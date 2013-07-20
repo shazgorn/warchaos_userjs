@@ -237,21 +237,6 @@
 							break;
 						}
 					}
-
-					if (document.getElementsByTagName('font')[0].innerHTML == "Акрит") {
-						var akritConts = [
-							["3","Улей"],
-							["30", "Сердце Дракона"],
-						]
-						for (var i = 1; i < tables.length; i++) {
-							for (var j = 0; j < akritConts.length; j++) {
-								if (tables[i].getElementsByTagName('span')[0].innerHTML == akritConts[j][0]) {
-									tables[i].getElementsByTagName('span')[0].innerHTML = akritConts[j][1];
-									break;
-								}
-							}
-						}
-					}
 					var onclickReg = /(\d+)/g;  //get coords of continent rectangle
 					for (var i = 1; i < tables.length; i++) {
 						var contName = tables[i].getElementsByTagName('span')[0].innerHTML;
