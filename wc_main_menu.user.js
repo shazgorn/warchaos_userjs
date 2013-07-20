@@ -12,6 +12,10 @@
 	//return;
 
 	function source() {
+		function getWindowObject() {
+			return window;
+		}
+		
 		function insertAfter(el1, el2) {
 		if (!el2.parentNode) return;
 		if (el2.nextSibling)
@@ -22,7 +26,7 @@
 
 		function getTableByClassName(className) {
 			var tables = document.getElementsByTagName('table');
-			for (i=0; i<tables.length; i++)
+			for (var i = 0; i < tables.length; i++)
 				if (tables[i].hasAttribute('class') && tables[i].getAttribute('class') == className)
 					return tables[i];
 			return null;
@@ -80,7 +84,7 @@
 				var clanBlockId = "me200i";
 				var clan_uid = "17748";
 				var as = document.getElementsByTagName('a');
-				for (i = 0; i < as.length; i++) {
+				for (var i = 0; i < as.length; i++) {
 					if (as[i].parentNode.tagName == "LI" && as[i].href.search("http://warchaos.ru/clan/manager/") != -1) {
 						//Clan Profile
 						li = document.createElement('li');
@@ -185,7 +189,7 @@
 								if (tds[i].hasAttribute("class") && tds[i].getAttribute("class") == "rwRight") {
 									var fonts = tds[i].getElementsByTagName("FONT");
 									if (fonts) {
-										for (var j=0; j<fonts.length; j++) {
+										for (var j = 0; j < fonts.length; j++) {
 											if (fonts[j].hasAttribute("color"))
 												fonts[j].setAttribute("color", "black");
 										}
@@ -194,7 +198,7 @@
 							}
 						}
 					}
-				}				
+				}
 				// add check all button to snapshots, msg, archive pages
 				if (document.URL.search("snapshots") != -1) {
 					addCheckAllButton();	
@@ -223,10 +227,63 @@
 				highlightLink("group", "Группа");
 				//unhighlightLink("lenta/2/", "Лиаф");
 				unhighlightLink("/uid", "Энциклопедия");
-
 				
-			}
+				if (document.URL.search("worlds") != -1) {
+					var b = document.getElementsByTagName('b');
+					var tables;
+					for (var i = 0; i < b.length; i++) {
+						if (b[i].innerHTML == "Материк") {
+							tables = b[i].parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('table');
+							break;
+						}
+					}
 
+					if (document.getElementsByTagName('font')[0].innerHTML == "Акрит") {
+						var akritConts = [
+							["3","Улей"],
+							["30", "Сердце Дракона"],
+						]
+						for (var i = 1; i < tables.length; i++) {
+							for (var j = 0; j < akritConts.length; j++) {
+								if (tables[i].getElementsByTagName('span')[0].innerHTML == akritConts[j][0]) {
+									tables[i].getElementsByTagName('span')[0].innerHTML = akritConts[j][1];
+									break;
+								}
+							}
+						}
+					}
+					var onclickReg = /(\d+)/g;  //get coords of continent rectangle
+					for (var i = 1; i < tables.length; i++) {
+						var contName = tables[i].getElementsByTagName('span')[0].innerHTML;
+						var coords = tables[i].getElementsByTagName('span')[0].getAttribute('onclick').match(onclickReg);
+						var w = getWindowObject();
+						var o = document.getElementById('worldmap');
+						var span = document.createElement('span');
+						var top = w.GetTop(o) + (Number(coords[2])+Number(coords[3]))/2;
+						var left = w.GetLeft(o) + (Number(coords[0])+Number(coords[1]))/2;
+
+						if (i == 32 && document.getElementsByTagName('font')[0].innerHTML == "Акрит") {
+							top += 32;
+							left += 32;
+						}
+
+						span.setAttribute('class', 'slnk');
+						span.setAttribute('style', "position:absolute; top:" + top + "px; left:" + left + "px; color:orange; font-size:12pt;");
+						span.setAttribute('onclick', tables[i].getElementsByTagName('span')[0].getAttribute('onclick'));
+						span.setAttribute("tooltip", tables[i].rows[0].cells[4].innerHTML);
+						var s = contName.split(" ");
+						if (s != contName) {
+							for (var j = 0; j < s.length; j++) {
+								span.appendChild(document.createTextNode(s[j]));
+								span.appendChild(document.createElement("br"));
+							}
+						} else {
+							span.appendChild(document.createTextNode(contName));
+						}
+						document.getElementById('worldmap').parentNode.appendChild(span);
+					}
+				}
+			}
 		})();
 	}
 
