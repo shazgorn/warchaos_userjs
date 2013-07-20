@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Warchaos Mapper for Liaf
-// @namespace      http://shazgorn.110mb.com
+// @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Mapper use iframe and window.postMessage
 // @include        http://dragonmap.ru/thispageshouldneverexist
 // @include        http://warchaos.ru/*

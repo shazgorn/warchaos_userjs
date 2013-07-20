@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Warchaos Buildings
-// @namespace      http://shazgorn.110mb.com
+// @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some icons to town screen and blds lvls
 // @include        http://warchaos.ru/f/a
 // @match          http://warchaos.ru/f/a

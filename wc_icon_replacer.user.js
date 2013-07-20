@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Warchaos and Terra Bellica Icon Replacer
-// @namespace      http://shazgorn.110mb.com
+// @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Replace default recipe icon(1914.gif). Add art info
 // @include        http://warchaos.ru/f/a
 // @match          http://warchaos.ru/f/a

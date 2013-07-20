@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Warchaos and Terra Bellica Buy Force
-// @namespace      http://shazgorn.110mb.com
+// @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add "max" button
 // @include        http://warchaos.ru/f/a
 // @match          http://warchaos.ru/f/a

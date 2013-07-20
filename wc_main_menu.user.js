@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Warchaos Main Menu
-// @namespace      http://shazgorn.110mb.com
+// @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some links to main menu
 // @include        http://warchaos.ru/*
 // @exclude        http://warchaos.ru/f/a

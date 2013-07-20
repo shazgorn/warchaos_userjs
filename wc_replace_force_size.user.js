@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Warchaos Replace Army Size
-// @namespace      http://shazgorn.110mb.com
+// @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Replace symbolic represenation with numeric
 // @include        http://warchaos.ru/f/a
 // @include        http://warchaos.ru/snapshot/*

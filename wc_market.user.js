@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Warchaos Market
-// @namespace      http://shazgorn.110mb.com
+// @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Like WC Pro market but with some additional options
 // @include        http://warchaos.ru/f/a
 // @match          http://warchaos.ru/f/a
