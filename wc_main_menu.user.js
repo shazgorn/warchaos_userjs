@@ -140,7 +140,7 @@
 							div.appendChild(b);
 							div.appendChild(document.createElement("br"));
 							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_icon_replacer.user.js","Warchaos Icon Replacer"," - Заменяет иконки рецов и добавляет инфу об артах.");
-							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_mapper_akrit.user.js","Warchaos Mapper for Akrit"," - Маппер для Акрита.");
+							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_mapper_akrit.user.js","Warchaos Mapper for Liaf"," - Маппер для Лиафа.");
 							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_buildings.user.js","Warchaos Buildings"," - Добавляет иконки и уровни зданий в городе.");
 							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_buy_force.user.js","Warchaos Buy Force"," - Добавляет кнопку max для покупки форса.");
 							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_loot_button.user.js","Warchaos Loot Button"," - Добавляет кнопку для выделения лута.");
