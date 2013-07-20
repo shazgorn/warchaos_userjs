@@ -31,7 +31,7 @@
 		function highlightLink(pagename, linkname) {
 			if (document.URL.search(pagename) != -1) {
 				var lis = document.getElementsByTagName('li');
-				for (var i=0; i<lis.length; i++)
+				for (var i = 0; i < lis.length; i++)
 					if (lis[i].getAttribute('class') != "lis" && lis[i].childNodes[0].innerHTML == linkname) {
 						lis[i].setAttribute('class', "lis");
 						lis[i].childNodes[0].setAttribute('style',"font-style:italic");
@@ -43,7 +43,7 @@
 		function unhighlightLink(pagename, linkname) {
 			if (document.URL.search(pagename) != -1) {
 				var lis = document.getElementsByTagName('li');
-				for (var i=0; i<lis.length; i++)
+				for (var i = 0; i < lis.length; i++)
 					if (lis[i].getAttribute('class') == "lis" && lis[i].childNodes[0].innerHTML == linkname) {
 						lis[i].removeAttribute('class');
 						lis[i].childNodes[0].setAttribute('style',"font-style:normal");
@@ -106,57 +106,16 @@
 							li.setAttribute('class', "lis");
 							a.setAttribute('style',"font-style:italic");
 						}
-						//Scripts
+						//Repo
 						li = document.createElement('li');
 						document.getElementById(bookBlockId).appendChild(li);
 						a = document.createElement('a');
-						a.href = "javascript://";
+						a.href = "https://github.com/shazgorn/warchaos_userjs";
+						a.target = "_blank";
 						li.appendChild(a);
 						document.links[++i].innerHTML =  "Скрипты";
-						a.addEventListener('click', function (e) {
-							var w = window;
-							w.help1 = "Скрипты";
-							w.help2 = "<div id='scripts_list'></div>";
-							w.ShowWin();
-							function addLinkToScriptsList(link, name, description) {
-								var div = document.getElementById("scripts_list");
-								var a = document.createElement("a");
-								a.href = link;
-								a.innerHTML = name;
-								div.appendChild(a);
-								div.appendChild(document.createTextNode(description));
-								div.appendChild(document.createElement("br"));
-							}
-							var div = document.getElementById("scripts_list");
-							var b = document.createElement("b");
-							b.innerHTML = "Главное меню";
-							div.appendChild(b);
-							div.appendChild(document.createElement("br"));
-							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_main_menu.user.js", "Warchaos Main Menu"," - Добавляет полезные ссылки в главное меню.");
-							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_continent_names.user.js", "Warchaos Continent Names", " - Заменяет названия материков.");
-							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_clear_msg.user.js","Warchaos Clear Msg"," - Удаляет сообщения.");
-							b = document.createElement("b");
-							b.innerHTML = "Игра";
-							div.appendChild(b);
-							div.appendChild(document.createElement("br"));
-							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_icon_replacer.user.js","Warchaos Icon Replacer"," - Заменяет иконки рецов и добавляет инфу об артах.");
-							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_mapper_akrit.user.js","Warchaos Mapper for Liaf"," - Маппер для Лиафа.");
-							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_buildings.user.js","Warchaos Buildings"," - Добавляет иконки и уровни зданий в городе.");
-							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_buy_force.user.js","Warchaos Buy Force"," - Добавляет кнопку max для покупки форса.");
-							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_loot_button.user.js","Warchaos Loot Button"," - Добавляет кнопку для выделения лута.");
-							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_ap_calc.user.js","Warchaos AP Calc"," - Показывает реген ходов.");
-							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_numpad_arrows.user.js","Warchaos Numpad Arrows"," - Позволяет двигать юниты numpad`om.");
-							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_market.user.js","Warchaos Market"," - Скрипт для рынка.");
-							addLinkToScriptsList("http://disk.webhop.org/shazgorn@jabber.ru/wc_replace_force_size.user.js","Warchaos Replace Army Size"," - Заменяет буквенные обозначения армий на численные.");
-							// addLinkToScriptsList(,"","");
-							div.appendChild(document.createElement("hr"));
-							a = document.createElement("a");
-							a.href = "http://silentdragons.ru/forum/viewtopic.php?f=4&t=1319";
-							a.target = "_blank";
-							a.innerHTML = "Тема на форуме";
-							div.appendChild(a);
-						},false);
 						//Scripts options
+						/*
 						li = document.createElement('li');
 						document.getElementById(bookBlockId).appendChild(li);
 						a = document.createElement('a');
@@ -170,6 +129,7 @@
 							w.help2 = "<div id='scripts_options_div'></div>";
 							w.ShowWin();
 						},false);
+						*/
 						//Map
 						li = document.createElement('li');
 						document.getElementById(bookBlockId).appendChild(li);
@@ -179,6 +139,7 @@
 						li.appendChild(a);
 						document.links[++i].innerHTML =  "Карта";
 						//box
+						/*
 						li = document.createElement('li');
 						document.getElementById(bookBlockId).appendChild(li);
 						a = document.createElement('input'); //ybox
@@ -202,6 +163,7 @@
 							window.open('http://warchaos.ru/search/?q=' + document.getElementById('qq').value, "_self");
 						},false);
 						li.appendChild(a);
+						*/
 						break;
 					}
 				}//for
@@ -260,7 +222,7 @@
 				highlightLink("lenta/7/", "Лиаф");
 				highlightLink("group", "Группа");
 				//unhighlightLink("lenta/2/", "Лиаф");
-				//unhighlightLink("/uid", "Энциклопедия");
+				unhighlightLink("/uid", "Энциклопедия");
 
 				
 			}
