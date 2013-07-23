@@ -283,16 +283,16 @@
 									}, false);
 								}, dummy, e.target.getAttribute("cm"));
 						}, false);
-						// displayMarket(t, resName);
+						displayMarket(t, resName);
 					}
 				} // for
-				_.each(_.groupBy(allMarkets, function(a) {return a.rows[0].cells[0].innerHTML.match(regResName)[1];}), function(set) {
-					_.each(_.toArray(set), function(market) {
-						displayMarket(market, lastResName);
-					});
-					if ($("#markets").children().last().html() != "")
-						$("#markets").append("<hr>");
-				});
+				// _.each(_.groupBy(allMarkets, function(a) {return a.rows[0].cells[0].innerHTML.match(regResName)[1];}), function(set) {
+					// _.each(_.toArray(set), function(market) {
+						// displayMarket(market, lastResName);
+					// });
+					// if ($("#markets").children().last().html() != "")
+						// $("#markets").append("<hr>");
+				// });
 			}
 			
 		}
