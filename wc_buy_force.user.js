@@ -192,7 +192,8 @@
 						if (td[i].hasAttribute('class') && td[i].getAttribute('class') == "bld"
 								&& td[i].hasChildNodes()) {
 							for (var j = 0; j < tbl.length; j++) {
-								if (td[i].innerHTML.search(tbl[j][0]) != -1) {
+								if ( ( j + 1 < tbl.length && (j % 2 == 0) && td[i].innerHTML.search(tbl[j+1][0]) != -1)
+								|| td[i].innerHTML.search(tbl[j][0]) != -1) {
 									var input = document.createElement("input");
 									input.setAttribute("type", "checkbox");
 									t.rows[j].cells[0].appendChild(input);
@@ -210,8 +211,8 @@
 									// function cmD(d,x,z,evt) { return cm(mobjects[obja+5],mobjects[0],subb,d,x,'',z,evt?evt:0);}
 									/* +td[i].getAttribute("rc").match(/b(\d+)/)[0]
 									 */
-									var quantity = 1;
-									var params = "a="+w.g.mobjects[w.g.obja+5]+"&b="+w.g.mobjects[0]+"&c=&d=8&e="+w.g.ecod+"&x="+q+"&y=&z="+z;
+									// var quantity = 1;
+									// var params = "a="+w.g.mobjects[w.g.obja+5]+"&b="+w.g.mobjects[0]+"&c=&d=8&e="+w.g.ecod+"&x="+quantity+"&y=&z="+z;
 									
 								}
 							}

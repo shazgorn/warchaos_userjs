@@ -115,16 +115,17 @@
 								m += '&';
 							}
 						}
-					}
-					else {
+					} else {
 						//ground
 						var img = c.getElementsByTagName('img')[0];
-						var res = bgReg.exec(img.getAttribute('src'));
-						if (res != null) {
-							var xy = xyReg.exec(img.getAttribute('tooltip'));
-							if (xy && (img.getAttribute('tooltip').search("Темнота") == -1) ) {  //terra incognita check
-								m += (xy[1] * 1000 + xy[2] * 1) + '$';
-								m += res[1] + '&';
+						if (img) {
+							var res = bgReg.exec(img.getAttribute('src'));
+							if (res != null) {
+								var xy = xyReg.exec(img.getAttribute('tooltip'));
+								if (xy && (img.getAttribute('tooltip').search("Темнота") == -1) ) {  //terra incognita check
+									m += (xy[1] * 1000 + xy[2] * 1) + '$';
+									m += res[1] + '&';
+								}
 							}
 						}
 					}

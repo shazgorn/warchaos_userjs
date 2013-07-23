@@ -4,9 +4,14 @@
 // @description    Like WC Pro market but with some additional options
 // @include        http://warchaos.ru/f/a
 // @match          http://warchaos.ru/f/a
+// @require        http://underscorejs.org/underscore-min.js
+// @require        http://code.jquery.com/jquery-2.0.3.min.js
 // ==/UserScript==
 
+
+
 (function () {
+	// return;
 	function source() {
 		function l() {
 			var t = "";
@@ -45,9 +50,7 @@
 		function getWindowObject() {
 			return window;
 		}
-		/**
-		*
-		*/
+
 		function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
 			var xmlHttpRequest = new XMLHttpRequest();
 			xmlHttpRequest.onreadystatechange = function() {
@@ -91,8 +94,6 @@
 
 			]
 
-		// addEventListener('load', function () {addCalcCost(document.getElementsByTagName("input"))}, false);
-
 		function addCalcCost(inputs) {
 			for (var i = 0; i < inputs.length; i++) {
 				if (inputs[i].type == "text") {
@@ -128,45 +129,22 @@
 			}
 		}
 
-		function getIndexInGoodsList(goodName) {
-			for (var i = 0; i < goodsList.length; i++) {
-				if (goodsList[i] == goodName)
-					return i;
-			}
-			return -1;
-		}
-
 		function clearDisplayedMarkets() {
-			var rw = getTablesByClassName("rw");
-			for (var i = 2; i < rw.length - 1; i++) {
-				removeElement(rw[i]);
-			}
-		}
-
-		function createSpanLooksLikeLink(resName) {
-			var span = document.createElement("SPAN");
-			span.setAttribute("class", "slnk");
-			span.setAttribute("style", "color:#31004A");
-			span.innerHTML = resName;
-			span.addEventListener("click", function (e) {
-					lastResName = e.target.innerHTML;
-					printListOfMarketsWithChoosenResource(resName);
-				}, false);
-			return span;
+			$("#markets>*").remove();
 		}
 
 		function checkResNameAndIcoNum(resName, icoNum) {
 			if ((resName == 'Все')
-				|| (resName == 'Древесина' && parseInt(icoNum) == 214)
-				|| (resName == 'Камень' && parseInt(icoNum) == 234)
-				|| (resName == 'Металл' && parseInt(icoNum) == 224)
-				|| (resName == 'Ресурсы' && parseInt(icoNum) >= 244 && parseInt(icoNum) <= 474)
-				|| (resName == 'Артефакты' && parseInt(icoNum) >= 504 && parseInt(icoNum) <= 1214)
-				|| (resName == 'Зелья' && parseInt(icoNum) >= 24 && parseInt(icoNum) <= 114)
-				|| (resName == 'Свитки' && parseInt(icoNum) >= 1934 && parseInt(icoNum) <= 2204)
-				|| (resName == 'Войска' && parseInt(icoNum) >= 2254 && parseInt(icoNum) <= 2474)
-				|| (resName == 'Рецепты' && parseInt(icoNum) == 1914)
-				|| (resName == 'Руны' && parseInt(icoNum) >= 1504 && parseInt(icoNum) <= 1764)) {
+				|| (resName == 'Древесина' && icoNum == 214)
+				|| (resName == 'Камень' && icoNum == 234)
+				|| (resName == 'Металл' && icoNum == 224)
+				|| (resName == 'Ресурсы' && icoNum >= 244 && icoNum <= 474)
+				|| (resName == 'Артефакты' && icoNum >= 504 && icoNum <= 1214)
+				|| (resName == 'Зелья' && icoNum >= 24 && icoNum <= 114)
+				|| (resName == 'Свитки' && icoNum >= 1934 && icoNum <= 2204)
+				|| (resName == 'Войска' && icoNum >= 2254 && icoNum <= 2474)
+				|| (resName == 'Рецепты' && icoNum == 1914)
+				|| (resName == 'Руны' && icoNum >= 1504 && icoNum <= 1764)) {
 					return true;
 			}
 			return false;
@@ -198,137 +176,145 @@
 				w.help2 = "<div id=\"progbar\">Идёт скачивание...</div>";
 				w.ShowWin();
 				downloadAllMarkets(0, resName);
-			}
-			var marketsToPrint = new Array();
-			for (var i = 0; i < allMarkets.length; i++) {
-				if (allMarkets[i] != null) {
-					var t = document.createElement("table");
-					t.setAttribute("class", "rw");
-					t.setAttribute("cellpadding", "3");
-					t.setAttribute("cellspacing", "0");
-					t.innerHTML = allMarkets[i].innerHTML;
-					var m = t.getElementsByTagName("button")[0].getAttribute("onclick").match(/(\d+),(\d+),(\d+),(\d+)/)[0];
-					t.getElementsByTagName("button")[0].setAttribute("cm", m);
-					t.getElementsByTagName("button")[0].setAttribute("onclick", "return false;");
-					t.getElementsByTagName("button")[0].addEventListener("click", function (e) {
-						var m = e.target.getAttribute("cm").match(/(\d+),(\d+),(\d+),(\d+)/);
-						var w = getWindowObject();
-						w.help1 = "Лавка";
-						w.help2 = "Загрузка лавки...";
-						w.ShowWin();
-						ajaxRequest("http://warchaos.ru/f/a", "POST", "a="+w.mobjects[w.obja+5]+"&b="+w.mobjects[0]
-							+"&c="+w.subb+"&d="+m[1]+"&x="+m[2]+"&y="+m[3]+"&z="+m[4], function (t, cm) {
-								var m = t.responseText.split('\";\ng.underleft=\"')[0];
-								m = m.split('\";\ng.upblock+=\"');
-								var w = getWindowObject();
-								w.help1 = "Лавка";
-								w.help2 = "";
-								for (var i = 2; i < m.length; i++) {
-									w.help2 += m[i];
-								}								
-								var Wlt = w.Wlt('i29');
-								w.help2 = w.help2.replace('"+Wlt(\'i29\')+"', Wlt);
-								w.help2 = w.help2.replace('input type=submit', 'input type=button id=buysellbutton');
-								w.ShowWin();
-								if (document.getElementById("buysellbutton") == null) {
-									return;
-								}
-								var cells = document.getElementById("buysellbutton").parentNode.parentNode.parentNode.parentNode.parentNode.previousSibling.previousSibling.rows[1].cells;
-								for (var i = cells.length - 1; i >= 0; i--) {
-									if (cells[i].getElementsByTagName("span")[0]) {
-										if (cells[i].getElementsByTagName("span")[0].getAttribute("tooltip") != e.target.parentNode.parentNode.cells[0].innerHTML)
-											removeElement(cells[i]);
-									} else
-										removeElement(cells[i]);
-								}
-								var inputs = document.getElementById("tipwin").getElementsByTagName("table")[0].rows[0].cells[0].getElementsByTagName("table")[1].rows[0].cells[0].getElementsByTagName("form")[0].getElementsByTagName("input");
-								addCalcCost(inputs);
-								document.getElementById("buysellbutton").setAttribute("cm", cm);
-								document.getElementById("buysellbutton").addEventListener("click", function (e) {
-									e.target.disabled = true;
-									var resName = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.previousSibling.previousSibling.rows[1].cells[0].childNodes[0].getAttribute("tooltip");
-									var form = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
-									var req = "";
-									var inputs = form.getElementsByTagName("input");
-									for (var i = 0; i < inputs.length; i++) {
-										if (inputs[i].type == "hidden") {
-											if (i == 0)
-												req += inputs[i].name + '=' + inputs[i].value;
-											else
-												req += '&' + inputs[i].name + '=' + inputs[i].value;
-										} else if (inputs[i].type == "text" && Number(inputs[i].value) > 0)
-											req += '&' + inputs[i].name + '=' + Number(inputs[i].value);
-										else if (inputs[i].type == "checkbox" && inputs[i].checked == true)
-											req += '&' + inputs[i].name + '=' + '1';
+			} else {
+				for (var i = 0; i < allMarkets.length; i++) {
+					if (allMarkets[i] != null) {
+						var t = document.createElement("table");
+						t.setAttribute("class", "rw");
+						t.setAttribute("cellpadding", "3");
+						t.setAttribute("cellspacing", "0");
+						t.innerHTML = allMarkets[i].innerHTML;
+						var m = t.getElementsByTagName("button")[0].getAttribute("onclick").match(/(\d+),(\d+),(\d+),(\d+)/)[0];
+						t.getElementsByTagName("button")[0].setAttribute("cm", m);
+						t.getElementsByTagName("button")[0].setAttribute("onclick", "return false;");
+						t.getElementsByTagName("button")[0].addEventListener("click", function (e) {
+							var m = e.target.getAttribute("cm").match(/(\d+),(\d+),(\d+),(\d+)/);
+							var w = getWindowObject();
+							w.help1 = "Лавка";
+							w.help2 = "Загрузка лавки...";
+							w.ShowWin();
+							ajaxRequest("http://warchaos.ru/f/a", "POST", "a="+w.mobjects[w.obja+5]+"&b="+w.mobjects[0]
+								+"&c="+w.subb+"&d="+m[1]+"&x="+m[2]+"&y="+m[3]+"&z="+m[4], function (t, cm) {
+									var m = t.responseText.split('\";\ng.underleft=\"')[0];
+									m = m.split('\";\ng.upblock+=\"');
+									var w = getWindowObject();
+									w.help1 = "Лавка";
+									w.help2 = "";
+									for (var i = 2; i < m.length; i++) {
+										w.help2 += m[i];
 									}
-									var select = document.getElementsByName("i29")[0];
-									req += '&i29=' + select.options[select.selectedIndex].value;
-									// a=2015&b=0&c=b8&d=555&e=989036992&x=104&y=164&z=2193&i3=1&i29=2015
-									ajaxRequest("http://warchaos.ru/f/a", "POST", req, function (t, args) {
-										var cm = args[0];
-										var resName = args[1];
-										var m = t.responseText.match(/g\.rtxt\+="([^"]+)";/);
-										document.getElementById("tipwin").getElementsByTagName("table")[0].rows[0].cells[0].getElementsByTagName("table")[1].rows[0].cells[0].innerHTML = m[1];
-										m = t.responseText.split("\";\ng.nextpage\=");
-										var markets = m[0].split('\";\ng.upblock+=\"');
-										for (var j = 2; j < markets.length; j++) {
-											if (markets[j].search(cm) != -1) {
-												var t = document.createElement("table");
-												t.setAttribute("class", "rw");
-												t.setAttribute("cellpadding", "3");
-												t.setAttribute("cellspacing", "0");
-												t.innerHTML = markets[j].match(/<table [^>]+>(.*)<\/table>/)[1];
-												for (var i = 0; i < allMarkets.length; i++) {
-													if (allMarkets[i].getElementsByTagName("button")[0].getAttribute("onclick").search(cm) != -1 && 
-															allMarkets[i].rows[0].cells[0].innerHTML == resName) {
-														for (var k = 0; k < t.rows[1].cells.length; k++) {
-															l(k, t.rows[1].innerHTML);
-															// try...
-															if (t.rows[1].hasChildNodes()
-																	&& t.rows[1].cells[k].childNodes.length > 0
-																	&& t.rows[1].cells[k].childNodes[0].hasAttribute("tooltip")
-																	&& t.rows[1].cells[k].childNodes[0].getAttribute("tooltip") == resName
-																	&& t.rows[1].cells[k].childNodes[0].childNodes[t.rows[1].cells[k].childNodes[0].childNodes.length - 1].nodeName == "#text") {
-																allMarkets[i].rows[0].cells[3].innerHTML = t.rows[1].cells[k].childNodes[0].childNodes[t.rows[1].cells[k].childNodes[0].childNodes.length - 1].data;
-																printListOfMarketsWithChoosenResource(lastResName);
-																return;
+									var Wlt = w.Wlt('i29');
+									w.help2 = w.help2.replace('"+Wlt(\'i29\')+"', Wlt);
+									w.help2 = w.help2.replace('input type=submit', 'input type=button id=buysellbutton');
+									w.ShowWin();
+									if (document.getElementById("buysellbutton") == null) {
+										return;
+									}
+									var cells = document.getElementById("buysellbutton").parentNode.parentNode.parentNode.parentNode.parentNode.previousSibling.previousSibling.rows[1].cells;
+									for (var i = cells.length - 1; i >= 0; i--) {
+										if (cells[i].getElementsByTagName("span")[0]) {
+											if (cells[i].getElementsByTagName("span")[0].getAttribute("tooltip") != e.target.parentNode.parentNode.cells[0].innerHTML)
+												removeElement(cells[i]);
+										} else
+											removeElement(cells[i]);
+									}
+									var inputs = document.getElementById("tipwin").getElementsByTagName("table")[0].rows[0].cells[0].getElementsByTagName("table")[1].rows[0].cells[0].getElementsByTagName("form")[0].getElementsByTagName("input");
+									addCalcCost(inputs);
+									document.getElementById("buysellbutton").setAttribute("cm", cm);
+									document.getElementById("buysellbutton").addEventListener("click", function (e) {
+										e.target.disabled = true;
+										var resName = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.previousSibling.previousSibling.rows[1].cells[0].childNodes[0].getAttribute("tooltip");
+										var form = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+										var req = "";
+										var inputs = form.getElementsByTagName("input");
+										for (var i = 0; i < inputs.length; i++) {
+											if (inputs[i].type == "hidden") {
+												if (i == 0)
+													req += inputs[i].name + '=' + inputs[i].value;
+												else
+													req += '&' + inputs[i].name + '=' + inputs[i].value;
+											} else if (inputs[i].type == "text" && Number(inputs[i].value) > 0)
+												req += '&' + inputs[i].name + '=' + Number(inputs[i].value);
+											else if (inputs[i].type == "checkbox" && inputs[i].checked == true)
+												req += '&' + inputs[i].name + '=' + '1';
+										}
+										var select = document.getElementsByName("i29")[0];
+										req += '&i29=' + select.options[select.selectedIndex].value;
+										// a=2015&b=0&c=b8&d=555&e=989036992&x=104&y=164&z=2193&i3=1&i29=2015
+										ajaxRequest("http://warchaos.ru/f/a", "POST", req, function (t, args) {
+											var cm = args[0];
+											var resName = args[1];
+											var m = t.responseText.match(/g\.rtxt\+="([^"]+)";/);
+											document.getElementById("tipwin").getElementsByTagName("table")[0].rows[0].cells[0].getElementsByTagName("table")[1].rows[0].cells[0].innerHTML = m[1];
+											m = t.responseText.split("\";\ng.nextpage\=");
+											var markets = m[0].split('\";\ng.upblock+=\"');
+											for (var j = 2; j < markets.length; j++) {
+												if (markets[j].search(cm) != -1) {
+													var t = document.createElement("table");
+													t.setAttribute("class", "rw");
+													t.setAttribute("cellpadding", "3");
+													t.setAttribute("cellspacing", "0");
+													t.innerHTML = markets[j].match(/<table [^>]+>(.*)<\/table>/)[1];
+													for (var i = 0; i < allMarkets.length; i++) {
+														if (allMarkets[i].getElementsByTagName("button")[0].getAttribute("onclick").search(cm) != -1 &&
+																allMarkets[i].rows[0].cells[0].innerHTML == resName) {
+															for (var k = 0; k < t.rows[1].cells.length; k++) {
+																l(k, t.rows[1].innerHTML);
+																// try...
+																if (t.rows[1].hasChildNodes()
+																		&& t.rows[1].cells[k].childNodes.length > 0
+																		&& t.rows[1].cells[k].childNodes[0].hasAttribute("tooltip")
+																		&& t.rows[1].cells[k].childNodes[0].getAttribute("tooltip") == resName
+																		&& t.rows[1].cells[k].childNodes[0].childNodes[t.rows[1].cells[k].childNodes[0].childNodes.length - 1].nodeName == "#text") {
+																	allMarkets[i].rows[0].cells[3].innerHTML = t.rows[1].cells[k].childNodes[0].childNodes[t.rows[1].cells[k].childNodes[0].childNodes.length - 1].data;
+																	printListOfMarketsWithChoosenResource(lastResName);
+																	return;
+																}
 															}
+															// not found...
+															allMarkets.splice(i,1);
+															printListOfMarketsWithChoosenResource(lastResName);
+															return;
 														}
-														// not found...
-														
-														allMarkets.splice(i,1);
-														printListOfMarketsWithChoosenResource(lastResName);
-														return;
 													}
 												}
 											}
-										}
-									}, dummy, [e.target.getAttribute("cm"), resName]);
-								}, false);
-							}, dummy, e.target.getAttribute("cm"));
-
-					}, false);
-
-					var wc_market_options = w.localStorage.getItem("wc_market_options");
-					if (wc_market_options == null) {
-						wc_market_options = new Array();
-						for (var i = 0; i < goodsList.length; i++) {
-							wc_market_options[i] = '1';
-						}
-						w.localStorage.setItem("wc_market_options", wc_market_options);
-					} else
-						wc_market_options = wc_market_options.toString().split(',');
-					// filter
-					var icoNum = parseInt(t.rows[0].cells[0].getAttribute("icoNum"));
-					if (checkResNameAndIcoNum(resName, icoNum)) {
-						var index = getIndexInGoodsList(t.rows[0].cells[0].innerHTML.match(/^( *[А-Яа-я:-])*/)[0]);
-						if (index != -1 && wc_market_options[index] != 0) {
-							if (getTablesByClassName("rw").length == 3)
-								insertAfter(t, getTablesByClassName("rw")[1]);
-							else
-								insertAfter(t, getTablesByClassName("rw")[getTablesByClassName("rw").length - 2]);
-						}
+										}, dummy, [e.target.getAttribute("cm"), resName]);
+									}, false);
+								}, dummy, e.target.getAttribute("cm"));
+						}, false);
+						// displayMarket(t, resName);
 					}
+				} // for
+				_.each(_.groupBy(allMarkets, function(a) {return a.rows[0].cells[0].innerHTML.match(regResName)[1];}), function(set) {
+					_.each(_.toArray(set), function(market) {
+						displayMarket(market, lastResName);
+					});
+					if ($("#markets").children().last().html() != "")
+						$("#markets").append("<hr>");
+				});
+			}
+			
+		}
+
+
+		function displayMarket(market, resName) {
+			var w = getWindowObject();
+			var wc_market_options = window.localStorage.getItem("wc_market_options");
+			if (wc_market_options == null) {
+				wc_market_options = new Array();
+				for (var i = 0; i < goodsList.length; i++) {
+					wc_market_options[i] = '1';
+				}
+				w.localStorage.setItem("wc_market_options", wc_market_options);
+			} else
+				wc_market_options = wc_market_options.toString().split(',');
+			// filter
+			var icoNum = parseInt(market.rows[0].cells[0].getAttribute("icoNum"));
+			if (checkResNameAndIcoNum(resName, icoNum)) {
+				var index = goodsList.indexOf(market.rows[0].cells[0].innerHTML.match(/^( *[А-Яа-я:-])*/)[0]);
+				if (index != -1 && wc_market_options[index] != 0) {
+					$("#markets").append(market);
 				}
 			}
 		}
@@ -343,12 +329,13 @@
 				allMarkets.push(market);
 				return;
 			}
+			
 			for (var i = 0; i < allMarkets.length; i++) {
 				if (market.rows[0].cells[0].innerHTML.match(regResName)[1] < allMarkets[i].rows[0].cells[0].innerHTML.match(regResName)[1]) {
 					allMarkets.splice(i, 0, market);
 					return;
 				} else if (market.rows[0].cells[0].innerHTML.match(regResName)[1] == allMarkets[i].rows[0].cells[0].innerHTML.match(regResName)[1]) {
-					
+
 					var miPrice = parseFloat(allMarkets[i].rows[0].cells[1].innerHTML);
 					if (!isBuyPage()) {
 						if (mPrice < miPrice) {
@@ -370,10 +357,35 @@
 			}
 			allMarkets.push(market);
 		}
-		
+
+		function filterMarkets(e) {
+			if (allMarkets.length == 0)
+				return;
+			clearDisplayedMarkets();
+			var newAllMarkets = new Array();
+			_.each(_.groupBy(allMarkets, function(a) {return a.rows[0].cells[0].innerHTML.match(regResName)[1];}), function(set) {
+				_.each(_.sortBy(_.toArray(set), function(market) {
+					if (typeof e == null || e.target.innerHTML == "По цене") {
+						return parseFloat(market.rows[0].cells[1].innerHTML)
+					} else {
+						return parseInt(market.rows[0].cells[2].innerHTML.match(regDistance)[1])
+					}
+				}), function(market) {
+					newAllMarkets.push(market);});
+			});
+			allMarkets = newAllMarkets;
+			_.each(_.groupBy(allMarkets, function(a) {return a.rows[0].cells[0].innerHTML.match(regResName)[1];}), function(set) {
+				_.each(_.toArray(set), function(market) {
+					displayMarket(market, lastResName);
+				});
+				if ($("#markets").children().last().html() != "")
+					$("#markets").append("<hr>");
+			});
+		}
+
 		/**
 		 * Desc: divide market so every market had only one good
-		 */		
+		 */
 		function parseMarket(market) {
 			while (market.rows[1].cells.length > 2) {
 				var t = document.createElement("table");
@@ -390,21 +402,21 @@
 			}
 			reorderCellsInMarket(market);
 		}
-		
+
 		function reorderCellsInMarket(market) {
 			var m = market.rows[1].cells[0].childNodes[0].getAttribute("tooltip").match(/x(\d+)\$/);
 			if (m) {
 				var totalPrice = parseFloat(market.rows[1].cells[1].innerHTML);
-				var pricePerItem =  parseInt(totalPrice / m[1]);
+				var pricePerItem =  parseInt(Math.ceil(totalPrice / m[1]));
 				market.rows[1].cells[1].innerHTML = pricePerItem + "(" + totalPrice + ")";
 			}
 			market.rows[0].insertCell(0);
 			market.rows[0].cells[0].appendChild(document.createTextNode(market.rows[1].cells[0].childNodes[0].getAttribute("tooltip")));
 			market.rows[0].cells[0].setAttribute("icoNum", market.rows[1].getElementsByTagName("img")[0].getAttribute("src").match(/(\d+)/)[1]);
-			
+
 			market.rows[0].insertCell(1);
 			market.rows[0].cells[1].appendChild(document.createTextNode(market.rows[1].cells[1].innerHTML));
-			
+
 			market.rows[0].insertCell(3);
 			// /*
 			if (market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes[
@@ -417,13 +429,13 @@
 			removeElement(market.rows[0].cells[2].childNodes[0]);
 			market.rows[0].cells[2].childNodes[0].innerHTML = market.rows[0].cells[2].childNodes[0].innerHTML.replace("Доставка: ", "");
 			market.rows[0].cells[2].childNodes[0].innerHTML = market.rows[0].cells[2].childNodes[0].innerHTML.replace(" кл.", "");
-			
+
 			market.deleteRow(1);
 			// /*
 			market.rows[0].cells[0].setAttribute("width", "25%");
 			market.rows[0].cells[1].setAttribute("width", "5%");
 			market.rows[0].cells[2].setAttribute("width", "12%");
-			
+
 			market.rows[0].cells[2].setAttribute("colspan", "");
 			market.rows[0].cells[3].setAttribute("width", "12%");
 			market.rows[0].cells[4].setAttribute("width", "10%");
@@ -433,7 +445,7 @@
 			// */
 			addMarketByName(market);
 		}
-		
+
 		/**
 		 * Desc: download all markets except markets with alliance tag
 		 */
@@ -459,7 +471,7 @@
 								t.innerHTML = markets[j].match(/<table [^>]+>(.*)<\/table>/)[1];
 								//WCBUG: there are can be empty market
 								if (!t.rows[1].cells[0].hasAttribute("align"))
-									continue;								
+									continue;
 								// remove market name
 								var fonts = t.getElementsByTagName("font");
 								for (var k = 0; k < fonts.length; k++) {
@@ -508,8 +520,6 @@
 						, dummy);
 		}
 
-		
-		
 		var buyPage = -1;
 		function isBuyPage() {
 			if (getTablesByClassName("rw")[2].rows[0].cells[0].innerHTML.search("<font color=\"#800000\">Покупка") == -1 && buyPage == -1)
@@ -552,7 +562,7 @@
 			}
 		}
 
-		(function wcMarket() {
+		function wcMarket() {
 			var resources = ["Все", "Древесина", "Камень", "Металл", "Ресурсы", "Артефакты", "Зелья", "Свитки", "Войска", "Рецепты", "Руны",]
 			var w = getWindowObject();
 			if (!w.g || !w.g.rpa)
@@ -560,7 +570,7 @@
 			if (w.g.rpa[5] == 0) {
 				addCheck();
 			}
-			if ((w.g == null || w.g.rpa==null)
+			if ((w.g == null || w.g.rpa == null)
 					|| (w.g.rpa[5] != 1 && w.g.rpa[5] != 6 && w.g.rpa[5] != 4)) //sell, buy, clan markets
 				return;
 
@@ -581,13 +591,51 @@
 						t.setAttribute("cellspacing", "0");
 						t.insertRow(0);
 						t.rows[0].insertCell(0);
-						t.rows[0].cells[0].setAttribute("align","center");
+						t.rows[0].cells[0].setAttribute("align", "center");
 						for (var j = 0; j < resources.length; j++) {
-							t.rows[0].cells[0].appendChild(createSpanLooksLikeLink(resources[j]));
+							var span = document.createElement("span");
+							span.setAttribute("class", "slnk");
+							span.setAttribute("style", "color:#31004A");
+							span.innerHTML = resources[j];
+							span.addEventListener("click", function (e) {
+									lastResName = e.target.innerHTML;
+									printListOfMarketsWithChoosenResource(lastResName);
+								}, false);
+							t.rows[0].cells[0].appendChild(span);
 							if (j != resources.length - 1)
 								t.rows[0].cells[0].appendChild(document.createTextNode("| "));
 						}
-
+						if (!isBuyPage()) {
+							// add sort by price| by distance
+							t = document.createElement("table");
+							insertAfter(t, sellButton.parentNode.parentNode.parentNode.parentNode.nextSibling);
+							t.setAttribute("class", "rw");
+							t.setAttribute("cellpadding", "3");
+							t.setAttribute("cellspacing", "0");
+							t.insertRow(0);
+							t.rows[0].insertCell(0);
+							t.rows[0].cells[0].setAttribute("align", "center");
+							var span = document.createElement("span");
+							span.setAttribute("class", "slnk");
+							span.setAttribute("style", "color:#31004A");
+							span.innerHTML = "По цене";
+							span.addEventListener("click", filterMarkets, false);
+							t.rows[0].cells[0].appendChild(span);
+							t.rows[0].cells[0].appendChild(document.createTextNode(" | "))
+							span = document.createElement("span");
+							span.setAttribute("class", "slnk");
+							span.setAttribute("style", "color:#31004A");
+							span.innerHTML = "По дальности";
+							span.addEventListener("click", filterMarkets, false);
+							t.rows[0].cells[0].appendChild(span);
+						}
+						var div = document.createElement("div");
+						div.setAttribute("id", "markets");
+						insertAfter(div, t);
+						$.each($(".rw"), function(i, rwi) {
+							if (i > (isBuyPage() ? 1 : 2) && i < $(".rw").length - 1)
+								$("#markets").append(rwi);
+						});
 						//Options button
 						var b = document.createElement("button");
 						insertAfter(b, document.getElementsByTagName("button")[1]);
@@ -703,10 +751,20 @@
 					}
 				}
 			}
-		})();
+		};
+		setTimeout(wcMarket, 1000);
+		// wcMarket();
 	}
-	var script = document.createElement('script');
-	script.textContent = '('+ source +')();';
+	var script = document.createElement("script");
+	script.src = "http://underscorejs.org/underscore-min.js";
 	document.body.appendChild(script);
-	document.body.removeChild(script);
+	script = document.createElement("script");
+	script.src = "http://code.jquery.com/jquery-2.0.3.min.js";
+	document.body.appendChild(script);
+	
+	var script2 = document.createElement('script');
+	script2.textContent = '('+ source +')();';
+	document.body.appendChild(script2);
+	//document.body.removeChild(script);
+	
 })();
