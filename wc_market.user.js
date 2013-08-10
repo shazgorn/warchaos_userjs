@@ -25,20 +25,6 @@
 			el.parentNode.removeChild(el);
 		}
 
-		/**
-		 * Description: search tables with specified class name
-		 * Return: array of tables
-		 */
-		function getTablesByClassName(className) {
-			var result = new Array();
-			var tables = document.getElementsByTagName('table');
-			for (i = 0; i < tables.length; i++)
-				if (tables[i].hasAttribute('class') && tables[i].getAttribute('class') == className) {
-					result.push(tables[i]);
-				}
-			return result;
-		}
-
 		function insertAfter(el1,el2) {
 			if (!el2.parentNode)return;
 			if (el2.nextSibling)
@@ -69,8 +55,8 @@
 		function dummy() {l(arguments);};
 
 		var allMarkets = new Array();
-		/** lastResName contain name of last pressed span e.g. Все, Ресурсы, Войска etc. */
-		var lastResName = ""; // I don`t think user wants to print all markets after preference change
+		/** lastResType contain name of last pressed span e.g. Все, Ресурсы, Войска etc. */
+		var lastResType = ""; // I don`t think user wants to print all markets after preference change
 		function getBlockName(resName) {
 			var blocks = ["Древесина","Ресурсы","Поселенцы", "Артефакты", "Зелье здоровья", "Зелья",
 							"Благословение", "Свитки", "Ополченцы", "Войска", "Рецепт: Благословение",
@@ -94,61 +80,49 @@
 
 			]
 
-		function addCalcCost(inputs) {
+		function addCalcCost() {
+			var inputs = $("input[type='text'][class='itxt']");
 			for (var i = 0; i < inputs.length; i++) {
-				if (inputs[i].type == "text") {
-					var span = document.createElement("span");
-					insertAfter(span, inputs[i]);
-					// insertAfter(span, document.createElement("br"));
-					span.innerHTML = '<img border="0" src="it/204.gif" width="20" height="15" align="absmiddle" tooltip="Золотые">0';
-					function calcCost(input) {
-						if (input.parentNode.parentNode.parentNode.parentNode.rows[0].cells[0].childNodes[1].data.match(/Покупка$/) == null) {
-								var cost = input.previousSibling.previousSibling.data.match(/\d*\.\d*/);
-								var discount = input.parentNode.parentNode.parentNode.parentNode.nextSibling.getElementsByTagName("font")[0].childNodes[0].data.match(/\d+/);
-								discount = discount ? 1 - discount/100 : "1";
-								var cb = input.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.childNodes[2];
-								var express = 0;
-								if (cb.checked) {
-									express = cb.nextSibling.data.match(/\d+\.*\d*/) * input.value;
-									if (express < cb.nextSibling.nextSibling.nextSibling.data.match(/\d+/)) {
-										express = cb.nextSibling.nextSibling.nextSibling.data.match(/\d+/);
-									}
-								}
-								input.nextSibling.childNodes[1].data = Math.ceil((cost * input.value) * discount + Number(express));
-							} else {
-								var cost = input.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.data.match(/\d*\.\d*/);
-								input.nextSibling.childNodes[1].data = Math.ceil(cost * input.value);
+				var span = document.createElement("span");
+				insertAfter(span, inputs[i]);
+				span.innerHTML = '<img border="0" src="it/204.gif" width="20" height="15" align="absmiddle" tooltip="Золотые">0';
+				function calcCost(input) {
+					if (input.parentNode.parentNode.parentNode.parentNode.rows[0].cells[0].childNodes[1].data.match(/Покупка$/) == null) {
+						var cost = input.previousSibling.previousSibling.data.match(/\d*\.\d*/);
+						var discount = input.parentNode.parentNode.parentNode.parentNode.nextSibling.getElementsByTagName("font")[0].childNodes[0].data.match(/\d+/);
+						discount = discount ? 1 - discount/100 : "1";
+						var cb = input.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.childNodes[2];
+						var express = 0;
+						if (cb.checked) {
+							express = cb.nextSibling.data.match(/\d+\.*\d*/) * input.value;
+							if (express < cb.nextSibling.nextSibling.nextSibling.data.match(/\d+/)) {
+								express = cb.nextSibling.nextSibling.nextSibling.data.match(/\d+/);
 							}
+						}
+						input.nextSibling.childNodes[1].data = Math.ceil((cost * input.value) * discount + Number(express));
+					} else {
+						var cost = input.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.data.match(/\d*\.\d*/);
+						input.nextSibling.childNodes[1].data = Math.ceil(cost * input.value);
 					}
-					inputs[i].addEventListener("keyup", function (e) {calcCost(e.target);}, false);
-					if (inputs[i].nextSibling.nextSibling != null)
-						inputs[i].nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.childNodes[2].addEventListener("click", function (e) {
-							calcCost(e.target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling);
-						}, false);
 				}
+
+				inputs[i].addEventListener("keyup", function (e) {calcCost(e.target);}, false);
+				if (inputs[i].nextSibling.nextSibling != null)
+					inputs[i].nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.childNodes[2].addEventListener("click", function (e) {
+						calcCost(e.target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling);
+					}, false);
 			}
 		}
 
 		function clearDisplayedMarkets() {
 			$("#markets>*").remove();
+			$("#tmarkets tr").each(function(i, tr) {
+				if (i > 0)
+					$(tr).remove();
+			});
 		}
 
-		function checkResNameAndIcoNum(resName, icoNum) {
-			if ((resName == 'Все')
-				|| (resName == 'Древесина' && icoNum == 214)
-				|| (resName == 'Камень' && icoNum == 234)
-				|| (resName == 'Металл' && icoNum == 224)
-				|| (resName == 'Ресурсы' && icoNum >= 244 && icoNum <= 474)
-				|| (resName == 'Артефакты' && icoNum >= 504 && icoNum <= 1214)
-				|| (resName == 'Зелья' && icoNum >= 24 && icoNum <= 114)
-				|| (resName == 'Свитки' && icoNum >= 1934 && icoNum <= 2204)
-				|| (resName == 'Войска' && icoNum >= 2254 && icoNum <= 2474)
-				|| (resName == 'Рецепты' && icoNum == 1914)
-				|| (resName == 'Руны' && icoNum >= 1504 && icoNum <= 1764)) {
-					return true;
-			}
-			return false;
-		}
+		
 
 		var alliesList = new Array();
 
@@ -165,9 +139,9 @@
 		}
 
 
-		function printListOfMarketsWithChoosenResource(resName) {
+		function printListOfMarketsWithChoosenResource(resType) {
 			var w = getWindowObject();
-			if (resName == "")  // in case of lastResName == ""
+			if (resType == "")  // in case of lastResType == ""
 				return;
 			clearDisplayedMarkets();
 			if (allMarkets.length == 0) {
@@ -175,26 +149,24 @@
 				w.help1 = "Рынок";
 				w.help2 = "<div id=\"progbar\">Идёт скачивание...</div>";
 				w.ShowWin();
-				downloadAllMarkets(0, resName);
+				downloadAllMarkets(0, resType);
 			} else {
 				for (var i = 0; i < allMarkets.length; i++) {
 					if (allMarkets[i] != null) {
+						var tmarkets = document.getElementById("tmarkets");
 						var t = document.createElement("table");
-						t.setAttribute("class", "rw");
-						t.setAttribute("cellpadding", "3");
-						t.setAttribute("cellspacing", "0");
-						t.innerHTML = allMarkets[i].innerHTML;
-						var m = t.getElementsByTagName("button")[0].getAttribute("onclick").match(/(\d+),(\d+),(\d+),(\d+)/)[0];
-						t.getElementsByTagName("button")[0].setAttribute("cm", m);
-						t.getElementsByTagName("button")[0].setAttribute("onclick", "return false;");
-						t.getElementsByTagName("button")[0].addEventListener("click", function (e) {
-							var m = e.target.getAttribute("cm").match(/(\d+),(\d+),(\d+),(\d+)/);
+						t.innerHTML = allMarkets[i].innerHTML;			
+						t.rows[0].cells[0].getElementsByTagName("span")[0].addEventListener("click", function (e) {
+							var m = e.target.getAttribute("cm").split(",");
 							var w = getWindowObject();
 							w.help1 = "Лавка";
 							w.help2 = "Загрузка лавки...";
 							w.ShowWin();
+							// market loading
 							ajaxRequest("http://warchaos.ru/f/a", "POST", "a="+w.mobjects[w.obja+5]+"&b="+w.mobjects[0]
-								+"&c="+w.subb+"&d="+m[1]+"&x="+m[2]+"&y="+m[3]+"&z="+m[4], function (t, cm) {
+								+"&c="+w.subb+"&d="+m[0]+"&x="+m[1]+"&y="+m[2]+"&z="+m[3], function (t, args) {
+									var cm = args[0];
+									var tooltip = args[1];
 									var m = t.responseText.split('\";\ng.underleft=\"')[0];
 									m = m.split('\";\ng.upblock+=\"');
 									var w = getWindowObject();
@@ -210,20 +182,20 @@
 									if (document.getElementById("buysellbutton") == null) {
 										return;
 									}
-									var cells = document.getElementById("buysellbutton").parentNode.parentNode.parentNode.parentNode.parentNode.previousSibling.previousSibling.rows[1].cells;
+									var cells = $("span[class='tlnx'][onclick]").parent();										
 									for (var i = cells.length - 1; i >= 0; i--) {
 										if (cells[i].getElementsByTagName("span")[0]) {
-											if (cells[i].getElementsByTagName("span")[0].getAttribute("tooltip") != e.target.parentNode.parentNode.cells[0].innerHTML)
+											if (cells[i].getElementsByTagName("span")[0].getAttribute("tooltip") != e.target.parentNode.getAttribute("tooltip"))
 												removeElement(cells[i]);
 										} else
 											removeElement(cells[i]);
 									}
 									var inputs = document.getElementById("tipwin").getElementsByTagName("table")[0].rows[0].cells[0].getElementsByTagName("table")[1].rows[0].cells[0].getElementsByTagName("form")[0].getElementsByTagName("input");
-									addCalcCost(inputs);
+									addCalcCost();
 									document.getElementById("buysellbutton").setAttribute("cm", cm);
 									document.getElementById("buysellbutton").addEventListener("click", function (e) {
 										e.target.disabled = true;
-										var resName = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.previousSibling.previousSibling.rows[1].cells[0].childNodes[0].getAttribute("tooltip");
+										var tooltip = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.previousSibling.previousSibling.rows[1].cells[0].childNodes[0].getAttribute("tooltip");
 										var form = e.target.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
 										var req = "";
 										var inputs = form.getElementsByTagName("input");
@@ -240,55 +212,49 @@
 										}
 										var select = document.getElementsByName("i29")[0];
 										req += '&i29=' + select.options[select.selectedIndex].value;
+										// sell/buy request
 										// a=2015&b=0&c=b8&d=555&e=989036992&x=104&y=164&z=2193&i3=1&i29=2015
 										ajaxRequest("http://warchaos.ru/f/a", "POST", req, function (t, args) {
 											var cm = args[0];
-											var resName = args[1];
+											var tooltip = args[1];
 											var m = t.responseText.match(/g\.rtxt\+="([^"]+)";/);
+											// print transfer result in window
 											document.getElementById("tipwin").getElementsByTagName("table")[0].rows[0].cells[0].getElementsByTagName("table")[1].rows[0].cells[0].innerHTML = m[1];
 											m = t.responseText.split("\";\ng.nextpage\=");
 											var markets = m[0].split('\";\ng.upblock+=\"');
 											for (var j = 2; j < markets.length; j++) {
 												if (markets[j].search(cm) != -1) {
 													var t = document.createElement("table");
-													t.setAttribute("class", "rw");
-													t.setAttribute("cellpadding", "3");
-													t.setAttribute("cellspacing", "0");
 													t.innerHTML = markets[j].match(/<table [^>]+>(.*)<\/table>/)[1];
 													for (var i = 0; i < allMarkets.length; i++) {
-														if (allMarkets[i].getElementsByTagName("button")[0].getAttribute("onclick").search(cm) != -1 &&
-																allMarkets[i].rows[0].cells[0].innerHTML == resName) {
-															for (var k = 0; k < t.rows[1].cells.length; k++) {
-																l(k, t.rows[1].innerHTML);
-																// try...
-																if (t.rows[1].hasChildNodes()
-																		&& t.rows[1].cells[k].childNodes.length > 0
-																		&& t.rows[1].cells[k].childNodes[0].hasAttribute("tooltip")
-																		&& t.rows[1].cells[k].childNodes[0].getAttribute("tooltip") == resName
-																		&& t.rows[1].cells[k].childNodes[0].childNodes[t.rows[1].cells[k].childNodes[0].childNodes.length - 1].nodeName == "#text") {
-																	allMarkets[i].rows[0].cells[3].innerHTML = t.rows[1].cells[k].childNodes[0].childNodes[t.rows[1].cells[k].childNodes[0].childNodes.length - 1].data;
-																	printListOfMarketsWithChoosenResource(lastResName);
+														if (allMarkets[i].rows[0].cells[0].getElementsByTagName("span")[0].getAttribute("cm") == cm &&
+																allMarkets[i].rows[0].cells[0].getAttribute("tooltip") == tooltip) {
+															for (var k = 0; k < t.rows[1].cells.length; k+=2) {
+																if (t.rows[1].cells[k].getElementsByTagName("span").length > 0
+																	&& t.rows[1].cells[k].getElementsByTagName("span")[0].getAttribute("tooltip") == tooltip) {
+																	allMarkets[i].rows[0].cells[0].childNodes[allMarkets[i].rows[0].cells[0].childNodes.length - 1].data = t.rows[1].cells[k].childNodes[0].childNodes[t.rows[1].cells[k].childNodes[0].childNodes.length - 1].data;
+																	printListOfMarketsWithChoosenResource(lastResType);
 																	return;
 																}
 															}
-															// not found...
+															// not found
 															allMarkets.splice(i,1);
-															printListOfMarketsWithChoosenResource(lastResName);
+															printListOfMarketsWithChoosenResource(lastResType);
 															return;
 														}
 													}
 												}
 											}
-										}, dummy, [e.target.getAttribute("cm"), resName]);
+										}, dummy, [e.target.getAttribute("cm"), tooltip]);
 									}, false);
-								}, dummy, e.target.getAttribute("cm"));
+								}, dummy, [e.target.getAttribute("cm"), e.target.parentNode.getAttribute("tooltip")]);
 						}, false);
-						displayMarket(t, resName);
-					}
+						displayMarket(t, resType);
+					}// if
 				} // for
 				// _.each(_.groupBy(allMarkets, function(a) {return a.rows[0].cells[0].innerHTML.match(regResName)[1];}), function(set) {
 					// _.each(_.toArray(set), function(market) {
-						// displayMarket(market, lastResName);
+						// displayMarket(market, lastResType);
 					// });
 					// if ($("#markets").children().last().html() != "")
 						// $("#markets").append("<hr>");
@@ -298,7 +264,7 @@
 		}
 
 
-		function displayMarket(market, resName) {
+		function displayMarket(market, resType) {
 			var w = getWindowObject();
 			var wc_market_options = window.localStorage.getItem("wc_market_options");
 			if (wc_market_options == null) {
@@ -311,18 +277,26 @@
 				wc_market_options = wc_market_options.toString().split(',');
 			// filter
 			var icoNum = parseInt(market.rows[0].cells[0].getAttribute("icoNum"));
-			if (checkResNameAndIcoNum(resName, icoNum)) {
-				var index = goodsList.indexOf(market.rows[0].cells[0].innerHTML.match(/^( *[А-Яа-я:-])*/)[0]);
+			if ((resType == 'Все')
+				|| (resType == 'Древесина' && icoNum == 214)
+				|| (resType == 'Камень' && icoNum == 234)
+				|| (resType == 'Металл' && icoNum == 224)
+				|| (resType == 'Ресурсы' && icoNum >= 244 && icoNum <= 474)
+				|| (resType == 'Артефакты' && icoNum >= 504 && icoNum <= 1214)
+				|| (resType == 'Зелья' && icoNum >= 24 && icoNum <= 114)
+				|| (resType == 'Свитки' && icoNum >= 1934 && icoNum <= 2204)
+				|| (resType == 'Войска' && icoNum >= 2254 && icoNum <= 2474)
+				|| (resType == 'Рецепты' && icoNum == 1914)
+				|| (resType == 'Руны' && icoNum >= 1504 && icoNum <= 1764)) {
+				var index = goodsList.indexOf(market.rows[0].cells[0].getAttribute("resName"));
 				if (index != -1 && wc_market_options[index] != 0) {
-					$("#markets").append(market);
+					$("#tmarkets").append(market.rows[0]);
 				}
 			}
 		}
-		var regDistance = /\((\d+)\)/;
-		var regResName = /([А-Яа-я: ]+)(?:[x0-9IVSLFCRr ]+|)\$/;
-		
+
 		function addMarketByName(market) {
-			var mPrice = parseFloat(market.rows[0].cells[1].innerHTML);
+			var mPrice = parseFloat(market.rows[0].cells[0].getAttribute("price"));
 			if (mPrice < 1 && isBuyPage())
 				return;
 			if (allMarkets.length == 0) {
@@ -331,19 +305,18 @@
 			}
 			
 			for (var i = 0; i < allMarkets.length; i++) {
-				if (market.rows[0].cells[0].innerHTML.match(regResName)[1] < allMarkets[i].rows[0].cells[0].innerHTML.match(regResName)[1]) {
+				if (market.rows[0].cells[0].getAttribute("resName") < allMarkets[i].rows[0].cells[0].getAttribute("resName")) {
 					allMarkets.splice(i, 0, market);
 					return;
-				} else if (market.rows[0].cells[0].innerHTML.match(regResName)[1] == allMarkets[i].rows[0].cells[0].innerHTML.match(regResName)[1]) {
-
-					var miPrice = parseFloat(allMarkets[i].rows[0].cells[1].innerHTML);
+				} else if (market.rows[0].cells[0].getAttribute("resName") == allMarkets[i].rows[0].cells[0].getAttribute("resName")) {
+					var miPrice = parseFloat(allMarkets[i].rows[0].cells[0].getAttribute("price"));
 					if (!isBuyPage()) {
 						if (mPrice < miPrice) {
 							allMarkets.splice(i, 0, market);
 							return;
 						} else if (mPrice == miPrice) {
-							var mDistance = parseInt(market.rows[0].cells[2].innerHTML.match(regDistance)[1]);
-							var miDistance = parseInt(allMarkets[i].rows[0].cells[2].innerHTML.match(regDistance)[1]);
+							var mDistance = parseInt(market.rows[0].cells[0].getAttribute("distance"));
+							var miDistance = parseInt(allMarkets[i].rows[0].cells[0].getAttribute("distance"));
 							if (mDistance <= miDistance) {
 								allMarkets.splice(i, 0, market);
 								return;
@@ -363,25 +336,18 @@
 				return;
 			clearDisplayedMarkets();
 			var newAllMarkets = new Array();
-			_.each(_.groupBy(allMarkets, function(a) {return a.rows[0].cells[0].innerHTML.match(regResName)[1];}), function(set) {
+			_.each(_.groupBy(allMarkets, function(a) {return a.rows[0].cells[0].getAttribute("resName");}), function(set) {
 				_.each(_.sortBy(_.toArray(set), function(market) {
-					if (typeof e == null || e.target.innerHTML == "По цене") {
-						return parseFloat(market.rows[0].cells[1].innerHTML)
+					if (typeof e == null || e.target.innerHTML == "Цена") {
+						return parseFloat(market.rows[0].cells[0].getAttribute("price"));
 					} else {
-						return parseInt(market.rows[0].cells[2].innerHTML.match(regDistance)[1])
+						return parseInt(market.rows[0].cells[0].getAttribute("time"));
 					}
 				}), function(market) {
 					newAllMarkets.push(market);});
 			});
 			allMarkets = newAllMarkets;
-			// _.each(_.groupBy(allMarkets, function(a) {return a.rows[0].cells[0].innerHTML.match(regResName)[1];}), function(set) {
-				// _.each(_.toArray(set), function(market) {
-					// displayMarket(market, lastResName);
-				// });
-				// if ($("#markets").children().last().html() != "")
-					// $("#markets").append("<hr>");
-			// });
-			printListOfMarketsWithChoosenResource(lastResName);
+			printListOfMarketsWithChoosenResource(lastResType);
 		}
 
 		/**
@@ -405,52 +371,75 @@
 		}
 
 		function reorderCellsInMarket(market) {
+			var regResName = /([А-Яа-я: ]+)(?: [0-9IVSLFCRr ]+| x\d+|)\$/;
+			var time = /(\d+)\:(\d+)\:(\d+)|(\d+)дн/;
+			
+			market.rows[0].insertCell(0);
+			// price
 			var m = market.rows[1].cells[0].childNodes[0].getAttribute("tooltip").match(/x(\d+)\$/);
 			if (m) {
 				var totalPrice = parseFloat(market.rows[1].cells[1].innerHTML);
 				var pricePerItem =  parseInt(Math.ceil(totalPrice / m[1]));
 				market.rows[1].cells[1].innerHTML = pricePerItem + "(" + totalPrice + ")";
 			}
-			market.rows[0].insertCell(0);
-			market.rows[0].cells[0].appendChild(document.createTextNode(market.rows[1].cells[0].childNodes[0].getAttribute("tooltip")));
+			market.rows[0].cells[0].setAttribute("price", market.rows[1].cells[1].innerHTML);
+			// ico
 			market.rows[0].cells[0].setAttribute("icoNum", market.rows[1].getElementsByTagName("img")[0].getAttribute("src").match(/(\d+)/)[1]);
+			var img = document.createElement("img");
+			img.setAttribute("src",  "it/" + market.rows[0].cells[0].getAttribute("icoNum") + ".gif");
+			img.setAttribute("width", 28);
+			img.setAttribute("height", 21);
+			market.rows[0].cells[0].appendChild(img);
+			// res name
+			var span = document.createElement("span");
+			span.setAttribute("style", "color:#000080;text-decoration:underline;margin-right:5px;");
+			span.innerHTML = market.rows[1].cells[0].childNodes[0].getAttribute("tooltip").replace("$Осталось:", " ");
+			span.innerHTML = span.innerHTML.replace("$", "");
+			market.rows[0].cells[0].appendChild(span);
+			// cm
+			m = market.getElementsByTagName("button")[0].getAttribute("onclick").match(/\d+,\d+,\d+,\d+/)[0];
+			span.setAttribute("cm", m);
+			// tooltip
+			market.rows[0].cells[0].setAttribute("tooltip", market.rows[1].cells[0].childNodes[0].getAttribute("tooltip"));
 
+			try {
+				market.rows[0].cells[0].setAttribute("resName", market.rows[0].cells[0].getAttribute("tooltip").match(regResName)[1]);
+			} catch (e) {
+				l(market.rows[0].cells[0].innerHTML);
+			}
+			
 			market.rows[0].insertCell(1);
 			market.rows[0].cells[1].appendChild(document.createTextNode(market.rows[1].cells[1].innerHTML));
 
 			market.rows[0].insertCell(3);
-			// /*
 			if (market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes[
 					market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes.length - 1].nodeName == "#text") {
-				market.rows[0].cells[3].appendChild(market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes[market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes.length - 1]);
+				market.rows[0].cells[0].appendChild(market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes[market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes.length - 1]);
 			}
-			// */
 			market.rows[0].insertCell(4);
 			market.rows[0].cells[4].appendChild(market.rows[0].cells[2].getElementsByTagName("a")[0]);
 			removeElement(market.rows[0].cells[2].childNodes[0]);
-			market.rows[0].cells[2].childNodes[0].innerHTML = market.rows[0].cells[2].childNodes[0].innerHTML.replace("Доставка: ", "");
-			market.rows[0].cells[2].childNodes[0].innerHTML = market.rows[0].cells[2].childNodes[0].innerHTML.replace(" кл.", "");
-
+			if (!isBuyPage()) {
+				m = market.rows[0].cells[2].childNodes[0].innerHTML.match(time);
+				market.rows[0].cells[0].setAttribute("time", m[4] ? parseInt(m[4]) * 86400 : parseInt(m[1]) * 3600 + parseInt(m[2]) * 60 + parseInt(m[3]));
+			}
+			market.rows[0].deleteCell(2);
+			var cell = market.rows[0].insertCell(2);
+			if (!isBuyPage()) {
+				cell.innerHTML = m[0];
+			}
+			market.rows[0].cells[3].innerHTML = market.rows[0].cells[4].innerHTML;
+			market.rows[0].cells[3].getElementsByTagName("a")[0].setAttribute("style", "color:#005825");
+			market.rows[0].deleteCell(4);
+			market.rows[0].deleteCell(4);
 			market.deleteRow(1);
-			// /*
-			market.rows[0].cells[0].setAttribute("width", "25%");
-			market.rows[0].cells[1].setAttribute("width", "5%");
-			market.rows[0].cells[2].setAttribute("width", "12%");
-
-			market.rows[0].cells[2].setAttribute("colspan", "");
-			market.rows[0].cells[3].setAttribute("width", "12%");
-			market.rows[0].cells[4].setAttribute("width", "10%");
-			market.rows[0].cells[4].setAttribute("align", "right");
-			market.rows[0].cells[5].setAttribute("width", "15%");
-			market.rows[0].cells[5].setAttribute("colspan", "");
-			// */
 			addMarketByName(market);
 		}
 
 		/**
 		 * Desc: download all markets except markets with alliance tag
 		 */
-		function downloadAllMarkets(nextpage, resName) {
+		function downloadAllMarkets(nextpage, resType) {
 			clearDisplayedMarkets();
 			var w = getWindowObject();
 			w.help1 = "";
@@ -466,9 +455,6 @@
 								if (markets[j].search(">Дерево<") != -1)  //skip WC Pro toolbar
 									continue;
 								var t = document.createElement("table");
-								t.setAttribute("class", "rw");
-								t.setAttribute("cellpadding", "3");
-								t.setAttribute("cellspacing", "0");
 								t.innerHTML = markets[j].match(/<table [^>]+>(.*)<\/table>/)[1];
 								//WCBUG: there are can be empty market
 								if (!t.rows[1].cells[0].hasAttribute("align"))
@@ -512,10 +498,10 @@
 							if (nextpage == 0) {
 								pb.innerHTML += 'Готово';
 								setTimeout("HideWin()", 1000);
-								printListOfMarketsWithChoosenResource(resName);
+								printListOfMarketsWithChoosenResource(resType);
 							} else {
 								pb.innerHTML += '.';
-								downloadAllMarkets(nextpage, resName);
+								downloadAllMarkets(nextpage, resType);
 							}
 						}
 						, dummy);
@@ -523,7 +509,7 @@
 
 		var buyPage = -1;
 		function isBuyPage() {
-			if (getTablesByClassName("rw")[2].rows[0].cells[0].innerHTML.search("<font color=\"#800000\">Покупка") == -1 && buyPage == -1)
+			if ($(".rw")[2].rows[0].cells[0].innerHTML.search("<font color=\"#800000\">Покупка") == -1 && buyPage == -1)
 				buyPage = false;
 			else if (buyPage == -1)
 				buyPage = true;
@@ -571,13 +557,14 @@
 			if (w.g.rpa[5] == 0) {
 				addCheck();
 			}
+			if (w.g.rpa[5] != 0 && w.g.upblock.search("<div align=center><table cellpadding=3 class=rwh><tr><td width=30>&nbsp;</td><td width=250 align=center>Рынок") != null)
+				addCalcCost();
 			if ((w.g == null || w.g.rpa == null)
 					|| (w.g.rpa[5] != 1 && w.g.rpa[5] != 6 && w.g.rpa[5] != 4)) //sell, buy, clan markets
 				return;
 
 			var tables = document.getElementsByTagName('table');
-
-			var rwh = getTablesByClassName("rwh");
+			var rwh = $(".rwh");
 			if (rwh) {
 				if (rwh[0] && rwh[0].innerHTML.search("Рынок") != -1) {
 					var sellButton = document.getElementsByTagName("button")[0];
@@ -599,42 +586,60 @@
 							span.setAttribute("style", "color:#31004A");
 							span.innerHTML = resources[j];
 							span.addEventListener("click", function (e) {
-									lastResName = e.target.innerHTML;
-									printListOfMarketsWithChoosenResource(lastResName);
+									lastResType = e.target.innerHTML;
+									printListOfMarketsWithChoosenResource(lastResType);
 								}, false);
 							t.rows[0].cells[0].appendChild(span);
 							if (j != resources.length - 1)
 								t.rows[0].cells[0].appendChild(document.createTextNode("| "));
 						}
+
+						// add sort by price | by time
+						t = document.createElement("table");
+						insertAfter(t, sellButton.parentNode.parentNode.parentNode.parentNode.nextSibling);
+						t.setAttribute("class", "rw");
+						t.setAttribute("cellpadding", "3");
+						t.setAttribute("cellspacing", "0");
+						t.setAttribute("id", "tmarkets");
+						var row = t.insertRow(0);
+						var cell = row.insertCell(0);
+						var span = document.createElement("span");
+						span.setAttribute("style", "color:#31004A");
+						span.innerHTML = "Товар";
+						cell.appendChild(span);
+						cell = row.insertCell(1);
+						span = document.createElement("span");
+						
+						span.setAttribute("style", "color:#31004A");
+						span.innerHTML = "Цена";
 						if (!isBuyPage()) {
-							// add sort by price| by distance
-							t = document.createElement("table");
-							insertAfter(t, sellButton.parentNode.parentNode.parentNode.parentNode.nextSibling);
-							t.setAttribute("class", "rw");
-							t.setAttribute("cellpadding", "3");
-							t.setAttribute("cellspacing", "0");
-							t.insertRow(0);
-							t.rows[0].insertCell(0);
-							t.rows[0].cells[0].setAttribute("align", "center");
-							var span = document.createElement("span");
-							span.setAttribute("class", "slnk");
-							span.setAttribute("style", "color:#31004A");
-							span.innerHTML = "По цене";
 							span.addEventListener("click", filterMarkets, false);
-							t.rows[0].cells[0].appendChild(span);
-							t.rows[0].cells[0].appendChild(document.createTextNode(" | "))
-							span = document.createElement("span");
 							span.setAttribute("class", "slnk");
-							span.setAttribute("style", "color:#31004A");
-							span.innerHTML = "По дальности";
-							span.addEventListener("click", filterMarkets, false);
-							t.rows[0].cells[0].appendChild(span);
 						}
+						cell.appendChild(span);
+						span = document.createElement("span");
+						span.setAttribute("class", "slnk");
+						span.setAttribute("style", "color:#31004A");
+						cell = row.insertCell(2);
+						if (!isBuyPage()) {
+							span.innerHTML = "Время";
+							span.addEventListener("click", filterMarkets, false);
+							cell.appendChild(span);
+						}
+						span = document.createElement("span");
+						span.setAttribute("style", "color:#31004A");
+						if (!isBuyPage())
+							span.innerHTML = "Продавец";
+						else
+							span.innerHTML = "Покупатель";
+						cell = row.insertCell(3);
+						cell.appendChild(span);
+							
 						var div = document.createElement("div");
 						div.setAttribute("id", "markets");
 						insertAfter(div, t);
 						$.each($(".rw"), function(i, rwi) {
-							if (i > (isBuyPage() ? 1 : 2) && i < $(".rw").length - 1)
+							if (i > 2 && i < $(".rw").length - 1)
 								$("#markets").append(rwi);
 						});
 						//Options button
@@ -714,7 +719,7 @@
 								w.localStorage.setItem("wc_market_options", wc_market_options);
 								var w = getWindowObject();
 								w.HideWin();
-								printListOfMarketsWithChoosenResource(lastResName);
+								printListOfMarketsWithChoosenResource(lastResType);
 							}, false);
 							//Select All
 							b = document.createElement("button");
@@ -748,13 +753,17 @@
 							var optionsDiv = document.getElementById("wc_market_options");
 							optionsDiv.appendChild(t);
 						}, false);
-
 					}
 				}
 			}
 		};
-		setTimeout(wcMarket, 1000);
-		// wcMarket();
+
+		(function main() {
+			if (typeof $ == "undefined")
+				setTimeout(main, 1000);
+			else
+				wcMarket();
+		})();
 	}
 	var script = document.createElement("script");
 	script.src = "http://underscorejs.org/underscore-min.js";

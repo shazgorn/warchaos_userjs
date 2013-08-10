@@ -25,6 +25,22 @@
 		else
 			el2.parentNode.appendChild(el1);
 	}
+	
+	function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
+			var xmlHttpRequest = new XMLHttpRequest();
+			xmlHttpRequest.onreadystatechange = function() {
+				if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
+					onSuccess(xmlHttpRequest, args);
+				}
+				else if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status != 200)
+							onFailure(xmlHttpRequest);
+			};
+			xmlHttpRequest.open(method, url, true);
+			if (method == 'POST')
+				xmlHttpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			xmlHttpRequest.send(param);
+	}
+		
 	/**
 	 * Unit object
 	 */
@@ -189,7 +205,7 @@
 					div.appendChild(t);
 					var td = document.getElementsByTagName("td");
 					for (var i = 0; i < td.length; i++) {
-						if (td[i].hasAttribute('class') && td[i].getAttribute('class') == "bld"
+						if (td[i].hasAttribute('class') && (td[i].getAttribute('class') == "bld" || td[i].getAttribute('class') == "btxt")
 								&& td[i].hasChildNodes()) {
 							for (var j = 0; j < tbl.length; j++) {
 								if ( ( j + 1 < tbl.length && (j % 2 == 0) && td[i].innerHTML.search(tbl[j+1][0]) != -1)
@@ -199,20 +215,42 @@
 									t.rows[j].cells[0].appendChild(input);
 									t.rows[j].cells[1].innerHTML = '<img src="' + tbl[j][1] + '">';
 									if (td[i].getElementsByTagName("small").length > 0) {
-										t.rows[j].cells[2].innerHTML = td[i].getElementsByTagName("small")[0].innerHTML;
+										t.rows[j].cells[2].innerHTML = td[i].getElementsByTagName("small")[0].innerHTML.match(/(\d+)/)[1];
 									}
 									input = document.createElement("input");
 									input.setAttribute("type", "text");
 									input.setAttribute("class", "cmb");
 									
 									t.rows[j].cells[3].appendChild(input);
+									
+									input = document.createElement("input");
+									input.setAttribute("type", "button");
+									input.setAttribute("class", "cmb");
+									input.setAttribute("value", "Нанять");
+									input.setAttribute("c", td[i].getAttribute("rc").match(/(b\d+)/)[1]);
+									input.setAttribute("z", j+1);
+									input.addEventListener("click", function(e) {
+										var quantity = e.target.parentNode.previousSibling.getElementsByTagName("input")[0].value;
+										// var b = w.g.subb;
+										var c = e.target.getAttribute("c");
+										var z = e.target.getAttribute("z");
+										// w.ecod  !!!! get new w.ecod for every request
+										var req = "a="+w.mobjects[w.obja+5]+"&b="+w.mobjects[0]+"&c="+c+"&d=8&e="+w.ecod+"&x="+quantity+"&y=&z="+z;
+										ajaxRequest("http://warchaos.ru/f/a", "POST", req,
+										function(t){
+											// l(t.responseText);
+											w.ecod = t.responseText.match(/ecod\=(\d+)/)[1];
+										}, function() {l("bad")});
+									}, false);
+									t.rows[j].cells[4].appendChild(input);
 									var z = td[i].getAttribute("rc").match(/b(\d+)/)[1];
 									// Нанять cmD(8,document.getElementById("buy3").value,3);
 									// function cmD(d,x,z,evt) { return cm(mobjects[obja+5],mobjects[0],subb,d,x,'',z,evt?evt:0);}
+									// function cm(a,b,c,d,x,y,z,evt)
 									/* +td[i].getAttribute("rc").match(/b(\d+)/)[0]
 									 */
-									// var quantity = 1;
-									// var params = "a="+w.g.mobjects[w.g.obja+5]+"&b="+w.g.mobjects[0]+"&c=&d=8&e="+w.g.ecod+"&x="+quantity+"&y=&z="+z;
+									
+									// var params = "a="+w.g.mobjects[w.g.obja+5]+"&b="+w.g.mobjects[0]+"&c="+w.g.subb+"&d=8&e="+w.g.ecod+"&x="+quantity+"&y=&z="+(j+1);
 									
 								}
 							}
