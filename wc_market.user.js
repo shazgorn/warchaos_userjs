@@ -549,7 +549,11 @@
 			}
 		}
 
-		function wcMarket() {
+		(function wcMarket() {
+			if (typeof $ == undefined || typeof _ == undefined) {
+				setTimeout(wcMarket, 1000);
+				return;
+			}
 			var resources = ["Все", "Древесина", "Камень", "Металл", "Ресурсы", "Артефакты", "Зелья", "Свитки", "Войска", "Рецепты", "Руны",]
 			var w = getWindowObject();
 			if (!w.g || !w.g.rpa)
@@ -756,25 +760,24 @@
 					}
 				}
 			}
-		};
+		})(); // wcMarket
 
-		(function main() {
-			if (typeof $ == "undefined")
-				setTimeout(main, 1000);
-			else
-				wcMarket();
-		})();
+
+	} // source
+	if (typeof $ == "undefined") {
+		var script = document.createElement("script");
+		script.src = "http://underscorejs.org/underscore-min.js";
+		document.body.appendChild(script);
 	}
-	var script = document.createElement("script");
-	script.src = "http://underscorejs.org/underscore-min.js";
-	document.body.appendChild(script);
-	script = document.createElement("script");
-	script.src = "http://code.jquery.com/jquery-2.0.3.min.js";
-	document.body.appendChild(script);
+	if (typeof _ == "undefined") {
+		var script = document.createElement("script");
+		script.src = "http://code.jquery.com/jquery-2.0.3.min.js";
+		document.body.appendChild(script);
+	}
 	
-	var script2 = document.createElement('script');
-	script2.textContent = '('+ source +')();';
-	document.body.appendChild(script2);
+	var script = document.createElement('script');
+	script.textContent = '('+ source +')();';
+	document.body.appendChild(script);
 	//document.body.removeChild(script);
 	
 })();
