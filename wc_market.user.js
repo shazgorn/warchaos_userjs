@@ -19,6 +19,8 @@
 				t += arguments[i] + ' ';
 			if (navigator.appName == "Opera")
 				opera.postError(new Date().toTimeString() + ": " + t);
+			else
+				console.log(new Date.toTimeString() + ": " + t);
 		}
 
 		function removeElement(el) {
@@ -162,9 +164,10 @@
 							w.help1 = "Лавка";
 							w.help2 = "Загрузка лавки...";
 							w.ShowWin();
+							
 							// market loading
 							ajaxRequest("http://warchaos.ru/f/a", "POST", "a="+w.mobjects[w.obja+5]+"&b="+w.mobjects[0]
-								+"&c="+w.subb+"&d="+m[0]+"&x="+m[1]+"&y="+m[2]+"&z="+m[3], function (t, args) {
+								+"&c="+w.subb+"&d="+m[0]+"&x="+m[1]+"&y="+m[2]+"&z="+m[3], function (t, args) {									
 									var cm = args[0];
 									var tooltip = args[1];
 									var m = t.responseText.split('\";\ng.underleft=\"')[0];
@@ -245,10 +248,12 @@
 													}
 												}
 											}
-										}, dummy, [e.target.getAttribute("cm"), tooltip]);
-									}, false);
-								}, dummy, [e.target.getAttribute("cm"), e.target.parentNode.getAttribute("tooltip")]);
-						}, false);
+										}, dummy, [e.target.getAttribute("cm"), tooltip]); // ajax for sell/buy request
+									}, false); // handler buy/sell request
+									$("table[class='rw3'][style*='ctrl/bg_5.gif']").attr("style", "background:url('ctrl/bg_5.gif');width:98%;");
+							}, dummy, [e.target.getAttribute("cm"), e.target.parentNode.getAttribute("tooltip")]); // ajax for market loading
+							
+						}, false); // handler for market click
 						displayMarket(t, resType);
 					}// if
 				} // for
@@ -380,7 +385,7 @@
 			if (m) {
 				var totalPrice = parseFloat(market.rows[1].cells[1].innerHTML);
 				var pricePerItem =  parseInt(Math.ceil(totalPrice / m[1]));
-				market.rows[1].cells[1].innerHTML = pricePerItem + "(" + totalPrice + ")";
+				market.rows[1].cells[1].innerHTML = totalPrice + "(" + pricePerItem  + ")";
 			}
 			market.rows[0].cells[0].setAttribute("price", market.rows[1].cells[1].innerHTML);
 			// ico
@@ -392,7 +397,7 @@
 			market.rows[0].cells[0].appendChild(img);
 			// res name
 			var span = document.createElement("span");
-			span.setAttribute("style", "color:#000080;text-decoration:underline;margin-right:5px;");
+			span.setAttribute("style", "color:#000080;text-decoration:underline;margin-right:5px;cursor:pointer;");
 			span.innerHTML = market.rows[1].cells[0].childNodes[0].getAttribute("tooltip").replace("$Осталось:", " ");
 			span.innerHTML = span.innerHTML.replace("$", "");
 			market.rows[0].cells[0].appendChild(span);
@@ -550,7 +555,18 @@
 		}
 
 		(function wcMarket() {
-			if (typeof $ == undefined || typeof _ == undefined) {
+			// XXX: you can get plenty of script elements if one have connection issues
+			if (typeof _ === "undefined") {
+				var script = document.createElement("script");
+				script.src = "http://underscorejs.org/underscore-min.js";
+				document.body.appendChild(script);
+			}			
+			if (typeof $ === "undefined") {
+				var script = document.createElement("script");
+				script.src = "http://code.jquery.com/jquery-2.0.3.min.js";
+				document.body.appendChild(script);
+			}
+			if (typeof $ === "undefined" || typeof _ === "undefined") {
 				setTimeout(wcMarket, 1000);
 				return;
 			}
@@ -764,20 +780,11 @@
 
 
 	} // source
-	if (typeof $ == "undefined") {
-		var script = document.createElement("script");
-		script.src = "http://underscorejs.org/underscore-min.js";
-		document.body.appendChild(script);
-	}
-	if (typeof _ == "undefined") {
-		var script = document.createElement("script");
-		script.src = "http://code.jquery.com/jquery-2.0.3.min.js";
-		document.body.appendChild(script);
-	}
+
 	
 	var script = document.createElement('script');
 	script.textContent = '('+ source +')();';
 	document.body.appendChild(script);
-	//document.body.removeChild(script);
+	document.body.removeChild(script);
 	
 })();
