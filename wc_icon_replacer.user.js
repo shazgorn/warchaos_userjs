@@ -78,7 +78,11 @@
 									if (parent.nodeName == "BUTTON") {
 										parent.setAttribute('style', "max-height:40px;");
 									}
-									imgs[i].setAttribute('style', "position:relative;left:-2px;top:0px;height:34px;width:34px;");
+									imgs[i].setAttribute('style', "position:relative;left:-2px;top:0px;");//height:34px;width:34px;
+									if (imgs[i].getAttribute("height") == "40") {
+										imgs[i].setAttribute("height", 34);
+										imgs[i].setAttribute("width", 34);
+									}
 									imgs[i].setAttribute('src', icons[j][icons[j].length-1]);
 									m = re3.exec(imgs[i].getAttribute('tooltip'));
 									var text = m ? m[0] : '?';

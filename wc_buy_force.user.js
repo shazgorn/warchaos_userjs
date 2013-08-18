@@ -24,21 +24,6 @@
 		else
 			el2.parentNode.appendChild(el1);
 	}
-	
-	function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
-			var xmlHttpRequest = new XMLHttpRequest();
-			xmlHttpRequest.onreadystatechange = function() {
-				if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
-					onSuccess(xmlHttpRequest, args);
-				}
-				else if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status != 200)
-							onFailure(xmlHttpRequest);
-			};
-			xmlHttpRequest.open(method, url, true);
-			if (method == 'POST')
-				xmlHttpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-			xmlHttpRequest.send(param);
-	}
 		
 	/**
 	 * Unit object
@@ -152,16 +137,28 @@
 			}
 		}
 	}
-	var tbl = [
-		["Казармы", "it/2254.gif", [1,0,0,0,0], 0],
-		["Гарнизон", "it/2264.gif", [2,0,0,0,0], 1],
-		["Стрельбище", "it/2274.gif", [0,1,0,0,0], 0],
-		["Полигон", "it/2284.gif", [1,0,1,0,0], 1],
-		["Орден меча", "it/2294.gif", [5,0,0,0,0], 0],
-		["Орден щита", "it/2304.gif", [4,0,1,0,0], 1],
-		["Конюшни", "it/2314.gif", [5,1,0,0,0], 0],
-		["Арена", "it/2324.gif", [5,1,1,0,0], 1],
-		["Башня магов", "it/2334.gif", [0,0,0,0,1], 0],
+
+	function forceType(bld, ico, price, lvl) {
+		this.bld = bld;
+		this.ico = ico;
+		this.price = price;
+		this.lvl = lvl;
+		this.mark = 0;
+		this.quantity = 0;
+		this.rc = "";
+	};
+	
+	var forceTable = [
+		new forceType("Казармы", "it/2254.gif", [1,0,0,0,0], 0),
+		new forceType("Гарнизон", "it/2264.gif", [2,0,0,0,0], 1),
+		new forceType("Стрельбище", "it/2274.gif", [0,1,0,0,0], 0),
+		new forceType("Полигон", "it/2284.gif", [1,0,1,0,0], 1),
+		new forceType("Орден меча", "it/2294.gif", [5,0,0,0,0], 0),
+		new forceType("Орден щита", "it/2304.gif", [4,0,1,0,0], 1),
+		new forceType("Конюшни", "it/2314.gif", [5,1,0,0,0], 0),
+		new forceType("Арена", "it/2324.gif", [5,1,1,0,0], 1),
+		new forceType("Башня магов", "it/2334.gif", [0,0,0,0,1], 0),
+		new forceType("Храм", "???", [], 0),
 	];
 
 	function cloneArray(arr) {
@@ -171,36 +168,15 @@
 		return res;
 	};
 
-
-	(function addButtons() {
-		if (typeof $ === "undefined") {
-			var script = document.createElement("script");
-			script.src = "http://code.jquery.com/jquery-2.0.3.min.js";
-			document.body.appendChild(script);
-		} else if (typeof $.ui === "undefined") {
-			script = document.createElement("script");
-			script.src = "http://code.jquery.com/ui/jquery-ui-git.js";
-			document.body.appendChild(script);
-		}
-		if (typeof $ === "undefined" || typeof $.ui === "undefined") {
-			setTimeout(addButtons, 1000);
-			return;
-		}
-		var div = document.createElement("div");
-		div.setAttribute("id", "dialog");
-		div.setAttribute("title", "just title");
-		div.innerHTML = "some content";
-		document.body.appendChild(div);
-		$(function() {
-			$("#dialog").dialog();
-		});
-
-		function getTotalCost() {
+	function addBuyAllButton() {
+		function getTotalCost() {				
 			var totalCost = [0,0,0,0,0];
-			$("#totalCost").parent().parent().parent().find("td[maxprice]").each(function(i,td) {
-				$(td.getAttribute("maxprice").split(",")).each(function(j, price) {
-					totalCost[j] = parseInt(totalCost[j]) + parseInt(price);
-				});
+			$("#buyforcetable input[type=checkbox]").each(function(i, cb) {
+				if (cb.checked) {
+					$($(cb).parent().parent().find("td[maxprice]").attr("maxprice").split(",")).each(function(j, price) {
+						totalCost[j] = parseInt(totalCost[j]) + parseInt(price);
+					});
+				}
 			});
 			return totalCost;
 		};
@@ -213,12 +189,342 @@
 				if (totalCost[i]) {
 					var img = document.createElement("img");
 					img.setAttribute("src", resources[i][0]);
-					img.setAttribute("style", "width:20px;height:15px;");
 					cell.append(img);
 					cell.append(document.createTextNode(totalCost[i]));
 				}
 			});
 		};
+		/**
+		 * j - index in forceTable/buyforcetable
+		 * TODO: if cur bld is lvl_0_bld and next bld is lvl_1_bld.checked then get its quantity and calc cur avalquantity
+		 * vice versa: if its lvl_1_bld and prev lvl_0_bld.checked get its quantity and calc cur avalquantity
+		 */
+		function calcCost(j, quantity) {
+			var avalquantity = parseInt($("#buyforcetable tr:nth-child("+(j+1)+") td[name='avalquantity']").html());
+			//l(avalquantity);
+			//l(quantity);
+			var cell = $("#buyforcetable tr:nth-child("+(j+1)+") td[maxprice]").get(0);
+			cell.innerHTML = "";
+			var resources = findAmountOfStorageResources();			
+			
+			if ($("#buyforcetable tr:nth-child("+(j+1)+") td input[type=checkbox]").get(0).checked) {
+				if (forceTable[j].lvl == 0 && forceTable[j+1].lvl == 1 && forceTable[j+1].mark == 1
+					&& $("#buyforcetable tr:nth-child("+(j+2)+") td input[type=checkbox]").get(0).checked) {
+					var altq = parseInt($("#buyforcetable tr:nth-child("+(j+2)+") input[name='quantity']").val());
+					if (quantity < 0)
+						quantity = 0;
+					else if (isNaN(altq))
+						altq = 0;
+					//l(avalquantity,  altq, quantity);
+					if (quantity > avalquantity) {
+						quantity = avalquantity;
+						$("#buyforcetable tr:nth-child("+(j+1)+") input[name='quantity']").val(quantity);
+						altq = 0;
+						$("#buyforcetable tr:nth-child("+(j+2)+") input[name='quantity']").val(altq);
+						calcCost(j+1, altq);
+					}
+					
+					if ((avalquantity - altq - quantity < 0) && altq > 0) {
+						altq = avalquantity - quantity;
+						$("#buyforcetable tr:nth-child("+(j+2)+") input[name='quantity']").val(altq);
+						calcCost(j+1, altq);
+					}
+				} else if (forceTable[j].lvl == 1 && $("#buyforcetable tr:nth-child("+(j)+") td input[type=checkbox]").get(0).checked) {
+					var altq = parseInt($("#buyforcetable tr:nth-child("+(j)+") input[name='quantity']").val());
+					if (quantity < 0)
+						quantity = 0;
+					else if (isNaN(altq))
+						altq = 0;
+					if (quantity > avalquantity) {
+						quantity = avalquantity;
+						$("#buyforcetable tr:nth-child("+(j+1)+") input[name='quantity']").val(quantity);
+						altq = 0;
+						$("#buyforcetable tr:nth-child("+(j)+") input[name='quantity']").val(altq);
+						calcCost(j-1, altq);
+					}					
+					if ((avalquantity - altq - quantity < 0) && altq > 0) {
+						altq = avalquantity - quantity;
+						$("#buyforcetable tr:nth-child("+(j)+") input[name='quantity']").val(altq);
+						calcCost(j-1, altq);
+					}
+				}
+			}
+			
+			//l(quantity);
+			var min = quantity;
+			cell.setAttribute("maxPrice", "0,0,0,0,0");
+			var price = cloneArray(forceTable[j].price);
+			var maxPrice = cloneArray(forceTable[j].price);
+			var totalCost = getTotalCost();
+			$(maxPrice).each(function(i) {
+				maxPrice[i] = price[i] * min;
+			});
+			$(maxPrice).each(function(i) {
+				if (maxPrice[i] > resources[i][1] - totalCost[i]) {
+					var tmpMin = parseInt((resources[i][1] - totalCost[i]) / price[i]);
+					if (tmpMin < min) {
+						min = tmpMin;
+					}
+				}
+			});
+			$(maxPrice).each(function(i) {
+				maxPrice[i] = price[i] * min;
+			});
+			var totalCost = getTotalCost();
+			$(totalCost).each(function(i) {
+				if (totalCost[i] > resources[i][1]) {
+				}
+			});
+			// print price
+			$(maxPrice).each(function(i) {
+				if (maxPrice[i]) {
+					var img = document.createElement("img");
+					img.setAttribute("src", resources[i][0]);
+					cell.appendChild(img);
+					cell.appendChild(document.createTextNode(maxPrice[i]));
+				}
+			});
+			cell.setAttribute("maxPrice", maxPrice.toString());
+			printTotalCost();
+			return min;
+		};
+		// init forceTable
+		$("td[class='bld']:has(small), td[class='btxt']:has(small), td[class='bld']").each(function(i, td) {
+			$(forceTable).each(function(j, force) {
+				if (td.innerHTML.search(force.bld) != -1
+					|| (j < forceTable.length-1 && td.innerHTML.search(forceTable[j+1].bld) != -1 && forceTable[j+1].lvl == 1)) {
+					force.mark = 1;
+					if ($(td).find("small").length > 0)
+						force.quantity = $(td).find("small").html().match(/\d+/);
+					else
+						force.quantity = 250;
+					force.rc = td.getAttribute("rc").match(/(b\d+)/)[1];
+				}
+			});
+		});
+		var cell;
+		var button;
+		// init table
+		var t = document.createElement("table");
+		t.setAttribute("id", "buyforcetable");		
+		$(t).dialog({autoOpen: false, width: 600, title: "Найм войск"});
+		var button = document.createElement("button");
+		button.innerHTML = "Нанять войска";
+		$("td[class='bld']:first").parent().parent().parent().parent().append($(button));
+		$(button).button().click(function() {$("#buyforcetable").dialog("open");});			
+		var resources = findAmountOfStorageResources();
+		for (var i = 0; i < forceTable.length + 1; i++) {
+			t.insertRow(0);
+			for (var j = 0; j < 7; j++) {
+				t.rows[0].insertCell(0);
+			}
+		}
+		var wcBuyForce = localStorage.getItem("wc_buy_force");
+		if (wcBuyForce) {
+			wcBuyForce = wcBuyForce.toString().split(",");
+		} else {
+			wcBuyForce = new Array();
+			$(forceTable).each(function() {
+				wcBuyForce.push(1);
+			});
+			localStorage.setItem("wc_buy_force", wcBuyForce);
+		}
+		
+		$(forceTable).each(function(i, force) {
+			if (force.mark == 1) {
+				if (force.bld == "Храм") {
+					return;
+				}
+				var cellCounter = 0;
+				var row = t.rows[i];
+				var cell = row.cells[cellCounter++];
+				var input = document.createElement("input");
+				input.setAttribute("type", "checkbox");
+				if (wcBuyForce[i] == "1")
+					input.checked = true;
+				else
+					input.checked = false;
+				cell.appendChild(input);
+				$(input).click(function(e) {
+					if (e.target.checked)
+						wcBuyForce[i] = 1;
+					else
+						wcBuyForce[i] = 0;
+					localStorage.setItem("wc_buy_force", wcBuyForce);
+					printTotalCost();
+				});
+				
+				cell = row.cells[cellCounter++];
+				cell.innerHTML = '<img src="' + forceTable[i].ico + '">';
+
+				cell = row.cells[cellCounter++];
+				var quantity;
+				quantity = force.quantity;
+				cell.innerHTML = quantity;
+				cell.setAttribute("name", "avalquantity");			
+
+				cell = row.cells[cellCounter++];
+				input = document.createElement("input");
+				input.setAttribute("type", "text");
+				input.setAttribute("name", "quantity");
+				input.setAttribute("index", i);
+				cell.appendChild(input);
+				$(input).spinner({
+					min: 0,
+					max: $(cell).prev().html(),
+					spin: function(e, ui) {
+						calcCost(parseInt(e.target.getAttribute("index")),
+								 parseInt(ui.value));
+					},
+				});
+				
+				$(input).keyup(function(e) {
+					calcCost(parseInt(e.target.getAttribute("index")),
+							 parseInt(e.target.value));
+				});
+				
+				// max
+				cell = row.cells[cellCounter++];
+				var button = document.createElement("button");
+				button.innerHTML = "max";
+				button.setAttribute("index", i);
+				button.setAttribute("quantity", quantity);
+				cell.appendChild(button);
+				// !!!
+				$(button).button().click(function(e) {
+					var input = $(e.target).parent().prev().find("input[name='quantity']")
+					var min = calcCost(parseInt(e.target.getAttribute("index")),
+									  parseInt($(e.target).parent().parent().find("td[name='avalquantity']").html()));
+					input.val(min);
+				});
+				
+				cell = row.cells[cellCounter++];
+				cell.setAttribute("maxprice", "0,0,0,0,0");
+				cell = row.cells[cellCounter++];
+				button = document.createElement("button");
+				button.innerHTML = "Нанять";
+				button.setAttribute("c", force.rc);
+				button.setAttribute("z", i+1);
+				button.setAttribute("bld", force.bld);
+				if (force.lvl == 1)
+					t.rows[i-1].cells[cellCounter-1].getElementsByTagName("button")[0].setAttribute("bld", force.bld);	
+				$(button).button().click(function(e) {
+					var w = window;
+					var quantity = parseInt($(e.target).parent().parent().find("input[name=quantity]").val());
+					var c = e.target.getAttribute("c");
+					var z = e.target.getAttribute("z");
+					// w.ecod  !!!! get new w.ecod for every request
+					var req = "a="+w.mobjects[w.obja+5]+"&b="+w.mobjects[0]+"&c="+c+"&d=8&e="+w.ecod+"&x="+quantity+"&y=&z="+z;
+					$.ajax({
+						url: "http://warchaos.ru/f/a",
+						type: "POST",
+						data: req,
+						async: false,
+						success: function(data) {
+							var w = window;
+							var quantity = 0;
+							w.ecod = data.match(/ecod\=(\d+)/)[1];
+							// "Казармы<BR><small>(87)</small>",0,0, new RegExp(e.target.getAttribute("bld")
+							var m  = data.match(new RegExp(e.target.getAttribute("bld") + "<BR><small>\\((\\d+)"));							
+							if (m)
+								quantity = m[1];
+							$(e.target).parent().parent().parent().parent().find(
+								"button[bld='" + e.target.getAttribute("bld")
+									+ "']").parent().parent().find("td[name='avalquantity']").html(quantity);							
+							var srge = data.match(/g\.srge\=(new Array.+);/);
+							w.srge = eval(srge[1]);
+							w.storg2();
+							w.storg1();
+						},
+						error: function() {
+							l("error");
+						},
+					});
+				}); // click				
+				cell.appendChild(button);				
+			} // if
+		}); // each
+
+		// clear all
+		button = document.createElement("button");
+		button.innerHTML = "Очистить";
+		row = t.rows[t.rows.length-1];
+		row.cells[3].appendChild(button);
+		$(button).button().click(function(e) {
+			$("#buyforcetable input[name=quantity]").val("");
+			$("#buyforcetable td[maxprice]").attr("maxprice", "0,0,0,0,0");
+			$("#buyforcetable td[maxprice]").html("");
+			$("#buyforcetable #totalCost").attr("totalcost", "0,0,0,0,0");
+			$("#buyforcetable #totalCost").html("");
+		});
+		// max all
+		button = document.createElement("button");
+		button.innerHTML = "max";
+		row.cells[4].appendChild(button);
+		cell = row.cells[5];
+		$(button).button().click(function(e) {
+			$("#buyforcetable #totalCost").attr("totalcost", "0,0,0,0,0");
+			$("#buyforcetable #totalCost").html("");
+			$("#buyforcetable input[type='checkbox']").each(function(i, cb) {
+				if (cb.checked) {
+					$(cb).parent().parent().find("button[quantity]").click();
+				} else {
+					$(cb).parent().parent().find("input[name=quantity]").val(0);
+					var td = $(cb).parent().parent().find("td[maxprice]")[0];
+					td.setAttribute("maxprice", "0,0,0,0,0");
+					td.innerHTML = "";					
+				}
+			});
+			printTotalCost();			
+		});
+		cell.setAttribute("id", "totalCost");
+		cell.setAttribute("totalCost", "0,0,0,0,0");
+		// hire all
+		button = document.createElement("button");
+		button.innerHTML = "Нанять всех";
+		cell = row.cells[6];
+		cell.appendChild(button);
+		$(button).button().click(function(e) {
+			$("#buyforcetable input[type='checkbox']").each(function(i, cb) {
+				if (cb.checked) {
+					$(cb).parent().parent().find("button[bld]").click();
+				}
+			})
+		});
+		// test rountines
+		$(function() {
+			return;
+			//$("#buyforcetable img[src='it/2254.gif']").parent().next().next().find("input[name='quantity']").val(10);
+			//$("#buyforcetable img[src='it/2264.gif']").parent().next().next().find("input[name='quantity']").val(10);
+		});
+	};
+	function addScript(src) {
+		var scripts = document.getElementsByTagName("script");
+		for (var i = 0; i < scripts.length; i++) {
+			if (scripts[i].getAttribute("src") == src)
+				return;
+		};
+		var script = document.createElement("script");
+		script.src = src;
+		document.head.appendChild(script);
+	}
+
+	(function addButtons() {
+		if (typeof $ === "undefined") {
+			addScript("http://warchaosujs.gixx.ru/jquery-ui/js/jquery-1.9.1.js");
+		} else if (typeof $.ui === "undefined") {
+			addScript("http://warchaosujs.gixx.ru/jquery-ui/js/jquery-ui-1.10.3.custom.min.js");
+			var link = document.createElement("link");
+			link.setAttribute("rel", "stylesheet");
+			link.setAttribute("href", "http://warchaosujs.gixx.ru/jquery-ui/css/sunny/jquery-ui-1.10.3.custom.css");
+			document.head.appendChild(link);
+		}
+		if (typeof $ === "undefined" || typeof $.ui === "undefined") {
+			setTimeout(addButtons, 1000);
+			return;
+		}
+		if (typeof window.g === "undefined" || typeof window.g.cons === "undefined" || typeof window.g.blds === "undefined")
+			return;
 		var bRg = /Казармы|Гарнизон|Стрельбище|Полигон|Орден|Конюшни|Арена|Башня|Храм/;
 		var t = document.getElementsByTagName('table');
 		for (var i = 0; i < t.length; i++) {
@@ -227,204 +533,7 @@
 				break;
 			}
 		}
-		var imgs = document.getElementsByTagName('img');
-		for (var i = 0; i < imgs.length; i++) {
-			if (imgs[i].getAttribute('src') == "ctrl/lu0.gif") {
-				var t = imgs[i].parentNode.parentNode.parentNode.parentNode;
-				//alert(t);
-				
-				t.insertRow(1);
-				t.rows[1].insertCell(0);
-				
-				var button = document.createElement("input");
-				button.setAttribute("type", "button");
-				button.setAttribute("class", "cmb");
-				button.setAttribute("style", "width: 90px;");
-				button.setAttribute("value", "Нанять войска");
-				//t.rows[1].cells[0].appendChild(button);
-				t.parentNode.appendChild(button);
-				button.addEventListener('click', function() {
-					var resources = findAmountOfStorageResources();
-					var w = window;
-					w.help1 = "Нанять войска";
-					w.help2 = "<div id='buyforce'></div>";
-					w.ShowWin();
-					// alert("clicked");
-					var div = document.getElementById("buyforce");
-					var t = document.createElement("table");
-					t.setAttribute("style", "color:black;font:normal;font-size:10;width:600px;");
-					for (var i = 0; i < tbl.length + 1; i++) {
-						t.insertRow(0);
-						for (var j = 0; j < 10; j++) {
-							t.rows[0].insertCell(0);
-						}
-					}
-					// max all
-					var input = document.createElement("input");
-					input.setAttribute("type", "button");
-					input.setAttribute("class", "cmb");
-					input.setAttribute("value", "max");
-					input.setAttribute("style", "width:30px;");
-					t.rows[t.rows.length-1].cells[0].appendChild(input);
-					input.addEventListener("click", function(e) {
-						t.rows[t.rows.length-1].cells[1].setAttribute("totalCost", "0,0,0,0,0");
-						$(e.target.parentNode.parentNode.parentNode.parentNode).find("input[type='checkbox']").each(function(i, cb) {
-							if (cb.checked == true) {
-								$(cb).parent().parent().find("input[value='max']").click();
-							}
-						});
-					}, false);
-					t.rows[t.rows.length-1].cells[1].setAttribute("id", "totalCost");
-					t.rows[t.rows.length-1].cells[1].setAttribute("totalCost", "0,0,0,0,0");
-					//totalCost.cell = t.rows[t.rows.length-1].cells[1];
-					div.appendChild(t);
-					var td = document.getElementsByTagName("td");
-					for (var i = 0; i < td.length; i++) {
-						if (td[i].hasAttribute('class') && (td[i].getAttribute('class') == "bld" || td[i].getAttribute('class') == "btxt")
-								&& td[i].hasChildNodes()) {
-							for (var j = 0; j < tbl.length; j++) {
-								if ( ( j + 1 < tbl.length && (j % 2 == 0) && td[i].innerHTML.search(tbl[j+1][0]) != -1)
-								|| td[i].innerHTML.search(tbl[j][0]) != -1) {
-									var input = document.createElement("input");
-									input.setAttribute("type", "checkbox");
-									input.checked = true;
-									t.rows[j].cells[0].appendChild(input);
-									t.rows[j].cells[1].innerHTML = '<img src="' + tbl[j][1] + '">';
-									var quantity;
-									if (td[i].getElementsByTagName("small").length > 0) {
-										quantity = parseInt(td[i].getElementsByTagName("small")[0].innerHTML.match(/(\d+)/)[1]);
-										t.rows[j].cells[2].innerHTML = quantity;
-										t.rows[j].cells[2].setAttribute("name", "avalquantity");
-									}
-									input = document.createElement("input");
-									input.setAttribute("type", "text");
-									input.setAttribute("class", "cmb");
-									input.setAttribute("name", "quantity");
-									input.setAttribute("index", j);
-									t.rows[j].cells[3].appendChild(input);
-									//input.addEventListener("click", function() {
-									//});
-									$(input).keyup(function(e) {
-										calcCost(parseInt(e.target.value), parseInt(e.target.getAttribute("index")),
-												 e.target.parentNode.nextSibling.nextSibling);
-									});
-									var cellCounter = 4;
-									var cell = t.rows[j].cells[cellCounter++];
-									input = document.createElement('input');
-									input.setAttribute("type", "button");
-									input.setAttribute("class", "cmb");
-									input.setAttribute("value", "max");
-									input.setAttribute("style", "width:30px;");
-									input.setAttribute("index", j);
-									input.setAttribute("quantity", quantity);
-									cell.appendChild(input);
-									// !!!
-									input.addEventListener("click", function(e) {
-										var min = calcCost(parseInt(e.target.parentNode.previousSibling.previousSibling.innerHTML), parseInt(e.target.getAttribute("index")), e.target.parentNode.nextSibling);
-										e.target.parentNode.previousSibling.childNodes[0].value = min;
-									}, false);
-									cell = t.rows[j].cells[cellCounter++];
-									function calcCost(quantity, j, cell) {
-										cell.innerHTML = "";
-										var resources = findAmountOfStorageResources();
-										var min = quantity;
-										cell.setAttribute("maxPrice", "0,0,0,0,0");
-										var price = cloneArray(tbl[j][2]);
-										var maxPrice = cloneArray(tbl[j][2]);
-										var totalCost = getTotalCost();
-										$(maxPrice).each(function(i) {
-											maxPrice[i] = price[i] * min;
-										});
-										$(maxPrice).each(function(i) {
-											if (maxPrice[i] > resources[i][1] - totalCost[i]) {
-												var tmpMin = parseInt((resources[i][1] - totalCost[i]) / price[i]);
-												if (tmpMin < min) {
-													min = tmpMin;
-												}
-											}
-										});
-										$(maxPrice).each(function(i) {
-											maxPrice[i] = price[i] * min;
-										});
-										var totalCost = getTotalCost();
-										$(totalCost).each(function(i) {
-											if (totalCost[i] > resources[i][1]) {
-											}
-										});
-										// print price
-										$(maxPrice).each(function(i) {
-											if (maxPrice[i]) {
-												var img = document.createElement("img");
-												img.setAttribute("src", resources[i][0]);
-												img.setAttribute("style", "width:20px;height:15px;");
-												cell.appendChild(img);
-												cell.appendChild(document.createTextNode(maxPrice[i]));
-											}
-										});
-										cell.setAttribute("maxPrice", maxPrice.toString());
-										printTotalCost();
-										return min;
-									};
-									cell = t.rows[j].cells[cellCounter++];
-									input = document.createElement("input");
-									input.setAttribute("type", "button");
-									input.setAttribute("class", "cmb");
-									input.setAttribute("value", "Нанять");
-									input.setAttribute("c", td[i].getAttribute("rc").match(/(b\d+)/)[1]);
-									input.setAttribute("z", j+1);
-									if ( j + 1 < tbl.length && (j % 2 == 0) && td[i].innerHTML.search(tbl[j+1][0]) != -1)
-										input.setAttribute("bld", tbl[j+1][0]);
-									else
-										input.setAttribute("bld", tbl[j][0]);
-									//input.setAttribute("unitType", tbl[j][3]);
-									input.addEventListener("click", function(e) {										
-										var quantity = parseInt(e.target.parentNode.parentNode.cells[3].childNodes[0].value);
-										// var b = w.subb;
-										var c = e.target.getAttribute("c");
-										var z = e.target.getAttribute("z");
-										// w.ecod  !!!! get new w.ecod for every request
-										var req = "a="+w.mobjects[w.obja+5]+"&b="+w.mobjects[0]+"&c="+c+"&d=8&e="+w.ecod+"&x="+quantity+"&y=&z="+z;
-										ajaxRequest("http://warchaos.ru/f/a", "POST", req,
-										function(t){
-											l(t.responseText);
-											w.ecod = t.responseText.match(/ecod\=(\d+)/)[1];
-											// "Казармы<BR><small>(87)</small>",0,0, new RegExp(e.target.getAttribute("bld")
-											var quantity = t.responseText.match(new RegExp(e.target.getAttribute("bld") + "<BR><small>\\((\\d+)"))[1];
-											//e.target.parentNode.parentNode.cells[2].innerHTML = quantity;
-											$(tbl).each(function(i) {
-												if (tbl[i][0] == e.target.getAttribute("bld") && tbl[i][3] == 1) {
-												//	e.target.parentNode.parentNode.previousSibling.cells[2].innerHTML = quantity;
-												} //else if (tbl[i][0] == e.target.getAttribute("bld") && tbl[i][3] == 0 && tbl)
-											});
-											$(e.target).parent().parent().parent().parent().find("input[bld='" + e.target.getAttribute("bld") + "']").parent().parent().find("td[name='avalquantity']").html(quantity);
-											var srge = t.responseText.match(/g\.srge\=(new Array.+);/);
-											w.srge = eval(srge[1]);
-											w.storg2();
-											w.storg1();
-										}, function() {l("bad")});
-									}, false);
-									
-									cell.appendChild(input);
-									var z = td[i].getAttribute("rc").match(/b(\d+)/)[1];
-									// Нанять cmD(8,document.getElementById("buy3").value,3);
-									// function cmD(d,x,z,evt) { return cm(mobjects[obja+5],mobjects[0],subb,d,x,'',z,evt?evt:0);}
-									// function cm(a,b,c,d,x,y,z,evt)
-									/* +td[i].getAttribute("rc").match(/b(\d+)/)[0]
-									 */
-									
-									// var params = "a="+w.g.mobjects[w.g.obja+5]+"&b="+w.g.mobjects[0]+"&c="+w.g.subb+"&d=8&e="+w.g.ecod+"&x="+quantity+"&y=&z="+(j+1);
-									
-								}
-							}
-						}
-					}
-				}, false);
-
-				//t.parentNode.appendChild(button);
-				//insertAfter(t, button);
-				//alert(t.rows.length);
-			}
-		}
+		addBuyAllButton();
 	})();
 
 	}

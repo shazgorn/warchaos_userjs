@@ -184,16 +184,18 @@
 									w.ShowWin();
 									if (document.getElementById("buysellbutton") == null) {
 										return;
+									}									
+									$("td[width='16%'][align='center']").remove();
+									$("span[class='tlnx'][onclick][tooltip!='"+e.target.parentNode.getAttribute("tooltip")+"']").parent().remove();
+									if ($("td[valign='top']").length == 0) {
+										$(allMarkets).each(function(i, market) {
+											if (market.innerHTML.search(e.target.parentNode.getAttribute("tooltip")) == -1) {
+												allMarkets[i] = null;
+												printListOfMarketsWithChoosenResource(lastResType);
+											}
+										});
 									}
-									var cells = $("span[class='tlnx'][onclick]").parent();										
-									for (var i = cells.length - 1; i >= 0; i--) {
-										if (cells[i].getElementsByTagName("span")[0]) {
-											if (cells[i].getElementsByTagName("span")[0].getAttribute("tooltip") != e.target.parentNode.getAttribute("tooltip"))
-												removeElement(cells[i]);
-										} else
-											removeElement(cells[i]);
-									}
-									var inputs = document.getElementById("tipwin").getElementsByTagName("table")[0].rows[0].cells[0].getElementsByTagName("table")[1].rows[0].cells[0].getElementsByTagName("form")[0].getElementsByTagName("input");
+									//var inputs = document.getElementById("tipwin").getElementsByTagName("table")[0].rows[0].cells[0].getElementsByTagName("table")[1].rows[0].cells[0].getElementsByTagName("form")[0].getElementsByTagName("input");
 									addCalcCost();
 									document.getElementById("buysellbutton").setAttribute("cm", cm);
 									document.getElementById("buysellbutton").addEventListener("click", function (e) {
@@ -235,7 +237,11 @@
 															for (var k = 0; k < t.rows[1].cells.length; k+=2) {
 																if (t.rows[1].cells[k].getElementsByTagName("span").length > 0
 																	&& t.rows[1].cells[k].getElementsByTagName("span")[0].getAttribute("tooltip") == tooltip) {
-																	allMarkets[i].rows[0].cells[0].childNodes[allMarkets[i].rows[0].cells[0].childNodes.length - 1].data = t.rows[1].cells[k].childNodes[0].childNodes[t.rows[1].cells[k].childNodes[0].childNodes.length - 1].data;
+																	// update quantity
+																	allMarkets[i].rows[0].cells[0].childNodes[
+																		allMarkets[i].rows[0].cells[0].childNodes.length - 1].data
+																		= t.rows[1].cells[k].childNodes[0].childNodes[
+																			t.rows[1].cells[k].childNodes[0].childNodes.length - 1].data;
 																	printListOfMarketsWithChoosenResource(lastResType);
 																	return;
 																}
@@ -361,13 +367,10 @@
 		function parseMarket(market) {
 			while (market.rows[1].cells.length > 2) {
 				var t = document.createElement("table");
-				t.setAttribute("class", "rw");
-				t.setAttribute("cellpadding", "3");
-				t.setAttribute("cellspacing", "0");
 				t.innerHTML = market.innerHTML;
 				while (t.rows[1].cells.length > 2) {
 					t.rows[1].deleteCell(t.rows[1].cells.length - 1);
-				}
+				}				
 				reorderCellsInMarket(t);
 				market.rows[1].deleteCell(0);
 				market.rows[1].deleteCell(0);
@@ -390,22 +393,21 @@
 			market.rows[0].cells[0].setAttribute("price", market.rows[1].cells[1].innerHTML);
 			// ico
 			market.rows[0].cells[0].setAttribute("icoNum", market.rows[1].getElementsByTagName("img")[0].getAttribute("src").match(/(\d+)/)[1]);
-			var img = document.createElement("img");
-			img.setAttribute("src",  "it/" + market.rows[0].cells[0].getAttribute("icoNum") + ".gif");
-			img.setAttribute("width", 28);
-			img.setAttribute("height", 21);
+			img = market.rows[1].cells[0].getElementsByTagName("img")[0];
+			img.setAttribute("width", parseInt(img.getAttribute("width") * 0.6));
+			img.setAttribute("height", parseInt(img.getAttribute("height") * 0.6));
 			market.rows[0].cells[0].appendChild(img);
 			// res name
 			var span = document.createElement("span");
 			span.setAttribute("style", "color:#000080;text-decoration:underline;margin-right:5px;cursor:pointer;");
-			span.innerHTML = market.rows[1].cells[0].childNodes[0].getAttribute("tooltip").replace("$Осталось:", " ");
+			span.innerHTML = market.rows[1].cells[0].getElementsByTagName("span")[0].getAttribute("tooltip").replace("$Осталось:", " ");
 			span.innerHTML = span.innerHTML.replace("$", "");
 			market.rows[0].cells[0].appendChild(span);
 			// cm
 			m = market.getElementsByTagName("button")[0].getAttribute("onclick").match(/\d+,\d+,\d+,\d+/)[0];
 			span.setAttribute("cm", m);
 			// tooltip
-			market.rows[0].cells[0].setAttribute("tooltip", market.rows[1].cells[0].childNodes[0].getAttribute("tooltip"));
+			market.rows[0].cells[0].setAttribute("tooltip", market.rows[0].cells[0].getElementsByTagName("img")[0].getAttribute("tooltip"));
 
 			try {
 				market.rows[0].cells[0].setAttribute("resName", market.rows[0].cells[0].getAttribute("tooltip").match(regResName)[1]);
@@ -417,9 +419,10 @@
 			market.rows[0].cells[1].appendChild(document.createTextNode(market.rows[1].cells[1].innerHTML));
 
 			market.rows[0].insertCell(3);
-			if (market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes[
+			if (market.rows[1].cells[0].getElementsByTagName("span")[0].hasChildNodes() &&  market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes[
 					market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes.length - 1].nodeName == "#text") {
-				market.rows[0].cells[0].appendChild(market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes[market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes.length - 1]);
+				market.rows[0].cells[0].appendChild(market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes[
+					market.rows[1].cells[0].getElementsByTagName("span")[0].childNodes.length - 1]);
 			}
 			market.rows[0].insertCell(4);
 			market.rows[0].cells[4].appendChild(market.rows[0].cells[2].getElementsByTagName("a")[0]);
@@ -553,18 +556,22 @@
 				}
 			}
 		}
-
+		function addScript(src) {
+			var scripts = document.getElementsByTagName("script");
+			for (var i = 0; i < scripts.length; i++) {
+				if (scripts[i].getAttribute("src") == src)
+					return;
+			};
+			var script = document.createElement("script");
+			script.src = src;
+			document.head.appendChild(script);
+		}
 		(function wcMarket() {
-			// XXX: you can get plenty of script elements if one have connection issues
 			if (typeof _ === "undefined") {
-				var script = document.createElement("script");
-				script.src = "http://underscorejs.org/underscore-min.js";
-				document.body.appendChild(script);
+				addScript("http://underscorejs.org/underscore-min.js");
 			}			
 			if (typeof $ === "undefined") {
-				var script = document.createElement("script");
-				script.src = "http://code.jquery.com/jquery-2.0.3.min.js";
-				document.body.appendChild(script);
+				addScript("http://warchaosujs.gixx.ru/jquery-ui/js/jquery-1.9.1.js");
 			}
 			if (typeof $ === "undefined" || typeof _ === "undefined") {
 				setTimeout(wcMarket, 1000);
