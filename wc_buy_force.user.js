@@ -196,8 +196,6 @@
 		};
 		/**
 		 * j - index in forceTable/buyforcetable
-		 * TODO: if cur bld is lvl_0_bld and next bld is lvl_1_bld.checked then get its quantity and calc cur avalquantity
-		 * vice versa: if its lvl_1_bld and prev lvl_0_bld.checked get its quantity and calc cur avalquantity
 		 */
 		function calcCost(j, quantity) {
 			var avalquantity = parseInt($("#buyforcetable tr:nth-child("+(j+1)+") td[name='avalquantity']").html());
@@ -390,7 +388,6 @@
 				button.setAttribute("index", i);
 				button.setAttribute("quantity", quantity);
 				cell.appendChild(button);
-				// !!!
 				$(button).button().click(function(e) {
 					var input = $(e.target).parent().prev().find("input[name='quantity']")
 					var min = calcCost(parseInt(e.target.getAttribute("index")),
