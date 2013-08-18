@@ -146,19 +146,20 @@
 		this.mark = 0;
 		this.quantity = 0;
 		this.rc = "";
+		this.z = 0;
 	};
 	
 	var forceTable = [
-		new forceType("Казармы", "it/2254.gif", [1,0,0,0,0], 0),
-		new forceType("Гарнизон", "it/2264.gif", [2,0,0,0,0], 1),
-		new forceType("Стрельбище", "it/2274.gif", [0,1,0,0,0], 0),
-		new forceType("Полигон", "it/2284.gif", [1,0,1,0,0], 1),
-		new forceType("Орден меча", "it/2294.gif", [5,0,0,0,0], 0),
-		new forceType("Орден щита", "it/2304.gif", [4,0,1,0,0], 1),
-		new forceType("Конюшни", "it/2314.gif", [5,1,0,0,0], 0),
-		new forceType("Арена", "it/2324.gif", [5,1,1,0,0], 1),
-		new forceType("Башня магов", "it/2334.gif", [0,0,0,0,1], 0),
-		new forceType("Храм", "???", [], 0),
+		new forceType("Казармы", "9010.gif", [1,0,0,0,0], 0),
+		new forceType("Гарнизон", "9020.gif", [2,0,0,0,0], 1),
+		new forceType("Стрельбище", "9030.gif", [0,1,0,0,0], 0),
+		new forceType("Полигон", "9040.gif", [1,0,1,0,0], 1),
+		new forceType("Орден меча", "9050.gif", [5,0,0,0,0], 0),
+		new forceType("Орден щита", "9060.gif", [4,0,1,0,0], 1),
+		new forceType("Конюшни", "9070.gif", [5,1,0,0,0], 0),
+		new forceType("Арена", "9080.gif", [5,1,1,0,0], 1),
+		new forceType("Башня магов", "9090.gif", [0,0,0,0,1], 0),
+		new forceType("Храм", "", [0,0,0,0,0], 0),
 	];
 
 	function cloneArray(arr) {
@@ -206,14 +207,13 @@
 			var resources = findAmountOfStorageResources();			
 			
 			if ($("#buyforcetable tr:nth-child("+(j+1)+") td input[type=checkbox]").get(0).checked) {
-				if (forceTable[j].lvl == 0 && forceTable[j+1].lvl == 1 && forceTable[j+1].mark == 1
+				if (forceTable[j].lvl == 0 && j < forceTable.length - 1 && forceTable[j+1].lvl == 1 && forceTable[j+1].mark == 1
 					&& $("#buyforcetable tr:nth-child("+(j+2)+") td input[type=checkbox]").get(0).checked) {
 					var altq = parseInt($("#buyforcetable tr:nth-child("+(j+2)+") input[name='quantity']").val());
 					if (quantity < 0)
 						quantity = 0;
 					else if (isNaN(altq))
 						altq = 0;
-					//l(avalquantity,  altq, quantity);
 					if (quantity > avalquantity) {
 						quantity = avalquantity;
 						$("#buyforcetable tr:nth-child("+(j+1)+") input[name='quantity']").val(quantity);
@@ -289,14 +289,73 @@
 		// init forceTable
 		$("td[class='bld']:has(small), td[class='btxt']:has(small), td[class='bld']").each(function(i, td) {
 			$(forceTable).each(function(j, force) {
+				if (force.bld == "Храм" && td.innerHTML.search("Храм") != -1) {
+					force.mark = 1;
+					if ($(td).find("small").length > 0)
+						force.quantity = $(td).find("small").html().match(/\d+/);
+					else
+						force.quantity = 0;
+					force.rc =  td.getAttribute("rc").match(/b\d+/);
+					var w = window;
+					var c = force.rc;
+					// w.ecod  !!!! get new w.ecod for every request
+					var req = "a="+w.mobjects[w.objcity+5]+"&b="+w.mobjects[0]+"&c="+c+"&d=&e="+w.ecod+"&x=&y=&z=";
+					$.ajax({
+						url: "http://warchaos.ru/f/a",
+						type: "POST",
+						data: req,
+						async: false,
+						success: function(data) {
+							window.ecod = data.match(/ecod\=(\d+)/)[1];
+							var table = document.createElement("table");
+							table.innerHTML = data.match(/<table .*>(.*Нанять.*)<\/table>/);
+							// building under construction
+							if (table.getElementsByTagName("img")[1] == null) {
+								var religions = [["силы", "", [0,0,1,0,2]],
+												 ["стремительности", "", [0,2,0,0,0]],
+												 ["магии", "", [0,0,0,2,1]],
+												 ["диверсий", "", [4,0,0,0,0]],
+												 ["лесов", "9190.gif", [0,2,0,0,0]]
+												];
+								$(religions).each(function(k, religion) {
+									var str = data.match(/rtxt.+;/)[0];
+									if (str.search(religion[0] != -1)) {
+										force.z = 9 + (k+1)*2;
+										force.ico = religion[1];
+										force.price = religion[2]
+									}
+								})
+								return;
+							} else {
+								force.ico = table.getElementsByTagName("img")[1].getAttribute("src");
+								var cell = table.rows[0].cells[2];
+								var imgs = cell.getElementsByTagName("img");
+								var resources = findAmountOfStorageResources();
+								for (var k = 0; k < imgs.length; k++) {
+									for (var m = 0; m < resources.length; m++) {
+										if (imgs[k].getAttribute("src") == resources[m][0]) {
+											force.price[m] = parseInt(imgs[k].nextSibling.data);
+										}
+									}
+								}
+								force.z = table.rows[0].cells[3].getElementsByTagName("input")[0].getAttribute("id").match(/\d+/);
+							}
+						},
+						error: function() {
+							l("error");
+						},
+					});
+				}
+				else				
 				if (td.innerHTML.search(force.bld) != -1
 					|| (j < forceTable.length-1 && td.innerHTML.search(forceTable[j+1].bld) != -1 && forceTable[j+1].lvl == 1)) {
 					force.mark = 1;
 					if ($(td).find("small").length > 0)
 						force.quantity = $(td).find("small").html().match(/\d+/);
 					else
-						force.quantity = 250;
-					force.rc = td.getAttribute("rc").match(/(b\d+)/)[1];
+						force.quantity = 0;
+					force.rc = td.getAttribute("rc").match(/b\d+/);
+					force.z = j+1;
 				}
 			});
 		});
@@ -330,9 +389,6 @@
 		
 		$(forceTable).each(function(i, force) {
 			if (force.mark == 1) {
-				if (force.bld == "Храм") {
-					return;
-				}
 				var cellCounter = 0;
 				var row = t.rows[i];
 				var cell = row.cells[cellCounter++];
@@ -401,7 +457,7 @@
 				button = document.createElement("button");
 				button.innerHTML = "Нанять";
 				button.setAttribute("c", force.rc);
-				button.setAttribute("z", i+1);
+				button.setAttribute("z", force.z);
 				button.setAttribute("bld", force.bld);
 				if (force.lvl == 1)
 					t.rows[i-1].cells[cellCounter-1].getElementsByTagName("button")[0].setAttribute("bld", force.bld);	
