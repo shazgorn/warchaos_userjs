@@ -256,6 +256,8 @@
 				}
 			}
 			else {
+				if (typeof window.players === "undefined")
+					return;
 				var tbl;  // table with map
 				var dmap = top.document.getElementById('dmap');
 				if (dmap) {
@@ -265,7 +267,7 @@
 					tbl = document.getElementsByTagName('button')[0].nextSibling;  //Observatory -> View
 				}
 				var req = formRequest(tbl);
-				var world = findWorldByName(g.players[1]);
+				var world = findWorldByName(window.players[1]);
 				if (world == parseMapAndDoSomeOtherStaff.WORLD) {
 					document.getElementById('sd_map').contentWindow.postMessage(req, "http://dragonmap.ru/thispageshouldneverexist");
 				} else if (world == null) {

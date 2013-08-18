@@ -110,11 +110,11 @@
 							li.setAttribute('class', "lis");
 							a.setAttribute('style',"font-style:italic");
 						}
-						//Repo
+						// Sripts
 						li = document.createElement('li');
 						document.getElementById(bookBlockId).appendChild(li);
 						a = document.createElement('a');
-						a.href = "https://github.com/shazgorn/warchaos_userjs";
+						a.href = "https://github.com/shazgorn/warchaos_userjs/wiki/Описания-скриптов";
 						a.target = "_blank";
 						li.appendChild(a);
 						document.links[++i].innerHTML =  "Скрипты";

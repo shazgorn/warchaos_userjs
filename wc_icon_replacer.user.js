@@ -1,11 +1,9 @@
 // ==UserScript==
-// @name           Warchaos and Terra Bellica Icon Replacer
+// @name           Warchaos Icon Replacer
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Replace default recipe icon(1914.gif). Add art info
 // @include        http://warchaos.ru/f/a
 // @match          http://warchaos.ru/f/a
-// @include        http://terrabellica.com/f/a
-// @match          http://terrabellica.com/f/a
 // ==/UserScript==
 
 (function () {
@@ -78,7 +76,11 @@
 									if (parent.nodeName == "BUTTON") {
 										parent.setAttribute('style', "max-height:40px;");
 									}
-									imgs[i].setAttribute('style', "position:relative;left:-2px;top:0px;height:34px;width:34px;");
+									imgs[i].setAttribute('style', "position:relative;left:-2px;top:0px;");//height:34px;width:34px;
+									if (imgs[i].getAttribute("height") == "40") {
+										imgs[i].setAttribute("height", 34);
+										imgs[i].setAttribute("width", 34);
+									}
 									imgs[i].setAttribute('src', icons[j][icons[j].length-1]);
 									m = re3.exec(imgs[i].getAttribute('tooltip'));
 									var text = m ? m[0] : '?';
