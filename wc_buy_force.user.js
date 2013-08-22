@@ -2,8 +2,8 @@
 // @name           Warchaos Buy Force
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add "max" button
-// @include        http://warchaos.ru/*
-// @match          http://warchaos.ru/*
+// @include        http://warchaos.ru/f/a
+// @match          http://warchaos.ru/f/a
 // ==/UserScript==
 
 (function () {
@@ -228,16 +228,6 @@
 							quantity = 0;
 						if (isNaN(altq))
 							altq = 0;
-						// dead code
-						/*
-						if (quantity > avalquantity) {
-							quantity = avalquantity;
-							$(t.rows[j]).find("input[name='quantity']").get(0).value = quantity;
-							altq = 0;
-							$(t.rows[altj]).find("input[name='quantity']").get(0).value = "";
-							calcCost(altj, altq);
-						}
-						*/
 						if ((avalquantity - altq - quantity < 0) && altq > 0) {
 							altq = avalquantity - quantity;
 							$(t.rows[altj]).find("input[name='quantity']").get(0).value = altq;
@@ -612,16 +602,14 @@
 					}
 				});
 			}
-			if (location.href == "http://warchaos.ru/f/a") {
-				if (typeof window.g === "undefined" || typeof window.g.cons === "undefined" || typeof window.g.blds === "undefined")
-					return;
-				var bRg = /Казармы|Гарнизон|Стрельбище|Полигон|Орден|Конюшни|Арена|Башня|Храм/;
-				var t = document.getElementsByTagName('table');
-				for (var i = 0; i < t.length; i++) {
-					if (t[i].hasAttribute('class') && t[i].getAttribute('class') == "rwh" && t[i].innerHTML.search(bRg) != -1) {
-						findUnitCost();
-						break;
-					}
+			if (typeof window.g === "undefined" || typeof window.g.cons === "undefined" || typeof window.g.blds === "undefined")
+				return;
+			var bRg = /Казармы|Гарнизон|Стрельбище|Полигон|Орден|Конюшни|Арена|Башня|Храм/;
+			var t = document.getElementsByTagName('table');
+			for (var i = 0; i < t.length; i++) {
+				if (t[i].hasAttribute('class') && t[i].getAttribute('class') == "rwh" && t[i].innerHTML.search(bRg) != -1) {
+					findUnitCost();
+					break;
 				}
 				addBuyAllButton();
 			}
