@@ -611,8 +611,8 @@
 					findUnitCost();
 					break;
 				}
-				addBuyAllButton();
 			}
+			addBuyAllButton();
 		})();
 
 	}
