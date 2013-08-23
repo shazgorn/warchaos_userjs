@@ -13,18 +13,6 @@
  */
 
 (function() {
-	// return;
-	/**
-	 * Description: get number of unit ico placed in arrows block
-	 * Return: ico number
-	 */
-	function getActiveUnitType() {
-		var unitReg = /(\d+).gif/;   //unit type
-		var cntr = document.getElementById("cntr");
-		return cntr ? unitReg.exec(cntr.getElementsByTagName("IMG")[0].getAttribute("src"))[1] : 0;
-	}
-
-
 	/**
 	 * Description: convert minutes to hh:mm format
 	 * Return: string representing time in "hh:mm" format
@@ -48,7 +36,6 @@
 	 */
 	function createTable(cur, max) {
 		var t = "";
-		var unitType = getActiveUnitType();
 		var timeToRegenOnePoint = Math.floor(1440/max);
 		t += "Время восст. 1 ед.: " + convertMinutesToHM(timeToRegenOnePoint);
 		if (cur == max)

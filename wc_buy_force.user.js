@@ -582,7 +582,7 @@
 			}
 			
 			if (typeof $ === "undefined" || typeof $.ui === "undefined") {
-				setTimeout(addButtons, 1000);
+				setTimeout(addButtons, 100);
 				return;
 			}
 

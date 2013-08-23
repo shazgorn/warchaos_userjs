@@ -12,24 +12,19 @@
 	//return;
 
 	function source() {
-		function getWindowObject() {
-			return window;
+		function addScript(src) {
+			var scripts = document.getElementsByTagName("script");
+			for (var i = 0; i < scripts.length; i++) {
+				if (scripts[i].getAttribute("src") == src)
+					return;
+			};
+			var script = document.createElement("script");
+			script.src = src;
+			document.head.appendChild(script);
 		}
 		
-		function insertAfter(el1, el2) {
-		if (!el2.parentNode) return;
-		if (el2.nextSibling)
-			el2.parentNode.insertBefore(el1,el2.nextSibling);
-		else
-			el2.parentNode.appendChild(el1);
-		}
-
-		function getTableByClassName(className) {
-			var tables = document.getElementsByTagName('table');
-			for (var i = 0; i < tables.length; i++)
-				if (tables[i].hasAttribute('class') && tables[i].getAttribute('class') == className)
-					return tables[i];
-			return null;
+		function getWindowObject() {
+			return window;
 		}
 
 		function highlightLink(pagename, linkname) {
@@ -62,6 +57,7 @@
 			b.setAttribute("class", "xcmb");
 			b.setAttribute("value", "Выделить все");
 			b.setAttribute("style", "margin-left: 4px;");
+			//document.body.appendChild(b);
 			b.addEventListener("click", function () {
 				var cb = document.getElementsByTagName("input");
 				for (var i = 0; i < cb.length; i++) {
@@ -73,36 +69,61 @@
 			var inputs = document.getElementsByTagName("input");
 			for (var i = 0; i < inputs.length; i++) {
 				if (inputs[i].hasAttribute("value") && inputs[i].getAttribute("value") == "Удалить") {
-					insertAfter(b, inputs[i]);
+					$(b).appendTo(inputs[i].parentNode);
 				}
 			}
 		}
 
 		(function mainMenuUpgrade() {
+			if (typeof $ === "undefined") {
+				addScript("http://warchaosujs.gixx.ru/jquery-ui/js/jquery-1.9.1.js");
+			}
+			if (typeof $ === "undefined") {
+				setTimeout(mainMenuUpgrade, 100);
+				return;
+			}
 			if (document.URL != "http://warchaos.ru/f/a") {//add some if (skin) later
 				var bookBlockId = "me500i";
 				var clanBlockId = "me200i";
-				var clan_uid = "17748";
 				var as = document.getElementsByTagName('a');
 				for (var i = 0; i < as.length; i++) {
 					if (as[i].parentNode.tagName == "LI" && as[i].href.search("http://warchaos.ru/clan/manager/") != -1) {
 						//Clan Profile
-						li = document.createElement('li');
-						document.getElementById(clanBlockId).appendChild(li);
-						a = document.createElement('a');
-						a.href = "http://warchaos.ru/uid/" + clan_uid;
-						li.appendChild(a);
-						document.links[++i].innerHTML = "Профиль клана";
-						if (document.URL == "http://warchaos.ru/uid/" + clan_uid) {
-							li.setAttribute('class', "lis");
-							a.setAttribute('style',"font-style:italic");
+						var clan_uid = sessionStorage.getItem("clan");
+						if (clan_uid == null)
+							$.ajax({
+								url: "http://warchaos.ru/uid/",
+								type: "GET",
+								async: false,
+								success: function(data) {
+									var m;
+									m = data.match(
+											/<b>Клан\:<\/b><\/td><td height=21 width=50%>&nbsp;<a href=http:\/\/warchaos\.ru\/uid\/(\d+)>(.+)<\/a>/);
+									if (m != null) {
+										clan_uid = m[1];
+									} else {
+										clan_uid = "";
+									}
+								},
+							});
+						if (clan_uid != "") {
+							var li = document.createElement('li');
+							document.getElementById(clanBlockId).appendChild(li);
+							var a = document.createElement('a');
+							a.href = "http://warchaos.ru/uid/" + clan_uid;
+							li.appendChild(a);
+							document.links[++i].innerHTML = "Профиль клана";
+							if (document.URL == "http://warchaos.ru/uid/" + clan_uid) {
+								li.setAttribute('class', "lis");
+								a.setAttribute('style',"font-style:italic");
+							}
 						}
 					}
 					if (as[i].parentNode.tagName == "LI" && as[i].href == "http://warchaos.3dn.ru/forum/") {
 						//Profile
-						li = document.createElement('li');
+						var li = document.createElement('li');
 						document.getElementById(bookBlockId).appendChild(li);
-						a = document.createElement('a');
+						var a = document.createElement('a');
 						a.href = "http://warchaos.ru/uid/" ;
 						li.appendChild(a);
 						document.links[++i].innerHTML = "Мой профиль";
@@ -142,47 +163,22 @@
 						a.target = "_blank";
 						li.appendChild(a);
 						document.links[++i].innerHTML =  "Карта";
-						//box
-						/*
-						li = document.createElement('li');
-						document.getElementById(bookBlockId).appendChild(li);
-						a = document.createElement('input'); //ybox
-						a.type="text";
-						a.setAttribute('class', "ybox");
-						a.setAttribute("style", "width:120px;");
-						a.setAttribute("maxlength", "15");
-						a.id = "qq";
-						li.appendChild(a);
-						a.addEventListener('keydown', function (e) {
-							if (e.keyCode == 13) window.open('http://warchaos.ru/search/?q=' + document.getElementById('qq').value, "_self");
-						}, false);
-						//button
-						li = document.createElement('li');
-						document.getElementById(bookBlockId).appendChild(li);
-						a = document.createElement('input');
-						a.type="button";
-						a.setAttribute('class', "xcmb");
-						a.value="Искать";
-						a.addEventListener('click', function () {
-							window.open('http://warchaos.ru/search/?q=' + document.getElementById('qq').value, "_self");
-						},false);
-						li.appendChild(a);
-						*/
 						break;
 					}
 				}//for
 				
-				//Add next/prev links at top of pages. use with care
+				//Add next/prev links at top of pages. Use with caution
 				if (document.URL.search(/msg|log|archive|clan\/\d|lenta|snapshots|top/) != -1) {
-					var mtext = getTableByClassName("mtext");
+					var mtext = $(".mtext").get(0);
 					if (mtext != null && mtext.innerHTML.search("Следующая") != -1) {
 						var	nextPrevBar = mtext.cloneNode(true);
-						var firstMsg = getTableByClassName("xrw xmsg");
+						var firstMsg = $(".xrw xmsg").get(0);
 						if (!firstMsg)
-							firstMsg = getTableByClassName("xrw");
+							firstMsg = $(".xrw").get(0);
 						if (firstMsg)
 							firstMsg.parentNode.insertBefore(nextPrevBar, firstMsg);
-					} else if (document.URL.search("msg/1") == -1) {  //change font color to black in messages everywhere except trade messages
+					} else if (document.URL.search("msg/1") == -1) {
+						//change font color to black in messages everywhere except trade messages
 						var tds = document.getElementsByTagName("TD");
 						if (tds) {
 							for (var i = 0; i < tds.length; i++) {
@@ -217,7 +213,7 @@
 							cb[i].checked = true;
 						}
 					}
-					if (document.getElementsByName('y')) {							
+					if (document.getElementsByName('y') != null && document.getElementsByName('y')[0] != null) {							
 						document.getElementsByName('y')[0].value = 1;
 						if (document.getElementsByName('i11')[0] != null)
 							document.getElementsByName('i11')[0].value = 21;
