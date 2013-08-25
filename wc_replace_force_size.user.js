@@ -4,10 +4,10 @@
 // @description    Replace symbolic represenation with numeric
 // @include        http://warchaos.ru/f/a
 // @include        http://warchaos.ru/snapshot/*
-// @include        http://services.silentdragons.ru/*
+// @include        http://warchaos.ru/~snapshot/*
 // @match          http://warchaos.ru/f/a
 // @match          http://warchaos.ru/snapshot/*
-// @match          http://services.silentdragons.ru/*
+// @match          http://warchaos.ru/~snapshot/*
 // ==/UserScript==
 
 (function() {
@@ -30,7 +30,7 @@
 				if (m) {
 					for (var j = 0; j < tbl.length; j += 2) {
 						if (m[1] == tbl[j]) {
-							t = t.replace(m[1],tbl[j+1]);
+							t = t.replace(m[1], tbl[j+1]);
 							imgs[i].setAttribute("tooltip",t);
 						}
 					}

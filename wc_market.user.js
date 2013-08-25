@@ -195,7 +195,6 @@
 											}
 										});
 									}
-									//var inputs = document.getElementById("tipwin").getElementsByTagName("table")[0].rows[0].cells[0].getElementsByTagName("table")[1].rows[0].cells[0].getElementsByTagName("form")[0].getElementsByTagName("input");
 									addCalcCost();
 									document.getElementById("buysellbutton").setAttribute("cm", cm);
 									document.getElementById("buysellbutton").addEventListener("click", function (e) {
@@ -220,6 +219,10 @@
 										// sell/buy request
 										// a=2015&b=0&c=b8&d=555&e=989036992&x=104&y=164&z=2193&i3=1&i29=2015
 										ajaxRequest("http://warchaos.ru/f/a", "POST", req, function (t, args) {
+											var srge = t.responseText.match(/g\.srge\=(new Array.+);/);
+											w.srge = eval(srge[1]);
+											w.storg2();
+											w.storg1();
 											var cm = args[0];
 											var tooltip = args[1];
 											var m = t.responseText.match(/g\.rtxt\+="([^"]+)";/);
