@@ -184,8 +184,8 @@
 									w.ShowWin();
 									if (document.getElementById("buysellbutton") == null) {
 										return;
-									}									
-									$("td[width='16%'][align='center']").remove();
+									}
+									$("#tipwin td[width='16%'][align='center']").remove(); // !!!
 									$("span[class='tlnx'][onclick][tooltip!='"+e.target.parentNode.getAttribute("tooltip")+"']").parent().remove();
 									if ($("td[valign='top']").length == 0) {
 										$(allMarkets).each(function(i, market) {
