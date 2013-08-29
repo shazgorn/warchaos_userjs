@@ -572,9 +572,9 @@
 
 		(function addButtons() {		
 			if (typeof $ === "undefined") {
-				addScript("http://warchaosujs.gixx.ru/jquery-ui/js/jquery-1.9.1.js");
+				addScript("http://code.jquery.com/jquery-1.9.1.js");
 			} else if (typeof $.ui === "undefined") {
-				addScript("http://warchaosujs.gixx.ru/jquery-ui/js/jquery-ui-1.10.3.custom.min.js");
+				addScript("http://code.jquery.com/ui/1.10.3/jquery-ui.js");
 				var link = document.createElement("link");
 				link.setAttribute("rel", "stylesheet");
 				link.setAttribute("href", "http://warchaosujs.gixx.ru/jquery-ui/css/sunny/jquery-ui-1.10.3.custom.css");

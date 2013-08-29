@@ -574,7 +574,7 @@
 				addScript("http://underscorejs.org/underscore-min.js");
 			}			
 			if (typeof $ === "undefined") {
-				addScript("http://warchaosujs.gixx.ru/jquery-ui/js/jquery-1.9.1.js");
+				addScript("http://code.jquery.com/jquery-1.9.1.js");
 			}
 			if (typeof $ === "undefined" || typeof _ === "undefined") {
 				setTimeout(wcMarket, 1000);
