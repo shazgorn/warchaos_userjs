@@ -182,18 +182,21 @@
 									w.help2 = w.help2.replace('"+Wlt(\'i29\')+"', Wlt);
 									w.help2 = w.help2.replace('input type=submit', 'input type=button id=buysellbutton');
 									w.ShowWin();
-									if (document.getElementById("buysellbutton") == null) {
-										return;
-									}
+									
 									$("#tipwin td[width='16%'][align='center']").remove(); // !!!
 									$("span[class='tlnx'][onclick][tooltip!='"+e.target.parentNode.getAttribute("tooltip")+"']").parent().remove();
-									if ($("td[valign='top']").length == 0) {
+									console.log($("#tipwin table[class='rw3'] tbody tr td[valign='top']").length);
+									if ($("td[valign='top']").length == 0 || $("#tipwin table[class='rw3'] tbody tr td[valign='top']").length == 0 ) {
 										$(allMarkets).each(function(i, market) {
 											if (market.innerHTML.search(e.target.parentNode.getAttribute("tooltip")) == -1) {
 												allMarkets[i] = null;
 												printListOfMarketsWithChoosenResource(lastResType);
+												return;
 											}
 										});
+									}
+									if (document.getElementById("buysellbutton") == null) {
+										return;
 									}
 									addCalcCost();
 									document.getElementById("buysellbutton").setAttribute("cm", cm);
