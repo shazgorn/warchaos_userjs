@@ -312,8 +312,9 @@
 		/*****
 		* start code
 		*****/
-
-		if (location.href.search(/snapshot\/|\/f\/a/) != -1) {
+		// not on tournament arena
+		if (location.href.search("snapshot") != -1 ||
+			(location.href.search("f/a") != -1 && typeof window.sts != "undefined" && window.sts[0] != "Локация")) {
 			var sd_map_iframe = document.createElement('iframe');
 			sd_map_iframe.setAttribute('src', 'http://dragonmap.ru/thispageshouldneverexist');
 			sd_map_iframe.setAttribute('id', 'sd_map');
@@ -327,8 +328,7 @@
 					}, false);
 				f();
 			})(parseMapAndDoSomeOtherStaff);
-		}
-		else if (location.href == "http://dragonmap.ru/thispageshouldneverexist") {
+		} else if (location.href == "http://dragonmap.ru/thispageshouldneverexist") {
 			addEventListener('message', function(e) {
 				if (e.origin = 'http://warchaos.ru') {
 					// l('incoming ' + ' from ' + e.origin + ' ' + e.data );
