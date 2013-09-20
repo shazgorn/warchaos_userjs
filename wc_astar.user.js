@@ -1,6 +1,9 @@
 // ==UserScript==
 // @name           Warchaos Astar
+// @namespace      https://github.com/shazgorn/warchaos_userjs
+// @description    You can your fleet like in heroes game
 // @include        http://warchaos.ru/f/a
+// @match          http://warchaos.ru/f/a
 // ==/UserScript==
 (function() {
 	function source() {
