@@ -100,8 +100,6 @@
 						} else {
 							match = parseInt(cell.childNodes[0].getAttribute("src").match(/(\d+)\.gif/)[1]);
 						}
-						
-						
 						if (ground = 0) {
 							if (match >= 80 && match <= 84)
 								node.cost = 3;
@@ -109,7 +107,8 @@
 								node.cost = 2;
 							else if (match >= 96 && match <= 110)
 								node.cost = 0.5;
-						} else if (activeUnit > 9232 && activeUnit < 9282) {  // naval
+						} else if (activeUnit == 9252 || activeUnit == 9032 || activeUnit == 9262 || activeUnit == 9042 || activeUnit == 9242 ||
+								  activeUnit == 9232 || activeUnit == 9052) {  // naval
 							if (cell.childNodes.length > 1 && cell.childNodes[1].getAttribute("src") != "216.gif") {
 								node.accessible = 0;
 							} else if (match >= 32 && match <= 47) {
@@ -167,6 +166,7 @@
 				}
 				var sum = 0;
 				curNode = finish;
+				$("img[src$='216.gif']").remove();
 				while (curNode !== start) {
 					sum += curNode.g;
 					var img = document.createElement("img");
@@ -198,20 +198,16 @@
 				console.log(e.target);
 				var dmap = window.top.document.getElementById("dmap");
 				var map = dmap.getElementsByTagName("table")[1];
-				//$("td").attr("class", "default");
-				//$("img[src$='216.gif']").remove();
 				if (e.target.hasAttribute("background") || e.target.parentNode.hasAttribute("background")) {
 					prevDestX = 0;
 					prevDestY = 0;
 				} else
 				if (e.target.getAttribute("src") == "216.gif") {
-					//console.log(e.target.parentNode.childNodes[0]);
 					var m = e.target.parentNode.childNodes[0].getAttribute("tooltip").match(/(\d+) ..(\d+)/);
 					if (prevDestX == parseInt(m[1]) && prevDestY == parseInt(m[2])) {
-						console.log("move");
 						move(parseInt(m[1]), parseInt(m[2]));
 					} else {
-						$("img[src$='216.gif']").remove();
+						//$("img[src$='216.gif']").remove();
 						astar(parseInt(m[1]), parseInt(m[2]), map);
 					}
 					prevDestX = parseInt(m[1]);
@@ -228,6 +224,7 @@
 			});
 			//var globalDestX = 0, globalDestY = 0;
 			function move(x, y) {
+				$("img[src$='216.gif']").remove();
 				if (prevDestX != 0 && prevDestY != 0) {
 					var dmap = window.top.document.getElementById("dmap");
 					var map = dmap.getElementsByTagName("table")[1];
