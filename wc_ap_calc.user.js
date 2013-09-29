@@ -12,46 +12,48 @@
  * time when each AP will be restored
  */
 
-(function() {
+(function () {
 	/**
 	 * Description: convert minutes to hh:mm format
 	 * Return: string representing time in "hh:mm" format
 	 */
+	'use strict';
 	function convertMinutesToHM(timeInMinutes) {
-		if (timeInMinutes == 1440)
-			return "24:00";
-		else
+		var res, h = Math.floor(timeInMinutes / 60), m = Math.floor(timeInMinutes % 60);
+		if (timeInMinutes === 1440) {
+			res = "24:00";
+		} else {
 			timeInMinutes %= 1440;
-		var h = Math.floor(timeInMinutes/60);
-		if (h < 10)
-			h = "0"+h;
-		var m = Math.floor(timeInMinutes%60);
-		if (m < 10)
-			m = "0"+m;
-		return h+":"+m;
+			if (h < 10) {
+				h = "0" + h;
+			}
+			if (m < 10) {
+				m = "0" + m;
+			}
+			res = h + ":" + m;
+		}
+		return res;
 	}
 	/**
 	 * Description: create table containing AP regeneration time
 	 * Return: raw table
 	 */
 	function createTable(cur, max) {
-		var t = "";
-		var timeToRegenOnePoint = Math.floor(1440/max);
+		var t = "", timeToRegenOnePoint = Math.floor(1440 / max),
+			d = new Date(), minutesSinceMidnight = d.getMinutes() + d.getHours() * 60,
+			ceil = Math.ceil(cur),
+			mileStoneTime = minutesSinceMidnight,
+			i;
 		t += "Время восст. 1 ед.: " + convertMinutesToHM(timeToRegenOnePoint);
-		if (cur == max)
+		if (cur === max) {
 			return t;
-		t += "<table><tr><td>Ходы</td><td>Время</td><td>Через</td></tr>";
-		var d = new Date();
-		var h = d.getHours();
-		var minutesSinceMidnight = d.getMinutes();
-		minutesSinceMidnight += h * 60;
-		var floor = Math.floor(cur);
-		var ceil = Math.ceil(cur);
-		if (cur == ceil) {
-			ceil++; cur++;
 		}
-		var mileStoneTime = minutesSinceMidnight;
-		for (var i = 0; ceil < max + 1; i++) {
+		t += "<table><tr><td>Ходы</td><td>Время</td><td>Через</td></tr>";
+		if (cur === ceil) {
+			ceil++;
+			cur++;
+		}
+		for (i = 0; ceil < max + 1; i++) {
 			t += "<tr>";
 			if (ceil > max) {
 				t += "<td>" + max + "</td>";
@@ -59,11 +61,11 @@
 				t += "<td>" + ceil + "</td>";
 			}
 			t += "<td>";
-			if (i==0 && cur < ceil && ceil <= max) {
+			if (i === 0 && cur < ceil && ceil <= max) {
 				//when part of ap will be regenerated
-				mileStoneTime += Math.floor((ceil-cur)*timeToRegenOnePoint);
+				mileStoneTime += Math.floor((ceil - cur) * timeToRegenOnePoint);
 			} else if (ceil > max) {
-				mileStoneTime += Math.floor((max - parseInt(max))*timeToRegenOnePoint);
+				mileStoneTime += Math.floor((max - parseInt(max, 10)) * timeToRegenOnePoint);
 			} else {
 				mileStoneTime += timeToRegenOnePoint;
 			}
@@ -77,14 +79,14 @@
 		return t;
 	}
 	function calculateAP() {
-		var fonts = document.getElementsByTagName("font");
+		var fonts = document.getElementsByTagName("font"), i, m, t;
 		if (fonts) {
-			for (var i = 0; i < fonts.length; i++) {
-				if (fonts[i].innerHTML.search("Ходы") != -1) {
+			for (i = 0; i < fonts.length; i++) {
+				if (fonts[i].innerHTML.search("Ходы") !== -1) {
 					if (!fonts[i].parentNode.nextSibling.hasAttribute("tooltip")) {
-						var m = fonts[i].parentNode.nextSibling.innerHTML.match(/(.+) \/ (.+)/);
+						m = fonts[i].parentNode.nextSibling.innerHTML.match(/([\d+\.]+) \/ ([\d+\.]+)/);
 						if (m) {
-							var t = createTable(parseFloat(m[1]), parseFloat(m[2]));
+							t = createTable(parseFloat(m[1]), parseFloat(m[2]));
 							fonts[i].parentNode.nextSibling.setAttribute("tooltip", t);
 						}
 					}
@@ -92,12 +94,13 @@
 			} //for
 		} //if
 	}
-	(function(f) {
+	(function (f) {
 		var wc_ifr = document.getElementById("ifr");
-		if (wc_ifr) 
-			wc_ifr.addEventListener("load", function() {
+		if (wc_ifr) {
+			wc_ifr.addEventListener("load", function () {
 				setTimeout(f, 0);
 			}, false);
+		}
 		f();
-	})(calculateAP);	
-})();
+	}(calculateAP));
+}());

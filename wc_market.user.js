@@ -185,7 +185,7 @@
 									
 									$("#tipwin td[width='16%'][align='center']").remove(); // !!!
 									$("span[class='tlnx'][onclick][tooltip!='"+e.target.parentNode.getAttribute("tooltip")+"']").parent().remove();
-									console.log($("#tipwin table[class='rw3'] tbody tr td[valign='top']").length);
+									//console.log($("#tipwin table[class='rw3'] tbody tr td[valign='top']").length);
 									if ($("td[valign='top']").length == 0 || $("#tipwin table[class='rw3'] tbody tr td[valign='top']").length == 0 ) {
 										$(allMarkets).each(function(i, market) {
 											if (market.innerHTML.search(e.target.parentNode.getAttribute("tooltip")) == -1) {
