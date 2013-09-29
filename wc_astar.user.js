@@ -13,6 +13,7 @@
 		(function astar_module() {
 			/* GLOBALS */
 			var idRg = /(\d+).gif/,
+				coordsRg = /(\d+) y:(\d+)/,
 				prevDestX = 0, 
 				prevDestY = 0;
 
@@ -357,9 +358,6 @@
 				$("img[src='" + redArrows + "']").remove();
 				$("img[src='" + brownArrows + "']").remove();
 				$("img[src='" + finishIco + "']").remove();
-				//$("img[src='" + redDot + "']").remove();
-				//$("img[src='" + greenDot + "']").remove();
-				//$("img[src='" + brownDot + "']").remove();
 				var nodes = [];
 				Node.prototype.nodes = nodes;
 				var activeUnit = new Unit($("button[class='but40'][onclick='cm6();'] img").get(0));
@@ -369,13 +367,11 @@
 					nodes.push([]);
 					for (j = 0; j < map.rows[i].cells.length; j++) {
 						var cell = map.rows[i].cells[j];
-						var match = cell.childNodes[0].getAttribute("tooltip").match(/(\d+) y:(\d+)/);
+						var match = cell.childNodes[0].getAttribute("tooltip").match(coordsRg);
 						var node = new Node(parseInt(match[1], 10), parseInt(match[2], 10), cell, i, j, map);
 						node.initCost();
 						node.initAccessible();
 						match = parseInt(cell.childNodes[0].getAttribute("src").match(idRg)[1], 10);
-						//if (activeUnit == 9000 || activeUnit == 9180 || activeUnit == 9122)
-						//	node.enemyOnAjdCell = false;
 						nodes[nodes.length-1].push(node);
 					} // for cells
 				} // for rows
@@ -435,7 +431,10 @@
 					if (curNode === finish) {
 						img.setAttribute("src", finishIco);
 						if (curNode.g <= moves) {
-							img.setAttribute("style", "display:block;position:relative;top:0px;left:20px;margin:-40px -20px 0px;");
+							if (curNode.checkForEnemyOnAdjCell() === true) {
+								img.setAttribute("style", "display:block;position:relative;top:0px;left:-20px;margin:-40px -20px 0px;");
+							} else
+								img.setAttribute("style", "display:block;position:relative;top:0px;left:20px;margin:-40px -20px 0px;");
 						}
 						else
 							img.setAttribute("style", "display:block;position:relative;top:0px;left:-20px;margin:-40px -20px 0px;");
@@ -484,8 +483,9 @@
 				if (e.altKey || e.shiftKey || e.ctrlKey || e.target.hasAttribute("background") || e.target.parentNode.hasAttribute("background")) {
 					prevDestX = 0;
 					prevDestY = 0;
-				} else if (e.target.getAttribute("src") == finishIco) {
-					m = e.target.parentNode.childNodes[0].getAttribute("tooltip").match(/(\d+) ..(\d+)/);
+				} else if (e.target.getAttribute("src") == finishIco || e.target.getAttribute("src") == greenArrows || 
+						e.target.getAttribute("src") == brownArrows || e.target.getAttribute("src") == redArrows) {
+					m = e.target.parentNode.childNodes[0].getAttribute("tooltip").match(coordsRg);
 					if (prevDestX == parseInt(m[1], 10) && prevDestY == parseInt(m[2], 10)) {
 						move();
 					} else {
@@ -494,7 +494,7 @@
 					prevDestX = parseInt(m[1], 10);
 					prevDestY = parseInt(m[2], 10);
 				} else if (e.target.hasAttribute("tooltip") && !e.target.parentNode.hasAttribute("background")) { // only empty cells
-					m = e.target.getAttribute("tooltip").match(/(\d+) ..(\d+)/);
+					m = e.target.getAttribute("tooltip").match(coordsRg);
 					prevDestX = parseInt(m[1], 10);
 					prevDestY = parseInt(m[2], 10);
 					astar(parseInt(m[1], 10), parseInt(m[2], 10));
