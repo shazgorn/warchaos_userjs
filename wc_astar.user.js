@@ -55,6 +55,11 @@
 					return true;
 				return false;
 			};
+			Unit.prototype.isKogg = function() {
+				if (this.id == 9042)
+					return true;
+				return false;
+			};
 			Unit.prototype.isAirborne = function() {
 				if (this.id == 9122)
 					return true;
@@ -82,6 +87,11 @@
 			};
 			Unit.prototype.isAssassin = function() {
 				if (this.id == 9180)
+					return true;
+				return false;
+			};
+			Unit.prototype.isElephant = function() {
+				if (this.id == 9150)
 					return true;
 				return false;
 			};
@@ -124,8 +134,9 @@
 				return false;
 			};
 			Unit.prototype.isHostile = function() {
-				if (!this.isHero() && !this.isDropship() && !this.isAirborne() && this.img.parentNode.childNodes.length == 3 && 
-					this.img.parentNode.childNodes[2].hasAttribute("class") && this.img.parentNode.childNodes[2].getAttribute("class") == "ind4")
+				if (!this.isHero() && !this.isDropship() && !this.isKogg() && !this.isAirborne() && 
+						this.img.parentNode.childNodes.length == 3 && this.img.parentNode.childNodes[2].hasAttribute("class") && 
+						this.img.parentNode.childNodes[2].getAttribute("class") == "ind4")
 					return true;
 				return false;
 			};
@@ -208,8 +219,14 @@
 					else if (this.isMountain())
 						this.cost = 3;
 					else if (this.isForest())
-						this.cost = this.cult == "лесов" &&
-						!(this.activeUnit.isVehicle()) ? 1 : 2;
+						if (this.activeUnit.isElephant())
+							this.cost = 3;
+						else if (this.activeUnit.isVehicle()) {
+							this.cost = 2;
+						} else if (this.cult == "лесов")
+							this.cost = 1;
+						else
+							this.cost = 2;
 					else if (this.isSwamp())
 						this.cost = 2;
 					else if (this.isRoad())
@@ -266,23 +283,16 @@
 				return null;
 			};
 			Node.prototype.getAdjCells = function() {
-				var adjCells = [];
-				var adjCell = this.getAdjCell(0, 1);
-				if (adjCell !== null) adjCells.push(adjCell);
-				adjCell = this.getAdjCell(0, -1);
-				if (adjCell !== null) adjCells.push(adjCell);
-				adjCell = this.getAdjCell(1, 0);
-				if (adjCell !== null) adjCells.push(adjCell);
-				adjCell = this.getAdjCell(-1, 0);
-				if (adjCell !== null) adjCells.push(adjCell);
-				adjCell = this.getAdjCell(-1, -1);
-				if (adjCell !== null) adjCells.push(adjCell);
-				adjCell = this.getAdjCell(-1, 1);
-				if (adjCell !== null) adjCells.push(adjCell);
-				adjCell = this.getAdjCell(1, -1);
-				if (adjCell !== null) adjCells.push(adjCell);
-				adjCell = this.getAdjCell(1, 1);
-				if (adjCell !== null) adjCells.push(adjCell);
+				var order = [0, -1, 1],
+					adjCells = [], 
+					adjCell;
+				for (var i = 0; i < 3; i++)
+					for (var j = 0; j < 3; j++)
+						if (!(i === 0 && j === 0)) {
+							adjCell = this.getAdjCell(order[i], order[j]);
+							if (adjCell !== null)
+								adjCells.push(adjCell);
+						}
 				return adjCells;
 			};
 			Node.prototype.checkForEnemyOnAdjCell = function() {
@@ -301,7 +311,8 @@
 				var adjCells = this.getAdjCells();
 				for (var i = 0; i < adjCells.length; i++) {
 					var el = adjCells[i];
-					if (this.checkForEnemyOnAdjCell() && el.checkForEnemyOnAdjCell())
+					if (!this.activeUnit.isAirborne() && !this.activeUnit.isAssassin() && 
+							this.checkForEnemyOnAdjCell() && el.checkForEnemyOnAdjCell())
 						return;
 					// check in openList for present in there
 					if (el !== null && el.accessible) {
@@ -516,6 +527,9 @@
 					var nodeToMove = astar(prevDestX, prevDestY);
 					if (nodeToMove && nodeToMove.g <= findMoves()) {
 						window.cmIComm(2, nodeToMove.x, nodeToMove.y, '');
+					} else if (nodeToMove === null) {
+						prevDestX = 0;
+						prevDestY = 0;
 					}
 				} else {
 					prevDestX = 0;
