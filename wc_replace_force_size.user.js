@@ -18,7 +18,7 @@
 			"Группа","9-14",
 			"Отряд", "15-25",
 			"Легион", "26-45",
-			"Рать", ">45",
+			"Рать", ">45"
 		];
 		var imgs = document.getElementsByTagName("IMG");
 		var reg = /\(([А-Яа-я]+)\)/;	//extracts

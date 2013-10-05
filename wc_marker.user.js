@@ -14,8 +14,8 @@ addEventListener("click", function(e) {
 	if (e.altKey || e.shiftKey || e.button == 2) {
 		setTimeout(function() {
 			var input = document.getElementById("miniinfoy");
-			if (input != null) {
-				if (input.childNodes[0].getAttribute("value") == 0) {
+			if (input !== null) {
+				if (input.childNodes[0].getAttribute("value") === 0) {
 					input.selectedIndex = 6;
 				}
 			}

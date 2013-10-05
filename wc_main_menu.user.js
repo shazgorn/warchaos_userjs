@@ -17,7 +17,7 @@
 			for (var i = 0; i < scripts.length; i++) {
 				if (scripts[i].getAttribute("src") == src)
 					return;
-			};
+			}
 			var script = document.createElement("script");
 			script.src = src;
 			document.head.appendChild(script);
@@ -82,15 +82,16 @@
 				setTimeout(mainMenuUpgrade, 100);
 				return;
 			}
+			var li, a, i, j;
 			if (document.URL != "http://warchaos.ru/f/a") {//add some if (skin) later
 				var bookBlockId = "me500i";
 				var clanBlockId = "me200i";
 				var as = document.getElementsByTagName('a');
-				for (var i = 0; i < as.length; i++) {
+				for (i = 0; i < as.length; i++) {
 					if (as[i].parentNode.tagName == "LI" && as[i].href.search("http://warchaos.ru/clan/manager/") != -1) {
 						//Clan Profile
 						var clan_uid = sessionStorage.getItem("clan");
-						if (clan_uid == null)
+						if (clan_uid === null)
 							$.ajax({
 								url: "http://warchaos.ru/uid/",
 								type: "GET",
@@ -99,17 +100,17 @@
 									var m;
 									m = data.match(
 											/<b>Клан\:<\/b><\/td><td height=21 width=50%>&nbsp;<a href=http:\/\/warchaos\.ru\/uid\/(\d+)>(.+)<\/a>/);
-									if (m != null) {
+									if (m !== null) {
 										clan_uid = m[1];
 									} else {
 										clan_uid = "";
 									}
-								},
+								}
 							});
-						if (clan_uid != "") {
-							var li = document.createElement('li');
+						if (clan_uid !== "") {
+							li = document.createElement('li');
 							document.getElementById(clanBlockId).appendChild(li);
-							var a = document.createElement('a');
+							a = document.createElement('a');
 							a.href = "http://warchaos.ru/uid/" + clan_uid;
 							li.appendChild(a);
 							document.links[++i].innerHTML = "Профиль клана";
@@ -121,9 +122,9 @@
 					}
 					if (as[i].parentNode.tagName == "LI" && as[i].href == "http://warchaos.3dn.ru/forum/") {
 						//Profile
-						var li = document.createElement('li');
+						li = document.createElement('li');
 						document.getElementById(bookBlockId).appendChild(li);
-						var a = document.createElement('a');
+						a = document.createElement('a');
 						a.href = "http://warchaos.ru/uid/" ;
 						li.appendChild(a);
 						document.links[++i].innerHTML = "Мой профиль";
@@ -170,7 +171,7 @@
 				//Add next/prev links at top of pages. Use with caution
 				if (document.URL.search(/msg|log|archive|clan\/\d|lenta|snapshots|top/) != -1) {
 					var mtext = $(".mtext").get(0);
-					if (mtext != null && mtext.innerHTML.search("Следующая") != -1) {
+					if (mtext !== null && mtext.innerHTML.search("Следующая") != -1) {
 						var	nextPrevBar = mtext.cloneNode(true);
 						var firstMsg = $(".xrw xmsg").get(0);
 						if (!firstMsg)
@@ -181,11 +182,11 @@
 						//change font color to black in messages everywhere except trade messages
 						var tds = document.getElementsByTagName("TD");
 						if (tds) {
-							for (var i = 0; i < tds.length; i++) {
+							for (i = 0; i < tds.length; i++) {
 								if (tds[i].hasAttribute("class") && tds[i].getAttribute("class") == "rwRight") {
 									var fonts = tds[i].getElementsByTagName("FONT");
 									if (fonts) {
-										for (var j = 0; j < fonts.length; j++) {
+										for (j = 0; j < fonts.length; j++) {
 											if (fonts[j].hasAttribute("color"))
 												fonts[j].setAttribute("color", "black");
 										}
@@ -199,7 +200,7 @@
 				if (document.URL.search("snapshots") != -1) {
 					addCheckAllButton();	
 				} else if (document.URL.search(/msg|archive/) != -1) {
-					if (document.getElementById("delbut") != null) {  //if on redirect page
+					if (document.getElementById("delbut") !== null) {  //if on redirect page
 						document.getElementById("delbut").getElementsByTagName("a")[0].addEventListener("click", function () {
 							addCheckAllButton();
 						}, false);
@@ -208,14 +209,14 @@
 				// pro seat
 				if (document.URL.search("user/game") != -1) {
 					var cb = document.getElementsByTagName("input");
-					for (var i = 0; i < cb.length; i++) {
+					for (i = 0; i < cb.length; i++) {
 						if (cb[i].getAttribute("type") == "checkbox") {
 							cb[i].checked = true;
 						}
 					}
-					if (document.getElementsByName('y') != null && document.getElementsByName('y')[0] != null) {							
+					if (document.getElementsByName('y') !== null && document.getElementsByName('y')[0] !== null) {							
 						document.getElementsByName('y')[0].value = 1;
-						if (document.getElementsByName('i11')[0] != null)
+						if (document.getElementsByName('i11')[0] !== null)
 							document.getElementsByName('i11')[0].value = 21;
 					}
 				}
@@ -227,14 +228,14 @@
 				if (document.URL.search("worlds") != -1) {
 					var b = document.getElementsByTagName('b');
 					var tables;
-					for (var i = 0; i < b.length; i++) {
+					for (i = 0; i < b.length; i++) {
 						if (b[i].innerHTML == "Материк") {
 							tables = b[i].parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.getElementsByTagName('table');
 							break;
 						}
 					}
 					var onclickReg = /(\d+)/g;  //get coords of continent rectangle
-					for (var i = 1; i < tables.length; i++) {
+					for (i = 1; i < tables.length; i++) {
 						var contName = tables[i].getElementsByTagName('span')[0].innerHTML;
 						var coords = tables[i].getElementsByTagName('span')[0].getAttribute('onclick').match(onclickReg);
 						var w = getWindowObject();
@@ -254,7 +255,7 @@
 						span.setAttribute("tooltip", tables[i].rows[0].cells[4].innerHTML);
 						var s = contName.split(" ");
 						if (s != contName) {
-							for (var j = 0; j < s.length; j++) {
+							for (j = 0; j < s.length; j++) {
 								span.appendChild(document.createTextNode(s[j]));
 								span.appendChild(document.createElement("br"));
 							}
