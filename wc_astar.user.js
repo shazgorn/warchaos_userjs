@@ -52,7 +52,7 @@
 				return false;
 			};
 			Unit.prototype.isDropship = function() {
-				if (this.id == 9242)
+				if (this.id == 9242 || this.id == 242)
 					return true;
 				return false;
 			};
@@ -62,7 +62,7 @@
 				return false;
 			};
 			Unit.prototype.isAirborne = function() {
-				if (this.id == 9122)
+				if (this.id == 9122 || this.id == 122)
 					return true;
 				return false;
 			};

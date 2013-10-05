@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    alt + click works as shift + click
 // @match          http://warchaos.ru/f/a
-// @version        1.0
+// @version        1.1
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_marker.user.js
 // ==/UserScript==
 
@@ -15,7 +15,7 @@ addEventListener("click", function(e) {
 		setTimeout(function() {
 			var input = document.getElementById("miniinfoy");
 			if (input !== null) {
-				if (input.childNodes[0].getAttribute("value") === 0) {
+				if (input.childNodes[0].getAttribute("value") === "0") {
 					input.selectedIndex = 6;
 				}
 			}
