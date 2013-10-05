@@ -7,7 +7,11 @@
 // @match          http://warchaos.ru/f/a
 // @match          http://warchaos.ru/snapshot/*
 // @match          http://warchaos.ru/~snapshot/*
+<<<<<<< HEAD
 // @version        1.0
+=======
+// @version        1.4
+>>>>>>> dc154f397b109b0e8529d0c74606973b826d80cd
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_mapper_shaz.user.js
 // ==/UserScript==
 
