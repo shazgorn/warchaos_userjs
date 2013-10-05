@@ -53,15 +53,15 @@
 			xmlHttpRequest.send(param);
 		}
 
-		function dummy() {l(arguments);}
+		function dummy() {l(arguments);};
 
-		var allMarkets = [];
+		var allMarkets = new Array();
 		/** lastResType contain name of last pressed span e.g. Все, Ресурсы, Войска etc. */
 		var lastResType = ""; // I don`t think user wants to print all markets after preference change
 		function getBlockName(resName) {
 			var blocks = ["Древесина","Ресурсы","Поселенцы", "Артефакты", "Зелье здоровья", "Зелья",
 							"Благословение", "Свитки", "Ополченцы", "Войска", "Рецепт: Благословение",
-							"Рецепты", "Руна силы", "Руны"];
+							"Рецепты", "Руна силы", "Руны",]
 			for (var i = 0; i < blocks.length; i++) {
 				if (resName == blocks[i]) {
 					return blocks[i+1];
@@ -77,36 +77,38 @@
 				"Благословение",  "Куст терновника", "Радуга", "Проклятие", "Огненная стена", "Суперсенсинг", "Дождь", "Слабость", "Паутина", "Отражение", "Маскировка", "Рассеивание", "Забывчивость", "Вихрь", "Пентаграмма", "Перемирие", "Очищение", "Ослепление", "Обездвиживание", "Портал", "Отмена	",
 				"Ополченцы", "Пикинеры", "Лучники", "Арбалетчики", "Мечники", "Кнехты", "Разведчики", "Рыцари", "Маги", "Элефанты", "Кочевники", "Джинны", "Ассасины", "Эльфы",
 				"Рецепт: Благословение", "Рецепт: Куст терновника", "Рецепт: Радуга", "Рецепт: Проклятие", "Рецепт: Огненная стена", "Рецепт: Суперсенсинг", "Рецепт: Дождь", "Рецепт: Слабость", "Рецепт: Паутина", "Рецепт: Отражение", "Рецепт: Маскировка", "Рецепт: Рассеивание", "Рецепт: Забывчивость", "Рецепт: Вихрь", "Рецепт: Пентаграмма", "Рецепт: Ослепление", "Рецепт: Подзорная труба", "Рецепт: Сокол", "Рецепт: Спиритический шлем", "Рецепт: Молот силы", "Рецепт: Короткий меч", "Рецепт: Посох патриарха", "Рецепт: Дубинка орков", "Рецепт: Разрывчатый лук", "Рецепт: Меч-самосек", "Рецепт: Булава", "Рецепт: Деревянный щит", "Рецепт: Кожаная броня", "Рецепт: Золотая броня", "Рецепт: Сапоги", "Рецепт: Зубы орка",
-				"Руна силы", "Руна цели", "Руна жизни", "Руна стойкости", "Руна времени", "Руна мистицизма"
-			];
-		function calcCost(input) {
-			var cost;
-			if (input.parentNode.parentNode.parentNode.parentNode.rows[0].cells[0].childNodes[1].data.match(/Покупка$/) === null) {
-				cost = input.previousSibling.previousSibling.data.match(/\d*\.\d*/);
-				var discount = input.parentNode.parentNode.parentNode.parentNode.nextSibling.getElementsByTagName("font")[0].childNodes[0].data.match(/\d+/);
-				discount = discount ? 1 - discount/100 : "1";
-				var cb = input.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.childNodes[2];
-				var express = 0;
-				if (cb.checked) {
-					express = cb.nextSibling.data.match(/\d+\.*\d*/) * input.value;
-					if (express < cb.nextSibling.nextSibling.nextSibling.data.match(/\d+/)) {
-						express = cb.nextSibling.nextSibling.nextSibling.data.match(/\d+/);
-					}
-				}
-				input.nextSibling.childNodes[1].data = Math.ceil((cost * input.value) * discount + Number(express));
-			} else {
-				cost = input.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.data.match(/\d*\.\d*/);
-				input.nextSibling.childNodes[1].data = Math.ceil(cost * input.value);
-			}
-		}
+				"Руна силы", "Руна цели", "Руна жизни", "Руна стойкости", "Руна времени", "Руна мистицизма",
+
+			]
+
 		function addCalcCost() {
 			var inputs = $("input[type='text'][class='itxt']");
 			for (var i = 0; i < inputs.length; i++) {
 				var span = document.createElement("span");
 				insertAfter(span, inputs[i]);
 				span.innerHTML = '<img border="0" src="it/204.gif" width="20" height="15" align="absmiddle" tooltip="Золотые">0';
+				function calcCost(input) {
+					if (input.parentNode.parentNode.parentNode.parentNode.rows[0].cells[0].childNodes[1].data.match(/Покупка$/) == null) {
+						var cost = input.previousSibling.previousSibling.data.match(/\d*\.\d*/);
+						var discount = input.parentNode.parentNode.parentNode.parentNode.nextSibling.getElementsByTagName("font")[0].childNodes[0].data.match(/\d+/);
+						discount = discount ? 1 - discount/100 : "1";
+						var cb = input.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.childNodes[2];
+						var express = 0;
+						if (cb.checked) {
+							express = cb.nextSibling.data.match(/\d+\.*\d*/) * input.value;
+							if (express < cb.nextSibling.nextSibling.nextSibling.data.match(/\d+/)) {
+								express = cb.nextSibling.nextSibling.nextSibling.data.match(/\d+/);
+							}
+						}
+						input.nextSibling.childNodes[1].data = Math.ceil((cost * input.value) * discount + Number(express));
+					} else {
+						var cost = input.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.data.match(/\d*\.\d*/);
+						input.nextSibling.childNodes[1].data = Math.ceil(cost * input.value);
+					}
+				}
+
 				inputs[i].addEventListener("keyup", function (e) {calcCost(e.target);}, false);
-				if (inputs[i].nextSibling.nextSibling !== null)
+				if (inputs[i].nextSibling.nextSibling != null)
 					inputs[i].nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.childNodes[2].addEventListener("click", function (e) {
 						calcCost(e.target.parentNode.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling.previousSibling);
 					}, false);
@@ -123,12 +125,12 @@
 
 		
 
-		var alliesList = [];
+		var alliesList = new Array();
 
 		function makeAlliesList() {
-			ajaxRequest("http://warchaos.ru/user/game/", "GET", [], function (t) {
+			ajaxRequest("http://warchaos.ru/user/game/", "GET", [], function (t, args) {
 				var m = t.responseText.match(/Мирные договоры\:<\/b><\/font><br><table class=xtabl>(.*)<\/table>/);
-				t = document.createElement("table");
+				var t = document.createElement("table");
 				t.innerHTML = m[1];
 				var a = t.getElementsByTagName("a");
 				for (var i = 0; i < a.length; i++) {
@@ -140,18 +142,19 @@
 
 		function printListOfMarketsWithChoosenResource(resType) {
 			var w = getWindowObject();
-			if (resType === "")  // in case of lastResType == ""
+			if (resType == "")  // in case of lastResType == ""
 				return;
 			clearDisplayedMarkets();
-			if (allMarkets.length === 0) {
-				w = getWindowObject();
+			if (allMarkets.length == 0) {
+				var w = getWindowObject();
 				w.help1 = "Рынок";
 				w.help2 = "<div id=\"progbar\">Идёт скачивание...</div>";
 				w.ShowWin();
 				downloadAllMarkets(0, resType);
 			} else {
 				for (var i = 0; i < allMarkets.length; i++) {
-					if (allMarkets[i] !== null) {
+					if (allMarkets[i] != null) {
+						var tmarkets = document.getElementById("tmarkets");
 						var t = document.createElement("table");
 						t.innerHTML = allMarkets[i].innerHTML;			
 						t.rows[0].cells[0].getElementsByTagName("span")[0].addEventListener("click", function (e) {
@@ -162,8 +165,10 @@
 							w.ShowWin();
 							
 							// market loading
-							ajaxRequest("http://warchaos.ru/f/a", "POST", "a="+w.mobjects[w.obja+5]+"&b="+w.mobjects[0]+"&c="+w.subb+"&d="+m[0]+"&x="+m[1]+"&y="+m[2]+"&z="+m[3], function (t, args) {
+							ajaxRequest("http://warchaos.ru/f/a", "POST", "a="+w.mobjects[w.obja+5]+"&b="+w.mobjects[0]
+								+"&c="+w.subb+"&d="+m[0]+"&x="+m[1]+"&y="+m[2]+"&z="+m[3], function (t, args) {									
 									var cm = args[0];
+									var tooltip = args[1];
 									var m = t.responseText.split('\";\ng.underleft=\"')[0];
 									m = m.split('\";\ng.upblock+=\"');
 									var w = getWindowObject();
@@ -180,7 +185,7 @@
 									$("#tipwin td[width='16%'][align='center']").remove(); // !!!
 									$("span[class='tlnx'][onclick][tooltip!='"+e.target.parentNode.getAttribute("tooltip")+"']").parent().remove();
 									//console.log($("#tipwin table[class='rw3'] tbody tr td[valign='top']").length);
-									if ($("td[valign='top']").length === 0 || $("#tipwin table[class='rw3'] tbody tr td[valign='top']").length === 0 ) {
+									if ($("td[valign='top']").length == 0 || $("#tipwin table[class='rw3'] tbody tr td[valign='top']").length == 0 ) {
 										$(allMarkets).each(function(i, market) {
 											if (market.innerHTML.search(e.target.parentNode.getAttribute("tooltip")) == -1) {
 												allMarkets[i] = null;
@@ -189,7 +194,7 @@
 											}
 										});
 									}
-									if (document.getElementById("buysellbutton") === null) {
+									if (document.getElementById("buysellbutton") == null) {
 										return;
 									}
 									addCalcCost();
@@ -202,13 +207,13 @@
 										var inputs = form.getElementsByTagName("input");
 										for (var i = 0; i < inputs.length; i++) {
 											if (inputs[i].type == "hidden") {
-												if (i === 0)
+												if (i == 0)
 													req += inputs[i].name + '=' + inputs[i].value;
 												else
 													req += '&' + inputs[i].name + '=' + inputs[i].value;
 											} else if (inputs[i].type == "text" && Number(inputs[i].value) > 0)
 												req += '&' + inputs[i].name + '=' + Number(inputs[i].value);
-											else if (inputs[i].type == "checkbox" && inputs[i].checked === true)
+											else if (inputs[i].type == "checkbox" && inputs[i].checked == true)
 												req += '&' + inputs[i].name + '=' + '1';
 										}
 										var select = document.getElementsByName("i29")[0];
@@ -225,20 +230,22 @@
 											var m = t.responseText.match(/g\.rtxt\+="([^"]+)";/);
 											// print transfer result in window
 											document.getElementById("tipwin").getElementsByTagName("table")[0].rows[0].cells[0].getElementsByTagName("table")[1].rows[0].cells[0].innerHTML = m[1];
-											m = t.responseText.split("\";\ng.nextpage=");
+											m = t.responseText.split("\";\ng.nextpage\=");
 											var markets = m[0].split('\";\ng.upblock+=\"');
 											for (var j = 2; j < markets.length; j++) {
 												if (markets[j].search(cm) != -1) {
-													t = document.createElement("table");
+													var t = document.createElement("table");
 													t.innerHTML = markets[j].match(/<table [^>]+>(.*)<\/table>/)[1];
 													for (var i = 0; i < allMarkets.length; i++) {
 														if (allMarkets[i].rows[0].cells[0].getElementsByTagName("span")[0].getAttribute("cm") == cm &&
 																allMarkets[i].rows[0].cells[0].getAttribute("tooltip") == tooltip) {
 															for (var k = 0; k < t.rows[1].cells.length; k+=2) {
-																if (t.rows[1].cells[k].getElementsByTagName("span").length > 0 && t.rows[1].cells[k].getElementsByTagName("span")[0].getAttribute("tooltip") == tooltip) {
+																if (t.rows[1].cells[k].getElementsByTagName("span").length > 0
+																	&& t.rows[1].cells[k].getElementsByTagName("span")[0].getAttribute("tooltip") == tooltip) {
 																	// update quantity
 																	allMarkets[i].rows[0].cells[0].childNodes[
-																		allMarkets[i].rows[0].cells[0].childNodes.length - 1].data = t.rows[1].cells[k].childNodes[0].childNodes[
+																		allMarkets[i].rows[0].cells[0].childNodes.length - 1].data
+																		= t.rows[1].cells[k].childNodes[0].childNodes[
 																			t.rows[1].cells[k].childNodes[0].childNodes.length - 1].data;
 																	printListOfMarketsWithChoosenResource(lastResType);
 																	return;
@@ -276,8 +283,8 @@
 		function displayMarket(market, resType) {
 			var w = getWindowObject();
 			var wc_market_options = window.localStorage.getItem("wc_market_options");
-			if (wc_market_options === null) {
-				wc_market_options = [];
+			if (wc_market_options == null) {
+				wc_market_options = new Array();
 				for (var i = 0; i < goodsList.length; i++) {
 					wc_market_options[i] = '1';
 				}
@@ -285,10 +292,20 @@
 			} else
 				wc_market_options = wc_market_options.toString().split(',');
 			// filter
-			var icoNum = parseInt(market.rows[0].cells[0].getAttribute("icoNum"), 10);
-			if ((resType == 'Все') || (resType == 'Древесина' && icoNum == 214) || (resType == 'Камень' && icoNum == 234) || (resType == 'Металл' && icoNum == 224) || (resType == 'Ресурсы' && icoNum >= 244 && icoNum <= 474) || (resType == 'Артефакты' && icoNum >= 504 && icoNum <= 1214) || (resType == 'Зелья' && icoNum >= 24 && icoNum <= 114) || (resType == 'Свитки' && icoNum >= 1934 && icoNum <= 2204) || (resType == 'Войска' && icoNum >= 2254 && icoNum <= 2474) || (resType == 'Рецепты' && icoNum == 1914) || (resType == 'Руны' && icoNum >= 1504 && icoNum <= 1764)) {
+			var icoNum = parseInt(market.rows[0].cells[0].getAttribute("icoNum"));
+			if ((resType == 'Все')
+				|| (resType == 'Древесина' && icoNum == 214)
+				|| (resType == 'Камень' && icoNum == 234)
+				|| (resType == 'Металл' && icoNum == 224)
+				|| (resType == 'Ресурсы' && icoNum >= 244 && icoNum <= 474)
+				|| (resType == 'Артефакты' && icoNum >= 504 && icoNum <= 1214)
+				|| (resType == 'Зелья' && icoNum >= 24 && icoNum <= 114)
+				|| (resType == 'Свитки' && icoNum >= 1934 && icoNum <= 2204)
+				|| (resType == 'Войска' && icoNum >= 2254 && icoNum <= 2474)
+				|| (resType == 'Рецепты' && icoNum == 1914)
+				|| (resType == 'Руны' && icoNum >= 1504 && icoNum <= 1764)) {
 				var index = goodsList.indexOf(market.rows[0].cells[0].getAttribute("resName"));
-				if (index != -1 && wc_market_options[index] !== 0) {
+				if (index != -1 && wc_market_options[index] != 0) {
 					$("#tmarkets").append(market.rows[0]);
 				}
 			}
@@ -298,7 +315,7 @@
 			var mPrice = parseFloat(market.rows[0].cells[0].getAttribute("price"));
 			if (mPrice < 1 && isBuyPage())
 				return;
-			if (allMarkets.length === 0) {
+			if (allMarkets.length == 0) {
 				allMarkets.push(market);
 				return;
 			}
@@ -314,8 +331,8 @@
 							allMarkets.splice(i, 0, market);
 							return;
 						} else if (mPrice == miPrice) {
-							var mDistance = parseInt(market.rows[0].cells[0].getAttribute("distance"), 10);
-							var miDistance = parseInt(allMarkets[i].rows[0].cells[0].getAttribute("distance"), 10);
+							var mDistance = parseInt(market.rows[0].cells[0].getAttribute("distance"));
+							var miDistance = parseInt(allMarkets[i].rows[0].cells[0].getAttribute("distance"));
 							if (mDistance <= miDistance) {
 								allMarkets.splice(i, 0, market);
 								return;
@@ -331,16 +348,16 @@
 		}
 
 		function filterMarkets(e) {
-			if (allMarkets.length === 0)
+			if (allMarkets.length == 0)
 				return;
 			clearDisplayedMarkets();
-			var newAllMarkets = [];
+			var newAllMarkets = new Array();
 			_.each(_.groupBy(allMarkets, function(a) {return a.rows[0].cells[0].getAttribute("resName");}), function(set) {
 				_.each(_.sortBy(_.toArray(set), function(market) {
-					if (typeof e === null || e.target.innerHTML == "Цена") {
+					if (typeof e == null || e.target.innerHTML == "Цена") {
 						return parseFloat(market.rows[0].cells[0].getAttribute("price"));
 					} else {
-						return parseInt(market.rows[0].cells[0].getAttribute("time"), 10);
+						return parseInt(market.rows[0].cells[0].getAttribute("time"));
 					}
 				}), function(market) {
 					newAllMarkets.push(market);});
@@ -375,15 +392,15 @@
 			var m = market.rows[1].cells[0].childNodes[0].getAttribute("tooltip").match(/x(\d+)\$/);
 			if (m) {
 				var totalPrice = parseFloat(market.rows[1].cells[1].innerHTML);
-				var pricePerItem =  parseInt(Math.ceil(totalPrice / m[1]), 10);
+				var pricePerItem =  parseInt(Math.ceil(totalPrice / m[1]));
 				market.rows[1].cells[1].innerHTML = totalPrice + "(" + pricePerItem  + ")";
 			}
 			market.rows[0].cells[0].setAttribute("price", market.rows[1].cells[1].innerHTML);
 			// ico
 			market.rows[0].cells[0].setAttribute("icoNum", market.rows[1].getElementsByTagName("img")[0].getAttribute("src").match(/(\d+)/)[1]);
 			img = market.rows[1].cells[0].getElementsByTagName("img")[0];
-			img.setAttribute("width", parseInt(img.getAttribute("width") * 0.6, 10));
-			img.setAttribute("height", parseInt(img.getAttribute("height") * 0.6, 10));
+			img.setAttribute("width", parseInt(img.getAttribute("width") * 0.6));
+			img.setAttribute("height", parseInt(img.getAttribute("height") * 0.6));
 			market.rows[0].cells[0].appendChild(img);
 			// res name
 			var span = document.createElement("span");
@@ -417,7 +434,7 @@
 			removeElement(market.rows[0].cells[2].childNodes[0]);
 			if (!isBuyPage()) {
 				m = market.rows[0].cells[2].childNodes[0].innerHTML.match(time);
-				market.rows[0].cells[0].setAttribute("time", m[4] ? parseInt(m[4], 10) * 86400 : parseInt(m[1], 10) * 3600 + parseInt(m[2], 10) * 60 + parseInt(m[3], 10));
+				market.rows[0].cells[0].setAttribute("time", m[4] ? parseInt(m[4]) * 86400 : parseInt(m[1]) * 3600 + parseInt(m[2]) * 60 + parseInt(m[3]));
 			}
 			market.rows[0].deleteCell(2);
 			var cell = market.rows[0].insertCell(2);
@@ -440,16 +457,17 @@
 			var w = getWindowObject();
 			w.help1 = "";
 			w.help2 = "";
-			ajaxRequest("http://warchaos.ru/f/a", "POST", "a="+w.mobjects[w.obja+5]+"&b="+w.mobjects[0]+"&c="+w.subb+"&d=0"+"&e="+''+"&x="+w.g.rpa[5]+"&y=0"+"&z=" + nextpage ,
+			ajaxRequest("http://warchaos.ru/f/a", "POST", "a="+w.mobjects[w.obja+5]+"&b="+w.mobjects[0]
+						+"&c="+w.subb+"&d=0"+"&e="+''+"&x="+w.g.rpa[5]+"&y=0"+"&z=" + nextpage ,
 						function (t) {
-							var m = t.responseText.split("\";\ng.nextpage");
-							var nextpage = parseInt(m[1], 10);
+							var m = t.responseText.split("\";\ng.nextpage\=");
+							var nextpage = parseInt(m[1]);
 							var markets = m[0].split('\";\ng.upblock+=\"');
 							outerloop:
 							for (var j = 2; j < markets.length; j++) {
 								if (markets[j].search(">Дерево<") != -1)  //skip WC Pro toolbar
 									continue;
-								t = document.createElement("table");
+								var t = document.createElement("table");
 								t.innerHTML = markets[j].match(/<table [^>]+>(.*)<\/table>/)[1];
 								//WCBUG: there are can be empty market
 								if (!t.rows[1].cells[0].hasAttribute("align"))
@@ -471,8 +489,7 @@
 								a.nextSibling.parentNode.removeChild(a.nextSibling);
 								a.nextSibling.parentNode.removeChild(a.nextSibling);
 								// remove empty cells
-								var i;
-								for (i = t.rows[1].cells.length - 1; i > 1; i--) {
+								for (var i = t.rows[1].cells.length - 1; i > 1; i--) {
 									if (!t.rows[1].cells[i].hasAttribute("align")) {
 										t.rows[1].deleteCell(i);
 									}
@@ -482,7 +499,7 @@
 									parseMarket(t);
 									// hlp(405,2015,0,11796,2)
 								} else {
-									for (i = 0; i < alliesList.length; i++) {
+									for (var i = 0; i < alliesList.length; i++) {
 										if (alliesList[i] == t.getElementsByTagName("a")[0].innerHTML) {
 											parseMarket(t);
 											break;
@@ -491,15 +508,16 @@
 								}
 							}
 							var pb = document.getElementById("progbar");
-							if (nextpage === 0) {
+							if (nextpage == 0) {
 								pb.innerHTML += 'Готово';
-								setTimeout(HideWin, 1000);
+								setTimeout("HideWin()", 1000);
 								printListOfMarketsWithChoosenResource(resType);
 							} else {
 								pb.innerHTML += '.';
 								downloadAllMarkets(nextpage, resType);
 							}
-						}, dummy);
+						}
+						, dummy);
 		}
 
 		var buyPage = -1;
@@ -521,15 +539,16 @@
 					if (inputs[i].hasAttribute("value") && inputs[i].getAttribute("value") =="Установить") {
 						inputs[i].addEventListener("click", function(e) {
 							var t = e.target.parentNode.parentNode.parentNode.parentNode;
-							var j, inputs = t.getElementsByTagName("input");
-							for (j = 0; j < inputs.length; j++) {
+							var checked = false;
+							var inputs = t.getElementsByTagName("input");
+							for (var j = 0; j < inputs.length; j++) {
 								if (inputs[j].getAttribute("type") == "checkbox" && inputs[j].checked) {
 									return;
 								}
 							}
 							var priceInputs = t.previousSibling.getElementsByTagName("input");
 							if (priceInputs) {
-								for (j = 0; j < priceInputs.length; j++) {
+								for (var j = 0; j < priceInputs.length; j++) {
 									if (priceInputs[j].value == "0.01") {
 										alert("Вы установили на один или более товаров цену 0.01 и не установили галки для союзников или сокланов");
 										return;
@@ -547,7 +566,7 @@
 			for (var i = 0; i < scripts.length; i++) {
 				if (scripts[i].getAttribute("src") == src)
 					return;
-			}
+			};
 			var script = document.createElement("script");
 			script.src = src;
 			document.head.appendChild(script);
@@ -563,18 +582,20 @@
 				setTimeout(wcMarket, 1000);
 				return;
 			}
-			var resources = ["Все", "Древесина", "Камень", "Металл", "Ресурсы", "Артефакты", "Зелья", "Свитки", "Войска", "Рецепты", "Руны"];
+			var resources = ["Все", "Древесина", "Камень", "Металл", "Ресурсы", "Артефакты", "Зелья", "Свитки", "Войска", "Рецепты", "Руны",]
 			var w = getWindowObject();
 			if (!w.g || !w.g.rpa)
 				return;
-			if (w.g.rpa[5] === 0) {
+			if (w.g.rpa[5] == 0) {
 				addCheck();
 			}
-			if (w.g.rpa[5] !== 0 && w.g.upblock.search("<div align=center><table cellpadding=3 class=rwh><tr><td width=30>&nbsp;</td><td width=250 align=center>Рынок") !== null)
+			if (w.g.rpa[5] != 0 && w.g.upblock.search("<div align=center><table cellpadding=3 class=rwh><tr><td width=30>&nbsp;</td><td width=250 align=center>Рынок") != null)
 				addCalcCost();
-			if ((w.g === null || w.g.rpa === null) || (w.g.rpa[5] != 1 && w.g.rpa[5] != 6 && w.g.rpa[5] != 4)) //sell, buy, clan markets
+			if ((w.g == null || w.g.rpa == null)
+					|| (w.g.rpa[5] != 1 && w.g.rpa[5] != 6 && w.g.rpa[5] != 4)) //sell, buy, clan markets
 				return;
 
+			var tables = document.getElementsByTagName('table');
 			var rwh = $(".rwh");
 			if (rwh) {
 				if (rwh[0] && rwh[0].innerHTML.search("Рынок") != -1) {
@@ -591,9 +612,8 @@
 						t.insertRow(0);
 						t.rows[0].insertCell(0);
 						t.rows[0].cells[0].setAttribute("align", "center");
-						var span;
 						for (var j = 0; j < resources.length; j++) {
-							span = document.createElement("span");
+							var span = document.createElement("span");
 							span.setAttribute("class", "slnk");
 							span.setAttribute("style", "color:#31004A");
 							span.innerHTML = resources[j];
@@ -615,7 +635,7 @@
 						t.setAttribute("id", "tmarkets");
 						var row = t.insertRow(0);
 						var cell = row.insertCell(0);
-						span = document.createElement("span");
+						var span = document.createElement("span");
 						span.setAttribute("style", "color:#31004A");
 						span.innerHTML = "Товар";
 						cell.appendChild(span);
@@ -662,11 +682,11 @@
 						b.setAttribute("style", "width:80px;");
 						b.innerHTML = "Настройки";
 						b.addEventListener("click", function () {
-							var i, w = getWindowObject();
+							var w = getWindowObject();
 							var wc_market_options = w.localStorage.getItem("wc_market_options");
-							if (wc_market_options === null) {
-								wc_market_options = [];
-								for (i = 0; i < goodsList.length; i++) {
+							if (wc_market_options == null) {
+								wc_market_options = new Array();
+								for (var i = 0; i < goodsList.length; i++) {
 									wc_market_options[i] = '1';
 								}
 								w.localStorage.setItem("wc_market_options", wc_market_options);
@@ -678,10 +698,10 @@
 
 							var t = document.createElement("table");
 							t.setAttribute("style", "color:black; font-size:12px; width:1100px;");
-							for (i = 0; i < 40; i++) {
+							for (var i = 0; i < 40; i++) {
 								t.insertRow(i);
 								for (var j = 0; j < 20; j++) {
-									if (i === 0)
+									if (i == 0)
 										t.rows[i].appendChild(document.createElement("th"));
 									else
 										t.rows[i].insertCell(j);
@@ -689,8 +709,8 @@
 							}
 							var columns = -2;
 							var row = 0;
-							for (i = 0; i < goodsList.length; i++, row++) {
-								if (getBlockName(goodsList[i]) !== null) {
+							for (var i = 0; i < goodsList.length; i++, row++) {
+								if (getBlockName(goodsList[i]) != null) {
 									columns += 2;
 									row = 0;
 									t.rows[0].cells[columns].innerHTML = getBlockName(goodsList[i]);
@@ -714,13 +734,13 @@
 							b.setAttribute("class", "cmb");
 							b.setAttribute("style", "height:30px;");
 							b.innerHTML = "Сохранить и Выйти";
-							b.addEventListener("click", function () {
+							b.addEventListener("click", function (e) {
 								var w = getWindowObject();
-								var wc_market_options = [];
+								var wc_market_options = new Array();
 								for (var i = 0; i < goodsList.length; i++) {
 									var cb = document.getElementById("cb" + i);
 									if (cb) {
-										if (cb.checked === true) {
+										if (cb.checked == true) {
 											wc_market_options[i] = '1';
 										} else {
 											wc_market_options[i] = '0';
@@ -729,7 +749,7 @@
 								}
 
 								w.localStorage.setItem("wc_market_options", wc_market_options);
-								w = getWindowObject();
+								var w = getWindowObject();
 								w.HideWin();
 								printListOfMarketsWithChoosenResource(lastResType);
 							}, false);
