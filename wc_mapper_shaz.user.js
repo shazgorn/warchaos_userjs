@@ -7,7 +7,7 @@
 // @match          http://warchaos.ru/f/a
 // @match          http://warchaos.ru/snapshot/*
 // @match          http://warchaos.ru/~snapshot/*
-// @version        1.0
+// @version        1.1
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_mapper_shaz.user.js
 // ==/UserScript==
 
@@ -68,13 +68,15 @@
 			if (typeof tbl == 'undefined') {
 				return;
 			}
-			var img, res, xy;
-			var m = '';
-			var bgReg = /land\d\/(\d+)\.gif/; //landscape
-			var xyReg = /x\:(\d+) y\:(\d+)/; //cell coords example: x:424 y:270
-			var delReg = /<(?:\w+|\s|=|\/|#|:|\.)+>/gi; //delete tags
-			for (var i = 0; i < tbl.rows.length; i++) {
-				for (var j = 0; j < tbl.rows[i].cells.length; j++) {
+			var img, res, xy,
+				m = '',
+				bgReg = /land\d\/(\d+)\.gif/,				//landscape
+				xyReg = /x\:(\d+) y\:(\d+)/,				//cell coords example: x:424 y:270
+				delReg = /<(?:\w+|\s|=|\/|#|:|\.)+>/gi,		//delete tags
+				difY = Math.abs((tbl.rows.length-1)/2 - 7),
+				difX = Math.abs((tbl.rows[0].cells.length-1)/2 - 7),
+			for (var i = difY; i < tbl.rows.length - difY; i++) {
+				for (var j = difX; j < tbl.rows[i].cells.length - difX; j++) {
 					var c = tbl.rows[i].cells[j];
 					if (c.hasAttribute('background')) {
 						//unit on the ground
