@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    You can move your units like in heroes game
 // @match          http://warchaos.ru/f/a
-// @version        1.1
+// @version        1.2
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_astar.user.js
 // ==/UserScript==
 
@@ -507,6 +507,7 @@
 						e.target.getAttribute("src") == brownArrows || e.target.getAttribute("src") == redArrows) {
 					m = e.target.parentNode.childNodes[0].getAttribute("tooltip").match(coordsRg);
 					if (prevDestX == parseInt(m[1], 10) && prevDestY == parseInt(m[2], 10)) {
+						moving = true;
 						move();
 					} else {
 						astar(parseInt(m[1], 10), parseInt(m[2], 10));

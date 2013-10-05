@@ -7,7 +7,7 @@
 // @match          http://warchaos.ru/f/a
 // @match          http://warchaos.ru/snapshot/*
 // @match          http://warchaos.ru/~snapshot/*
-// @version        1.0
+// @version        1.2
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_mapper_shaz.user.js
 // ==/UserScript==
 
@@ -74,7 +74,7 @@
 				xyReg = /x\:(\d+) y\:(\d+)/,				//cell coords example: x:424 y:270
 				delReg = /<(?:\w+|\s|=|\/|#|:|\.)+>/gi,		//delete tags
 				difY = Math.abs((tbl.rows.length-1)/2 - 7),
-				difX = Math.abs((tbl.rows[0].cells.length-1)/2 - 7),
+				difX = Math.abs((tbl.rows[0].cells.length-1)/2 - 7);
 			for (var i = difY; i < tbl.rows.length - difY; i++) {
 				for (var j = difX; j < tbl.rows[i].cells.length - difX; j++) {
 					var c = tbl.rows[i].cells[j];
