@@ -2,8 +2,9 @@
 // @name           Warchaos Astar
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    You can move your units like in heroes game
-// @include        http://warchaos.ru/f/a
 // @match          http://warchaos.ru/f/a
+// @version        1.0
+// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_astar.user.js
 // ==/UserScript==
 
 

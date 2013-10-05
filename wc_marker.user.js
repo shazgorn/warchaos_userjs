@@ -2,8 +2,9 @@
 // @name           Warchaos Marker
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    alt + click works as shift + click
-// @include        http://warchaos.ru/f/a
 // @match          http://warchaos.ru/f/a
+// @version        1.0
+// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_marker.user.js
 // ==/UserScript==
 
 

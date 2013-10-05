@@ -2,8 +2,9 @@
 // @name           Warchaos Icon Replacer
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Replace default recipe icon(1914.gif). Add art info
-// @include        http://warchaos.ru/f/a
 // @match          http://warchaos.ru/f/a
+// @version        1.0
+// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_icon_replacer.user.js
 // ==/UserScript==
 
 (function () {
@@ -52,27 +53,28 @@
 ["Рецепт: Отражение", "Recipe: Clone", "data:image/gif;base64,R0lGODdhKAAoANUAAG1MDnpRD8Ged93Hqcqplr6OcKp7UKB2OZRyOodkL4NlKLuDKPG7Zu7gbunsKt3Xy+qrkPTn0pmEVYBhGKycZPj06O3kwKyMsZFoHfbgpaGIZdi4cXxpPO7aLNrINL+yLNCzWcpzVJd1Sd7hEfyqSu+bQWNhSNCoT8KlWNa0TXk9ChQPDk9S0VNLg5SPe2FWL5pNFtbAL04gCLGcUegiI7IGB/gDAhQNgAUG8q+pOuexNk+rSxdpGNe1UP///////ywAAAAAKAAoAAAG/kAAICAYEAQFgcBwQCQOUARAAa0uBIxGwzF4PCAFSIQgEQImlIpaHWlb2l7A5dFubzEHbSOj1hwyEQ9DEoRpFRkNaoiIDQMaWAxKFAsHQlcbGwwGVAydARwaGgoKgBkdGYgdDR4fIBIhCwsSFwUiBiIICCIisQkAGAuwIhIEIhMYI50kJczMlUK5CV4DEF8XIRPZChwKEwomCSIEEFAlJCSRGBPhxxjAwScbKCco8yn3+LAGBCoq4uQIBEBZoGGKgQIhUFhYyHAhvocQQWQogOFfAUISEiQwsFEhRIgrNlj4+BBChlsSTBIw8WBJiBMpWFy4wKIFio8tLtgkeY/B/kkMCUwOwLThYQsXJlq8QIDTBAUONz+C4GIAxoShIEiiiIEAxAsKEGXkivFihlQIDQwEsFqUp4sYCwi8iPqQAgIJZT8iobh2QtuPF2jACMGiBowH+FbQCBHiQg0XdO9J4AAAhuUJkfFdsMG5RgvOUFPIqGGjRo3NNVaAxffhA4EJAQIAKJAVYggbNDh/tpH3dm4bLEqvCI3vRAMCHGAAOFDhI40auUOY5m3WtAwbLW6ssCEjL74KDSJIsAzAQObnNGgEh0EjL3f2hWFwd2H2IYMBVQdXqH3vtnyaNrBX1naWZRfgc97dU4EHAiBgVQEwPXQbYTfUIAMBAyDQAAMy/rhwQYWpIVgfPgxA4KBfzUlYA4U3DDDAhhvKcMOHN9QoXYIpgJfBeAr8pZlgF+DgAiIMLNDJAi6wgMOSLWhQA44dOCCeCj1+NEMMLtwgwwL9wKCCDCvIYMKHSq7gQg4JbgCBACYI4RdJM3CwwgI6xAKDDHiCycINSmrnAgcjgsAAAUMEMIEAKT6EAgX95ImnmWHu2QIOfhKn4AbdPMjfQw9QmuUKJrjwJwccsACpn6vhM1UICcQCgAY+4oPDUTVe4AIFKIDApwsvrKAdjveoyQslBGwqKwsvKIksCpjw+YIGLuBg5oj4mFQVBrSRRMANSvX5JQgqsGAqBTPMmtem/mueGIKx9+z556Q4dEdBljioICelKzB1T22YxnbGuh8peSu8HNwqg5Iy9IOvpcEqEIAKAKiAAMAP7dBCwiq4wMMOZYGwAw8dSsDDyPTho0MKICgAQwAYLKSAARR/nDGpJoy8AwUfm8kBBWCCmioDLsOggAWsBoCAAQbsUDMHL+w8w1Oh8mAC0zujzPSfN0EAwQA9WBAbB+NYYAACATzwlAQIPMDQA3dhlPZCmDyNQFQWZDDCBEOIAEYBLorwsjS2JKDLAQ/sYkwRjeDjRQpiFHt3AAk8YoAGD1SwwRWyPBLKDDnMQIgAGOxDwOgC3IMh3358MAEMCRRwAAfiRKBFewSooBLBIVKiYoEDlDBBgBdzDBC536OMokEBBVwAAQPnMK9MiUcoQcAFFFwgABeihIMA5XAwNAEHRmjtujvku5OACeinP7UBDETAwAcCLEDBAG0gMkAFBMCAwQWhFNBCbAAMoL/MIIQAhIAAOcgBRTRAAOTlYAEGEEgQAAA7"],
 ["Рецепт: Радуга", "Recipe: Rainbow", "data:image/gif;base64,R0lGODdhKAAoANUAAG5KCnxPB8umWdrCqtCVgaJ1SZltJ4hxNZl3SYNlKKaPMty+X/TCbvHpZuPlI5niyNyqkPPr2aGJUH5jGr2gfvjy52FJMih+6fTowZtta/Phl35RIq7pcOG5f7SEWXZhNuDJOeh1JIFXU8qKXeanVe7LwY9cFNa0TfC+pNi2Uvs2CK1bEf4IBP+XAf/OAv/oAv/9Afn/FcOyNtb/QB3s8QX6/gcG+VoDvtgFzc20QLayC////////////////////ywAAAAAKAAoAAAG/kAAICAYDAhIQqFgOCAKCAMg8VwWFIIFo+EYPB4QAiQykAgBE0plvY64317L5fHGMBwKRWOPWWcUGhEPABsIhmoVGA1rihp7AxkUDAwCFBR5aFgcHQweCQaTDBsfGRkJCRoYGiCpDCANIA4CEh4hIQgEHgUSIgYGhgohBxMGISMhIggUCAEGDgsQJNLTUkK+Bw8DJRDbBCMTARMJIgniG4VhTNMQFAYTBwUTJvN5HgIkAvn5J/z9HgoeBpxDkM7ACF8KMlhI4GHEiH39IkqcuAAFARMEvfGScADeBnspJoocya8DigIiJBBAQeFDCQoNBZAcicKWChUh+kFAIWHF/oGdGjoInTnx2E0WSJEa4JfCwUkTEwZ0CElUYggVSW/ivLp0AScJG6B2qGoVK4ubIVqkbcF26QgPHgwEgEqCLD8UZnGyZevCxYsXMPgh+GBhxQqoMsmuOKu3hV8YkCHHiHHghAwBEMAFsPCQaAikKvb+lTxjBocHNB6I4PcKwgcTABCMIDkCa2PAMEx/oVGjd+/V/BqUEGHYQoHEVhmzBRxjBmrfNWhcmH7BQr8FJXqucFhX4mK9LmDE4MA7uvTpNtKnt86ahIEVGzp7P7s8N4371G3cUH+j/w32J3glAl0TfRZaeM5Fh156/t2Aw4MPAtgABgiYkMBYEaFwVggu/ozH2wX89QfhiBGy5gAGEgRwYYY3OZYgev6ReEMGIohgwQcfVOYVCR8IMQEEEbXognPSMejggzTe2JEETErQTwrQWBBAOBT0s8KB5IGo35E25niAkzM1sEACG6wwAQHdsdDCC1luiUOXX4JZVVMjlLmCBRnUpQIMWfaX5Ady2lUSCggYVgAFC5zQAgcg+nljoIIOWoBhI1DFqIg2VhbpCVSV1A5UI3R3gYMKAbppRIme0EECU6LhQaIzZnrqSKu2WuZDcM46EQgBJmBCWCJswNCSgnYq0gIppOArQ3WWCddDvOrKjxgDKBvABiKE8RZ8B4wgAQX4SCNADpuWoIEDwxMQQtBb2SCQQAE4ilDAAb8ogNITaWjAQAkToYDBABygG8ABkRSQwQMVcKDAJQhkIEAp/3iAwLcAWQLBEfxcHNAfOshzgMTJQKBIAxGkokoEFZyrSip4TFwANyUQUAIHBJNzyikZeJAEA9LwPAkJDHTAjiXTUYCmAxqY4oQIGZQQAQYYvDFKNjsRUOE8WJuA49YW3CiCBwxEsIAMl1DwQAnmMjBABQOsYMAFEGewwZR01x3AGWfEd4kCBCR0ARJ5FKBEEAA7"],
 ["Рецепт: Рассеивание", "Recipe: Dispel", "data:image/gif;base64,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"],
-["Рецепт: Суперсенсинг", "Recipe: Supersensing", "data:image/gif;base64,R0lGODdhKAAoANUAAHJHB6mLZ+q9ocy3pMCKZa2dhKaGU59zOJZrO4ZnMVQ5GX1iHaaSLeG+cPHibOnsKvPlmuXj2eimlNCMZvnx4mhcMHFTHICLfu7bv5Z6Ss2kcMehjN6yeOi0WYNkIOTRMNfXFtGmVsV/M6pvU5lkHL6ARvyqSu+bQYVsUXNOM76aRta0TZdSBWhnZklLTzo7O0NCQVNUYExJSBgbHiYpKzMwLwUEBHxKBTUfCNelQtC2TeOEKLlhD9W4Rf///////ywAAAAAKAAoAAAG/kCAMCAYEAoEguGASCCYCMXieagyAg2H4wGJRCQTCWVgACgqiwJlvfa6vQXL5Y3ZMhhaB2YdYEAoEQAWGYRqFHVrdRBaEAEaDQ0BGwV3FRUMGhyQBgsHHZAWCQEBCx4QGBAfEIsfDh8gIQYEIiIZBQEjBhkICIQMIgkVJCIlIgcZGxmdIA0cJifQ0AcW1LwJBREYEgISGwQL4B4o4AspKcgSVScmJhwaJB4JIx4k9XcqIRoh+/sr/v8qGBgYwIJFBgnpEBCwEiDUiAkIUKSwZA7Bv4sY/XUQMIHEQTC6DCSQl2JExBYtLrRw8cIFDAUZY64QIGCJgW0bKmDQ8DBE/oEYLWLEYAlDhgwYMWbIxMihJokE2wRAauAPgYugMZC2kPHiBQ0ZMWjQWLqiwYOaLDxI7YDRxYULQF3EqDHD61cYM2y4kLnRgQELaaliTPEWZVIYNV7MoAHjRQ0XYpVmJDCKxI20GjICDdpiBleWMup2RUzjhY2MGRIALrggREasMY6WflHU8QzPNWzYwJExh4oNHgDcsDCB7cULMrZ2/VqjBozGjV9UeME7pg4HGxKwAKDwYoUWMFzepjuDrlfTNkoUQLFUT4aCFka49ldBqAsZkW2Ut2H7RYEBBVywVAMYGFAQARPMtwJQYD3nnFhv6TfDABgAyJ5MH2iAQFoJ/v6TglA0xEZDDVm5AIEGSdlwQYUo1FBdRg0IsKEHmf2jgEvhuWADYnh1gEIFDqDAAYu64VABDkjioIACDkDwngeC+aOADC7JNQMMNKBAwwwOFLBKDhwMcAFMCsD11lA4PFAgAFBiVEMLJD6G1A4duDABBBxwsM8RBUg5QwWUMCCABhUI4QEHg20VWlgu7OBABzIQkGcIBER0QQU24hDDBQ1sYMENNyxQ40UvxHYlY3TugMMEHEwwwQgotPiilEhykIAHaRWgoD9vJnWUAnTygAMHHbwKawowxaTAAwSkUI8Fjlz0pmL3zRDsDSVwQMCxycrUgAQZ1HPABsb5c1R5/pDNkEMOBbFQQgAoIIAsWTQZSEJxGCnQnH42kJDDBDyAekMFF/zYrUYXDbrhAgTsukIKsV5gg660sKDADQogWQEKB/9jXAMegGrBAgaUi9EFIYhAQhQZ66abZAOGLIgFCpl8HAs8/FhBx0v1sAIHuN5AgkTydJjRWz9iZDNGkHSAqzzN0jzCQx34/E+sZMWEkABOD4cCQq8iEMoEBmigj9lVZ50RKiAsIMgIYBAwwADKjDBSBnb3ItAxI4gqgB4ZSRDBAA20fYMoPAUQAQUcMLABAxmMckEABgiUgQGPY76BBEb4s43cfTCwAAuiRDTCBhRoQcEpqKwBgZqrRPAAbQMILLEBBgLcPoAoB4w00gKjuCpBB+wQ34HxuWuwwSQXFLCBBlwEEI9JAWDwhhfxzI1QAQjU4309wVhSgTkVyFAyBQ3koAED/2GAigMCjMECCW+N0sKnAucPqhD8K2ABAY9jHwOaV4BAjWAhQQAAOw=="],
-]
-		var re = /it\/(\d+)\.gif/i;  //pic
-		var art; //art info
+["Рецепт: Суперсенсинг", "Recipe: Supersensing", "data:image/gif;base64,R0lGODdhKAAoANUAAHJHB6mLZ+q9ocy3pMCKZa2dhKaGU59zOJZrO4ZnMVQ5GX1iHaaSLeG+cPHibOnsKvPlmuXj2eimlNCMZvnx4mhcMHFTHICLfu7bv5Z6Ss2kcMehjN6yeOi0WYNkIOTRMNfXFtGmVsV/M6pvU5lkHL6ARvyqSu+bQYVsUXNOM76aRta0TZdSBWhnZklLTzo7O0NCQVNUYExJSBgbHiYpKzMwLwUEBHxKBTUfCNelQtC2TeOEKLlhD9W4Rf///////ywAAAAAKAAoAAAG/kCAMCAYEAoEguGASCCYCMXieagyAg2H4wGJRCQTCWVgACgqiwJlvfa6vQXL5Y3ZMhhaB2YdYEAoEQAWGYRqFHVrdRBaEAEaDQ0BGwV3FRUMGhyQBgsHHZAWCQEBCx4QGBAfEIsfDh8gIQYEIiIZBQEjBhkICIQMIgkVJCIlIgcZGxmdIA0cJifQ0AcW1LwJBREYEgISGwQL4B4o4AspKcgSVScmJhwaJB4JIx4k9XcqIRoh+/sr/v8qGBgYwIJFBgnpEBCwEiDUiAkIUKSwZA7Bv4sY/XUQMIHEQTC6DCSQl2JExBYtLrRw8cIFDAUZY64QIGCJgW0bKmDQ8DBE/oEYLWLEYAlDhgwYMWbIxMihJokE2wRAauAPgYugMZC2kPHiBQ0ZMWjQWLqiwYOaLDxI7YDRxYULQF3EqDHD61cYM2y4kLnRgQELaaliTPEWZVIYNV7MoAHjRQ0XYpVmJDCKxI20GjICDdpiBleWMup2RUzjhY2MGRIALrggREasMY6WflHU8QzPNWzYwJExh4oNHgDcsDCB7cULMrZ2/VqjBozGjV9UeME7pg4HGxKwAKDwYoUWMFzepjuDrlfTNkoUQLFUT4aCFka49ldBqAsZkW2Ut2H7RYEBBVywVAMYGFAQARPMtwJQYD3nnFhv6TfDABgAyJ5MH2iAQFoJ/v6TglA0xEZDDVm5AIEGSdlwQYUo1FBdRg0IsKEHmf2jgEvhuWADYnh1gEIFDqDAAYu64VABDkjioIACDkDwngeC+aOADC7JNQMMNKBAwwwOFLBKDhwMcAFMCsD11lA4PFAgAFBiVEMLJD6G1A4duDABBBxwsM8RBUg5QwWUMCCABhUI4QEHg20VWlgu7OBABzIQkGcIBER0QQU24hDDBQ1sYMENNyxQ40UvxHYlY3TugMMEHEwwwQgotPiilEhykIAHaRWgoD9vJnWUAnTygAMHHbwKawowxaTAAwSkUI8Fjlz0pmL3zRDsDSVwQMCxycrUgAQZ1HPABsb5c1R5/pDNkEMOBbFQQgAoIIAsWTQZSEJxGCnQnH42kJDDBDyAekMFF/zYrUYXDbrhAgTsukIKsV5gg660sKDADQogWQEKB/9jXAMegGrBAgaUi9EFIYhAQhQZ66abZAOGLIgFCpl8HAs8/FhBx0v1sAIHuN5AgkTydJjRWz9iZDNGkHSAqzzN0jzCQx34/E+sZMWEkABOD4cCQq8iEMoEBmigj9lVZ50RKiAsIMgIYBAwwADKjDBSBnb3ItAxI4gqgB4ZSRDBAA20fYMoPAUQAQUcMLABAxmMckEABgiUgQGPY76BBEb4s43cfTCwAAuiRDTCBhRoQcEpqKwBgZqrRPAAbQMILLEBBgLcPoAoB4w00gKjuCpBB+wQ34HxuWuwwSQXFLCBBlwEEI9JAWDwhhfxzI1QAQjU4309wVhSgTkVyFAyBQ3koAED/2GAigMCjMECCW+N0sKnAucPqhD8K2ABAY9jHwOaV4BAjWAhQQAAOw=="]
+];
+		
+		var re = /it\/(\d+)\.gif/i,  //pic
+			art, //art info
+			re3 = /x\d+/, //crafts
+			parent, text, el,
+			imgs = document.images;			
 		if (document.URL == "http://warchaos.ru/f/a")
 			art = /(I*V*\**) *((?:SL|FC|R|r\d+| )*)* *(?:\$Осталось: )*(\d+)/;
 		else
 			art = /(I*V*\**) *((?:SL|FC|R|r\d+| )*)* *(?:\$Left: )*(\d+)/;
-		var re3 = /x\d+/; //crafts
-		//alert(art.exec("Золотая броня III$Осталось: 54 дн.");
-		var imgs = document.images;
 		for (var i = 0; i < imgs.length; i++) {
 			if (!imgs[i].hasAttribute('sck') && imgs[i].hasAttribute("src") ) {
 				var m = imgs[i].getAttribute('src').match(re);
-				var item = m ? parseInt(m[1]) : 0;
+				var item = m ? parseInt(m[1], 10) : 0;
 				if (item == 1914)
 					for (var j = 0; j < icons.length; j++) {
 						if (imgs[i].hasAttribute("tooltip")) {
 							for (var k = 0; k < icons[j].length - 1; k++) {
 								if (imgs[i].getAttribute('tooltip').search(icons[j][k]) != -1) {
-									var parent = imgs[i].parentNode;
+									parent = imgs[i].parentNode;
 									if (parent.nodeName == "BUTTON") {
 										parent.setAttribute('style', "max-height:40px;");
 									}
@@ -83,8 +85,8 @@
 									}
 									imgs[i].setAttribute('src', icons[j][icons[j].length-1]);
 									m = re3.exec(imgs[i].getAttribute('tooltip'));
-									var text = m ? m[0] : '?';
-									var el = document.createElement('span');
+									text = m ? m[0] : '?';
+									el = document.createElement('span');
 									el.setAttribute('style',"position:relative;top:-3px;left:0px;color:yellow;");
 									el.appendChild(document.createElement('br'));
 									el.appendChild(document.createTextNode(text));
@@ -94,19 +96,16 @@
 						}
 					}
 				else if (item >= 604 && item <= 1764) {
-					var parent = imgs[i].parentNode;
+					parent = imgs[i].parentNode;
 					if (parent.nodeName == "BUTTON") {
 						parent.setAttribute('style', "max-height:40px;");
 					}
-					if (imgs[i].hasAttribute("tooltip") && parent.childNodes.length == 1
-						|| (parent.childNodes.length == 3 && parent.childNodes[2].nodeName == 'INPUT')
-						|| (imgs[i].parentNode.hasAttribute("class") && imgs[i].parentNode.getAttribute("class") == "tlnx" && imgs[i].parentNode.childNodes.length == 1) //market
-						|| (imgs[i].parentNode.hasAttribute("class") && imgs[i].parentNode.getAttribute("class") == "tlnx" && imgs[i].parentNode.childNodes.length == 2 && 
+					if (imgs[i].hasAttribute("tooltip") && parent.childNodes.length == 1 || (parent.childNodes.length == 3 && parent.childNodes[2].nodeName == 'INPUT') || (imgs[i].parentNode.hasAttribute("class") && imgs[i].parentNode.getAttribute("class") == "tlnx" && imgs[i].parentNode.childNodes.length == 1) || (imgs[i].parentNode.hasAttribute("class") && imgs[i].parentNode.getAttribute("class") == "tlnx" && imgs[i].parentNode.childNodes.length == 2 && 
 							imgs[i].nextSibling.getAttribute("src") == "q.gif")
 						) {
 						m = art.exec(imgs[i].getAttribute('tooltip'));
-						var text = m ? (m[2] ? m[1] + m[2] + ' ' + m[3] : m[1] + "       " + m[3]) : '?';
-						var el = document.createElement('span');
+						text = m ? (m[2] ? m[1] + m[2] + ' ' + m[3] : m[1] + "       " + m[3]) : '?';
+						el = document.createElement('span');
 						el.setAttribute('style','color:yellow;position:relative;top:-12px;width:45px; white-space:nowrap; font-family:"Palatino Linotype", serif;');
 						el.appendChild(document.createElement('br'));
 						el.appendChild(document.createTextNode(text));

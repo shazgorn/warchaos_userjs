@@ -2,12 +2,11 @@
 // @name           Warchaos Replace Army Size
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Replace symbolic represenation with numeric
-// @include        http://warchaos.ru/f/a
-// @include        http://warchaos.ru/snapshot/*
-// @include        http://warchaos.ru/~snapshot/*
 // @match          http://warchaos.ru/f/a
 // @match          http://warchaos.ru/snapshot/*
 // @match          http://warchaos.ru/~snapshot/*
+// @version        1.0
+// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_replace_force_size.user.js
 // ==/UserScript==
 
 (function() {

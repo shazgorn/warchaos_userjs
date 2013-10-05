@@ -2,16 +2,13 @@
 // @name           Warchaos Mapper for Liaf
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Mapper use iframe and window.postMessage
-// @include        http://dragonmap.ru/thispageshouldneverexist
-// @include        http://warchaos.ru/*
-// @include        http://warchaos.ru/f/a
-// @include        http://warchaos.ru/snapshot/*
-// @include        http://warchaos.ru/~snapshot/*
 // @match          http://dragonmap.ru/thispageshouldneverexist
 // @match          http://warchaos.ru/*
 // @match          http://warchaos.ru/f/a
 // @match          http://warchaos.ru/snapshot/*
 // @match          http://warchaos.ru/~snapshot/*
+// @version        1.0
+// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_mapper_shaz.user.js
 // ==/UserScript==
 
 

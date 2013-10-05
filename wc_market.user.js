@@ -2,10 +2,9 @@
 // @name           Warchaos Market
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Like WC Pro market but with some additional options
-// @include        http://warchaos.ru/f/a
 // @match          http://warchaos.ru/f/a
-// @require        http://underscorejs.org/underscore-min.js
-// @require        http://code.jquery.com/jquery-2.0.3.min.js
+// @version        1.0
+// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_market.user.js
 // ==/UserScript==
 
 
