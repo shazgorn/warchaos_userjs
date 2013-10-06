@@ -3,11 +3,11 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    You can move your units like in heroes game
 // @match          http://warchaos.ru/f/a
-// @version        1.2
+// @version        1.3
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_astar.user.js
 // ==/UserScript==
 
-
+//TODO: exit from dropship zeroes AP
 (function() {
 	"use strict";
 	function source() {
@@ -313,9 +313,8 @@
 				var adjCells = this.getAdjCells();
 				for (var i = 0; i < adjCells.length; i++) {
 					var el = adjCells[i];
-					if (!this.activeUnit.isAirborne() && !this.activeUnit.isAssassin() && 
-							this.checkForEnemyOnAdjCell() && el.checkForEnemyOnAdjCell())
-						return;
+					if (!this.activeUnit.isHero() && !this.activeUnit.isAssassin() && this.enemyOnAdjCell && el.enemyOnAdjCell)
+						continue;
 					// check in openList for present in there
 					if (el !== null && el.accessible) {
 						if (el.state == 1) {
@@ -376,7 +375,7 @@
 				Node.prototype.nodes = nodes;
 				var activeUnit = new Unit($("button[class='but40'][onclick='cm6();'] img").get(0));
 				Node.prototype.activeUnit = activeUnit;
-				var i, j;
+				var i, j, k;
 				for (i = 0; i < map.rows.length; i++) {
 					nodes.push([]);
 					for (j = 0; j < map.rows[i].cells.length; j++) {
@@ -389,6 +388,18 @@
 						nodes[nodes.length-1].push(node);
 					} // for cells
 				} // for rows
+				// check for enemies
+				var adjCells;
+				for (i = 0; i < nodes.length; i++)
+					for (j = 0; j < nodes[i].length; j++) {
+						if (nodes[i][j].obj !== null && nodes[i][j].obj.isHostile()) {
+							adjCells = nodes[i][j].getAdjCells();
+							for (k = 0; k < adjCells.length; k++) {
+								adjCells[k].enemyOnAdjCell = 1;
+								//adjCells[k].map.rows[adjCells[k].i].cells[adjCells[k].j].setAttribute("style", "border-width:1px;border:solid red;");
+							}
+						}
+					}
 				// search for krakens
 				if (activeUnit.isAfraidOfKraken()) {
 					for (i = 0; i < nodes.length; i++)
@@ -396,8 +407,8 @@
 							if (nodes[i][j].obj !== null) {
 								if (nodes[i][j].obj.isKraken()) {
 									nodes[i][j].accessible = 0;
-									var adjCells = nodes[i][j].getAdjCells();
-									for (var k = 0; k < adjCells.length; k++) {
+									adjCells = nodes[i][j].getAdjCells();
+									for (k = 0; k < adjCells.length; k++) {
 										adjCells[k].accessible = 0;
 									}
 								}
@@ -475,7 +486,7 @@
 									];
 						img.setAttribute("style", "display:block;position:relative;top:" + arrs[dy][dx][0] + "px;left:" + arrs[dy][dx][1] + "px;margin:-60px;");
 					}
-					img.setAttribute("tooltip", curNode.g);
+					img.setAttribute("tooltip", curNode.cell.childNodes[0].getAttribute("tooltip") + "</br>" + curNode.g);
 					curNode.cell.appendChild(img);
 					if (curNode.parent === start) {
 						return curNode;
