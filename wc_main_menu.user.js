@@ -3,8 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some links to main menu
 // @match          http://warchaos.ru/*
-// @exclude        http://warchaos.ru/f/a
-// @version        1.0
+// @version        1.1
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_main_menu.user.js
 // ==/UserScript==
 
@@ -73,6 +72,36 @@
 				}
 			}
 		}
+		function addOption(select, text, link) {
+			var option = document.createElement("option");
+			option.text = text;
+            option.value = link;
+			select.add(option, null);
+		}
+		function addAdditionalNav() {
+            if ($("#addmenu").length === 0 && $("#cise table").length == 1) {
+                var table = $("#cise table").get(0);
+                var row = table.insertRow(table.rows.length);
+				var cell;
+				for (var i = 0; i < table.rows[0].cells.length; i++) {
+					cell = row.insertCell(row.cells.length)
+					if (table.rows[0].cells[i].getElementsByTagName("img")[0].getAttribute("src") == "ctrl/54.gif")
+						break;
+				}
+                var select = document.createElement("select");
+                select.setAttribute("id", "addmenu");
+                cell.appendChild(select);
+                $(select).change(function(e){
+                    if (e.target.childNodes[e.target.selectedIndex].value !== "")
+                        window.open(e.target.childNodes[e.target.selectedIndex].value, "_self");
+                });
+                addOption(select, "Перейти", "");
+                addOption(select, "Архив", "http://warchaos.ru/archive/");
+                addOption(select, "Обзор аккаунта", "http://warchaos.ru/report/");
+                addOption(select, "Управление", "http://warchaos.ru/user/game/");
+                addOption(select, "Настройки", "http://warchaos.ru/user/preferences/");
+            }
+		}
 
 		(function mainMenuUpgrade() {
 			if (typeof $ === "undefined") {
@@ -83,7 +112,7 @@
 				return;
 			}
 			var li, a, i, j;
-			if (document.URL != "http://warchaos.ru/f/a") {//add some if (skin) later
+			if (document.URL != "http://warchaos.ru/f/a") {
 				var bookBlockId = "me500i";
 				var clanBlockId = "me200i";
 				var as = document.getElementsByTagName('a');
@@ -265,13 +294,23 @@
 						document.getElementById('worldmap').parentNode.appendChild(span);
 					}
 				}
+			} else if (document.URL == "http://warchaos.ru/f/a") {
+				setTimeout(addAdditionalNav, 100);	
+				var wc_ifr = document.getElementById("ifr");
+				if (wc_ifr) {
+					wc_ifr.addEventListener("load", function() {
+						setTimeout(addAdditionalNav, 100);
+					}, false);
+				}
 			}
 		})();
-	}
+
+
+
+	} // source
 
 	var script = document.createElement('script');
 	script.textContent = '('+ source +')();';
 	document.body.appendChild(script);
 	document.body.removeChild(script);
 })();
-

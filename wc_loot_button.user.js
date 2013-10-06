@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add loot button
 // @match          http://warchaos.ru/f/a
-// @version        1.0
+// @version        1.1
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_loot_button.user.js
 // ==/UserScript==
 
@@ -24,7 +24,7 @@
 	addEventListener('click', function (e) {
 			if (e.target.nodeName == "BUTTON") {
 				var img = e.target.getElementsByTagName("IMG");
-				img = img ? img[0] : 0;
+				img = img.length !== 0 ? img[0] : null;
 				if (img !== null && img.hasAttribute('src')) {
 					var unitReg = /(\d+).gif/;   //unit type
 					if (img !== null) {
