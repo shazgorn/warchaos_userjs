@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some links to main menu
 // @match          http://warchaos.ru/*
-// @version        1.1
+// @version        1.2
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_main_menu.user.js
 // ==/UserScript==
 
@@ -237,9 +237,9 @@
 				}
 				// pro seat
 				if (document.URL.search("user/game") != -1) {
-					var cb = document.getElementsByTagName("input");
+					var cb = $("input[type='checkbox']");
 					for (i = 0; i < cb.length; i++) {
-						if (cb[i].getAttribute("type") == "checkbox") {
+						if (i != 1 && i != 2) {
 							cb[i].checked = true;
 						}
 					}
