@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some links to main menu
 // @match          http://warchaos.ru/*
-// @version        1.2
+// @version        1.21
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_main_menu.user.js
 // ==/UserScript==
 
@@ -97,7 +97,7 @@
                 });
                 addOption(select, "Перейти", "");
                 addOption(select, "Архив", "http://warchaos.ru/archive/");
-                addOption(select, "Обзор аккаунта", "http://warchaos.ru/report/");
+                addOption(select, "Обзор аккаунта", "http://warchaos.ru/report/0/65535");
                 addOption(select, "Управление", "http://warchaos.ru/user/game/");
                 addOption(select, "Настройки", "http://warchaos.ru/user/preferences/");
             }

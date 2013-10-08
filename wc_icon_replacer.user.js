@@ -2,8 +2,8 @@
 // @name           Warchaos Icon Replacer
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Replace default recipe icon(1914.gif). Add art info
-// @match          http://warchaos.ru/f/a
-// @version        1.0
+// @match          http://warchaos.ru/*
+// @version        1.1
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_icon_replacer.user.js
 // ==/UserScript==
 
