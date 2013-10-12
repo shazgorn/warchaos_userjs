@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some links to main menu
 // @match          http://warchaos.ru/*
-// @version        1.21
+// @version        1.22
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_main_menu.user.js
 // ==/UserScript==
 
@@ -72,11 +72,13 @@
 				}
 			}
 		}
-		function addOption(select, text, link) {
-			var option = document.createElement("option");
-			option.text = text;
-            option.value = link;
-			select.add(option, null);
+		function addMenuItem(ul, text, link) {
+			var li = document.createElement("li");
+			var a = document.createElement("a");
+			a.setAttribute("href", link);
+			a.innerHTML = text;
+			li.appendChild(a);
+			ul.appendChild(li);
 		}
 		function addAdditionalNav() {
             if ($("#addmenu").length === 0 && $("#cise table").length == 1) {
@@ -88,27 +90,37 @@
 					if (table.rows[0].cells[i].getElementsByTagName("img")[0].getAttribute("src") == "ctrl/54.gif")
 						break;
 				}
-                var select = document.createElement("select");
-                select.setAttribute("id", "addmenu");
+				var ul = document.createElement("ul");
+				ul.setAttribute("id", "addmenu");
 				cell.setAttribute("colspan", 2);
-                cell.appendChild(select);
-                $(select).change(function(e){
-                    if (e.target.childNodes[e.target.selectedIndex].value !== "")
-                        window.open(e.target.childNodes[e.target.selectedIndex].value, "_self");
-                });
-                addOption(select, "Перейти", "");
-                addOption(select, "Архив", "http://warchaos.ru/archive/");
-                addOption(select, "Обзор аккаунта", "http://warchaos.ru/report/0/65535");
-                addOption(select, "Управление", "http://warchaos.ru/user/game/");
-                addOption(select, "Настройки", "http://warchaos.ru/user/preferences/");
+                cell.appendChild(ul);
+				var li = document.createElement("li");
+				var a = document.createElement("a");
+				a.href = "/f/a";
+				a.innerHTML = "Перейти";
+				li.appendChild(a);
+				ul.appendChild(li);
+				var inUl = document.createElement("ul");
+				li.appendChild(inUl);
+                addMenuItem(inUl, "Архив", "http://warchaos.ru/archive/");
+                addMenuItem(inUl, "Обзор аккаунта", "http://warchaos.ru/report/0/65535");
+                addMenuItem(inUl, "Управление", "http://warchaos.ru/user/game/");
+                addMenuItem(inUl, "Настройки", "http://warchaos.ru/user/preferences/");
+				$("#addmenu").menu({position: {my:"left top", at: "left+40 top-100"}});
             }
 		}
 
 		(function mainMenuUpgrade() {
 			if (typeof $ === "undefined") {
 				addScript("http://code.jquery.com/jquery-1.9.1.js");
+			} else if (typeof $.ui === "undefined") {
+				addScript("http://code.jquery.com/ui/1.10.3/jquery-ui.js");
+				var link = document.createElement("link");
+				link.setAttribute("rel", "stylesheet");
+				link.setAttribute("href", "http://warchaosujs.gixx.ru/jquery-ui/css/sunny/jquery-ui-1.10.3.custom.css");
+				document.head.appendChild(link);
 			}
-			if (typeof $ === "undefined") {
+			if (typeof $ === "undefined" || typeof $.ui === "undefined") {
 				setTimeout(mainMenuUpgrade, 100);
 				return;
 			}
@@ -305,7 +317,7 @@
 				}
 			}
 		})();
-
+		
 
 
 	} // source

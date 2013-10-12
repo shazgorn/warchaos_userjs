@@ -531,6 +531,9 @@ button.ui-button::-moz-focus-inner {
 	cursor: move;
 }
 .ui-menu {
+	color: #281604;
+	font-family: Arial,sans-serif;
+	font-size: 12px;
 	list-style: none;
 	padding: 2px;
 	margin: 0;
@@ -545,6 +548,9 @@ button.ui-button::-moz-focus-inner {
 	margin: 0;
 	padding: 0;
 	width: 100%;
+	color: #281604;
+	font-family: Arial,sans-serif;
+	font-size: 12px;
 	/* support: IE10, see #8844 */
 	list-style-image: url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7);
 }
@@ -870,7 +876,8 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-active,
 .ui-widget-header .ui-state-active {
 	border: 1px solid #655e4e;
-	background: #ffffff url(images/ui-bg_inset-soft_30_ffffff_1x100.png) 50% 50% repeat-x;
+	/* background: #ffffff url(images/ui-bg_inset-soft_30_ffffff_1x100.png) 50% 50% repeat-x; */
+	background: #94613D url('http://warchaos.ru/fp/ctrl/bg_4.gif') 50% 50% repeat-x;
 	font-weight: bold;
 	color: #0074c7;
 }
@@ -1212,4 +1219,7 @@ body .ui-tooltip {
 	color: #653809;
 	/* background: #E5CA9A; */
 	background-color: #E5CA9A;
+}
+#buyforcebutton {
+	margin-bottom: 7px;
 }

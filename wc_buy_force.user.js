@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add "max" button, allows you to buy all force
 // @match          http://warchaos.ru/f/a
-// @version        1.0
+// @version        1.1
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_buy_force.user.js
 // ==/UserScript==
 
@@ -325,6 +325,7 @@
 			t.setAttribute("id", "buyforcetable");		
 			$(t).dialog({autoOpen: false, width: 600, title: "Найм войск"});
 			var button = document.createElement("button");
+			button.setAttribute("id", "buyforcebutton");
 			$("td[class='bld']:first").parent().parent().parent().parent().append($(button));
 			$(button).button({label: "Найм войск"}).click(function() {$("#buyforcetable").dialog("open");});
 			for (var i = 0; i < forceTable.length + 1; i++) {
