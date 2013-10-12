@@ -147,14 +147,14 @@
 
 		/**
 		 * Add listener on refresh button.
-		 * listener will erase item in localStorage associated with current town
+		 * listener will erase item in sessionStorage associated with current town
 		 */
 		function addEraseCookieActionOnRefreshButton(townId) {
 			var buttons = document.getElementsByTagName("BUTTON");
 			for (var i = 0; i < buttons.length; i++) {
 				if (buttons[i].hasAttribute("tooltip") && buttons[i].getAttribute("tooltip") == "Обновить") {
 					buttons[i].addEventListener("click", function () {
-							getWindowObject().localStorage.removeItem(townId);
+							getWindowObject().sessionStorage.removeItem(townId);
 						}, false
 					);
 					break;
@@ -163,7 +163,7 @@
 		}
 
 		/**
-		 * Add building name and level to item in localStorage
+		 * Add building name and level to item in sessionStorage
 		 *
 		 * Params:
 		 * i - cell index containing building
@@ -181,13 +181,13 @@
 				}
 			var w = getWindowObject();
 			var townId = getTownId();
-			var townBuildings = w.localStorage.getItem(townId).split(',');
+			var townBuildings = w.sessionStorage.getItem(townId).split(',');
 			for (var k = 0; k < 15; k++)
 				if (tbl[k][0] == div.childNodes[j].data) {
 					townBuildings[k] = lvl;
 					break;
 				}
-			w.localStorage.setItem(townId, townBuildings);
+			w.sessionStorage.setItem(townId, townBuildings);
 			if (lvl > 0) {
 				td[i].getElementsByTagName("DIV")[0].childNodes[j].data += " [" + lvl + "]";
 			}
@@ -202,14 +202,14 @@
 				townId = getTownId();
 			}
 			var townBuildings;
-			if ((townBuildings = w.localStorage.getItem(townId)) !== null) {
+			if ((townBuildings = w.sessionStorage.getItem(townId)) !== null) {
 				townBuildings = townBuildings.split(',');
 			} else {
 				townBuildings = [];
 				for (i = 0; i < 15; i++) {
 					townBuildings[i] = '-1';
 				}
-				window.localStorage.setItem(townId, townBuildings);
+				window.sessionStorage.setItem(townId, townBuildings);
 			}
 
 			addEraseCookieActionOnRefreshButton(townId);
@@ -226,7 +226,7 @@
 					for (i = 0; i < 15; i++) {
 						if (tbl[i][0] == buildingName) {
 							townBuildings[i] = buildingLvl;
-							w.localStorage.setItem(townId, townBuildings);
+							w.sessionStorage.setItem(townId, townBuildings);
 							break;
 						}
 					}

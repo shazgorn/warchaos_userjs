@@ -326,7 +326,7 @@
 			$(t).dialog({autoOpen: false, width: 600, title: "Найм войск"});
 			var button = document.createElement("button");
 			$("td[class='bld']:first").parent().parent().parent().parent().append($(button));
-			$(button).button({label: "Найм войск"}).click(function() {$("#buyforcetable").dialog("open");});			
+			$(button).button({label: "Найм войск"}).click(function() {$("#buyforcetable").dialog("open");});
 			for (var i = 0; i < forceTable.length + 1; i++) {
 				t.insertRow(0);
 				for (var j = 0; j < 7; j++) {

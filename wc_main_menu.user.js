@@ -90,6 +90,7 @@
 				}
                 var select = document.createElement("select");
                 select.setAttribute("id", "addmenu");
+				cell.setAttribute("colspan", 2);
                 cell.appendChild(select);
                 $(select).change(function(e){
                     if (e.target.childNodes[e.target.selectedIndex].value !== "")

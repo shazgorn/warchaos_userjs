@@ -577,8 +577,13 @@
 			}			
 			if (typeof $ === "undefined") {
 				addScript("http://code.jquery.com/jquery-1.9.1.js");
+				addScript("http://yandex.st/jquery-ui/1.10.3/jquery-ui.min.js");
+				var link = document.createElement("link");
+				link.setAttribute("rel", "stylesheet");
+				link.setAttribute("href", "http://warchaosujs.gixx.ru/jquery-ui/css/sunny/jquery-ui-1.10.3.custom.css");
+				document.head.appendChild(link);
 			}
-			if (typeof $ === "undefined" || typeof _ === "undefined") {
+			if (typeof $ === "undefined" || typeof $.ui === "undefined" || typeof _ === "undefined") {
 				setTimeout(wcMarket, 1000);
 				return;
 			}
@@ -681,110 +686,108 @@
 						b.setAttribute("class", "cmb");
 						b.setAttribute("style", "width:80px;");
 						b.innerHTML = "Настройки";
-						b.addEventListener("click", function () {
+						$(b).click(function() {$("#wc_market_options").dialog("open");});
+						var w = getWindowObject();
+						var wc_market_options = w.localStorage.getItem("wc_market_options");
+						if (wc_market_options == null) {
+							wc_market_options = new Array();
+							for (var i = 0; i < goodsList.length; i++) {
+								wc_market_options[i] = '1';
+							}
+							w.localStorage.setItem("wc_market_options", wc_market_options);
+						} else
+							wc_market_options = wc_market_options.toString().split(',');
+						w.help1 = "Настройки";
+						w.help2 = "<div id='wc_market_options'></div>";
+						// w.ShowWin();
+
+						var t = document.createElement("table");
+						t.setAttribute("id", "wc_market_options");
+						t.setAttribute("style", "color:black; font-size:12px; width:1100px;");
+						for (var i = 0; i < 40; i++) {
+							t.insertRow(i);
+							for (var j = 0; j < 20; j++) {
+								if (i == 0)
+									t.rows[i].appendChild(document.createElement("th"));
+								else
+									t.rows[i].insertCell(j);
+							}
+						}
+						var columns = -2;
+						var row = 0;
+						for (var i = 0; i < goodsList.length; i++, row++) {
+							if (getBlockName(goodsList[i]) != null) {
+								columns += 2;
+								row = 0;
+								t.rows[0].cells[columns].innerHTML = getBlockName(goodsList[i]);
+								row++;
+							}
+							t.rows[row].cells[columns].innerHTML = goodsList[i];
+							var cb = document.createElement("input");
+							cb.setAttribute("type", "checkbox");
+							cb.setAttribute("id", "cb" + i);
+							t.rows[row].cells[columns + 1].appendChild(cb);
+							if (wc_market_options[i] == 1) {
+								cb.checked = true;
+							} else {
+								cb.checked = false;
+							}
+						}
+
+						// Save button
+						var b = document.createElement("button");
+						t.insertRow(t.rows.length).insertCell(0).appendChild(b);
+						b.setAttribute("class", "cmb");
+						b.setAttribute("style", "height:30px;");
+						b.innerHTML = "Сохранить и Выйти";
+						b.addEventListener("click", function (e) {
 							var w = getWindowObject();
-							var wc_market_options = w.localStorage.getItem("wc_market_options");
-							if (wc_market_options == null) {
-								wc_market_options = new Array();
-								for (var i = 0; i < goodsList.length; i++) {
-									wc_market_options[i] = '1';
-								}
-								w.localStorage.setItem("wc_market_options", wc_market_options);
-							} else
-								wc_market_options = wc_market_options.toString().split(',');
-							w.help1 = "Настройки";
-							w.help2 = "<div id='wc_market_options'></div>";
-							w.ShowWin();
-
-							var t = document.createElement("table");
-							t.setAttribute("style", "color:black; font-size:12px; width:1100px;");
-							for (var i = 0; i < 40; i++) {
-								t.insertRow(i);
-								for (var j = 0; j < 20; j++) {
-									if (i == 0)
-										t.rows[i].appendChild(document.createElement("th"));
-									else
-										t.rows[i].insertCell(j);
-								}
-							}
-							var columns = -2;
-							var row = 0;
-							for (var i = 0; i < goodsList.length; i++, row++) {
-								if (getBlockName(goodsList[i]) != null) {
-									columns += 2;
-									row = 0;
-									t.rows[0].cells[columns].innerHTML = getBlockName(goodsList[i]);
-									row++;
-								}
-								t.rows[row].cells[columns].innerHTML = goodsList[i];
-								var cb = document.createElement("input");
-								cb.setAttribute("type", "checkbox");
-								cb.setAttribute("id", "cb" + i);
-								t.rows[row].cells[columns + 1].appendChild(cb);
-								if (wc_market_options[i] == 1) {
-									cb.checked = true;
-								} else {
-									cb.checked = false;
-								}
-							}
-
-							// Save button
-							var b = document.createElement("button");
-							t.insertRow(t.rows.length).insertCell(0).appendChild(b);
-							b.setAttribute("class", "cmb");
-							b.setAttribute("style", "height:30px;");
-							b.innerHTML = "Сохранить и Выйти";
-							b.addEventListener("click", function (e) {
-								var w = getWindowObject();
-								var wc_market_options = new Array();
-								for (var i = 0; i < goodsList.length; i++) {
-									var cb = document.getElementById("cb" + i);
-									if (cb) {
-										if (cb.checked == true) {
-											wc_market_options[i] = '1';
-										} else {
-											wc_market_options[i] = '0';
-										}
+							var wc_market_options = new Array();
+							for (var i = 0; i < goodsList.length; i++) {
+								var cb = document.getElementById("cb" + i);
+								if (cb) {
+									if (cb.checked == true) {
+										wc_market_options[i] = '1';
+									} else {
+										wc_market_options[i] = '0';
 									}
 								}
+							}
 
-								w.localStorage.setItem("wc_market_options", wc_market_options);
-								var w = getWindowObject();
-								w.HideWin();
-								printListOfMarketsWithChoosenResource(lastResType);
-							}, false);
-							//Select All
-							b = document.createElement("button");
-							b.setAttribute("class", "cmb");
-							b.setAttribute("style", "height:30px;");
-							t.rows[t.rows.length - 1].insertCell(1);
-							t.rows[t.rows.length - 1].insertCell(2).appendChild(b);
-							b.setAttribute("class", "cmb");
-							b.innerHTML = "Выделить всё";
-							b.addEventListener("click", function (e) {
-								var cbs = e.target.parentNode.parentNode.parentNode.getElementsByTagName("input");
-								for (var i = 0; i < cbs.length; i++) {
-									cbs[i].checked = true;
-								}
-							}, false);
-							//Clear All
-							b = document.createElement("button");
-							b.setAttribute("class", "cmb");
-							b.setAttribute("style", "height:30px;");
-							t.rows[t.rows.length - 1].insertCell(3);
-							t.rows[t.rows.length - 1].insertCell(4).appendChild(b);
-							b.setAttribute("class", "cmb");
-							b.innerHTML = "Очистить всё";
-							b.addEventListener("click", function (e) {
-								var cbs = e.target.parentNode.parentNode.parentNode.getElementsByTagName("input");
-								for (var i = 0; i < cbs.length; i++) {
-									cbs[i].checked = false;
-								}
-							}, false);
-
-							var optionsDiv = document.getElementById("wc_market_options");
-							optionsDiv.appendChild(t);
+							w.localStorage.setItem("wc_market_options", wc_market_options);
+							var w = getWindowObject();
+							w.HideWin();
+							printListOfMarketsWithChoosenResource(lastResType);
 						}, false);
+						//Select All
+						b = document.createElement("button");
+						b.setAttribute("class", "cmb");
+						b.setAttribute("style", "height:30px;");
+						t.rows[t.rows.length - 1].insertCell(1);
+						t.rows[t.rows.length - 1].insertCell(2).appendChild(b);
+						b.setAttribute("class", "cmb");
+						b.innerHTML = "Выделить всё";
+						b.addEventListener("click", function (e) {
+							var cbs = e.target.parentNode.parentNode.parentNode.getElementsByTagName("input");
+							for (var i = 0; i < cbs.length; i++) {
+								cbs[i].checked = true;
+							}
+						}, false);
+						//Clear All
+						b = document.createElement("button");
+						b.setAttribute("class", "cmb");
+						b.setAttribute("style", "height:30px;");
+						t.rows[t.rows.length - 1].insertCell(3);
+						t.rows[t.rows.length - 1].insertCell(4).appendChild(b);
+						b.setAttribute("class", "cmb");
+						b.innerHTML = "Очистить всё";
+						b.addEventListener("click", function (e) {
+							var cbs = e.target.parentNode.parentNode.parentNode.getElementsByTagName("input");
+							for (var i = 0; i < cbs.length; i++) {
+								cbs[i].checked = false;
+							}
+						}, false);
+						$(t).dialog({autoOpen: false, width: 1100, title: "Настройки рынка"});
 					}
 				}
 			}
