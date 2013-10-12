@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Like WC Pro market but with some additional options
 // @match          http://warchaos.ru/f/a
-// @version        1.0
+// @version        1.1
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_market.user.js
 // ==/UserScript==
 
