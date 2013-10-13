@@ -92,7 +92,6 @@
 				}
 				var ul = document.createElement("ul");
 				ul.setAttribute("id", "addmenu");
-				// cell.setAttribute("colspan", 2);
                 cell.appendChild(ul);
 				var li = document.createElement("li");
 				var a = document.createElement("a");
@@ -106,7 +105,7 @@
                 addMenuItem(inUl, "Обзор аккаунта", "http://warchaos.ru/report/0/65535");
                 addMenuItem(inUl, "Управление", "http://warchaos.ru/user/game/");
                 addMenuItem(inUl, "Настройки", "http://warchaos.ru/user/preferences/");
-				$("#addmenu").menu({position: {my:"left top", at: "left+0 top-100"}});
+				$("#addmenu").menu({position: {my:"left top", at: "left+0 top-90"}});
             }
 		}
 

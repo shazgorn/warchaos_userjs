@@ -553,7 +553,7 @@
 				if (window.h1win)
 					return false;
 				if ($("font[color='black']").length !== 0) {
-					if ($("font[color='black']").html().search(/ставк|ресурсы|папоротник|предметы|артефакт|разрушен/) != -1) {
+					if ($("font[color='black']").html().search(/ставк|ресурсы|папоротник|предметы|артефакт|разрушен|использовали|обороны/) != -1) {
 						return true;
 					}
 					return false;
