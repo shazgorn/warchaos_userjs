@@ -1,23 +1,14 @@
 // ==UserScript==
 // @name           Warchaos Buy Force
 // @namespace      https://github.com/shazgorn/warchaos_userjs
-// @description    Add "max" button
-// @include        http://warchaos.ru/f/a
+// @description    Add "max" button, allows you to buy all force
 // @match          http://warchaos.ru/f/a
+// @version        1.1
+// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_buy_force.user.js
 // ==/UserScript==
 
 (function () {
 	function source() {
-		function l() {
-			var t = "";
-			for (var i = 0; i < arguments.length; i++)
-				t += arguments[i] + ' ';
-			if (navigator.appName == "Opera")
-				opera.postError(new Date().toTimeString() + ": " + t);
-			else
-				console.log(new Date().toTimeString() + ": " + t);
-		}
-
 		function insertAfter(el1,el2) {
 			if (!el2.parentNode) return;
 			if (el2.nextSibling)
@@ -30,31 +21,31 @@
 		 * Unit object
 		 */
 		function Unit() {
-			this.cost = new Array();  // unit cost
-			this.available = 0;       // number of available units to hire
-			this.img = new Array();   // images of resource
-			this.min = 0;			  // how many units you can hire
-			this.box = 0;             // input text element
+			this.cost = [];				// unit cost
+			this.available = 0;			// number of available units to hire
+			this.img = [];				// images of resource
+			this.min = 0;				// how many units you can hire
+			this.box = 0;				// input text element
 		}
 		/** Print number of units to hire in box */
 		Unit.prototype.printTotalCost = function () {
-			var totalCost = new Array();
-			for (var i = 0; i < this.box.parentNode.childNodes.length; i++) {
+			var i, totalCost = [];
+			for (i = 0; i < this.box.parentNode.childNodes.length; i++) {
 				if (this.box.parentNode.childNodes[i].nodeName == "#text") {
 					totalCost.push(this.box.parentNode.childNodes[i]);
 				}
 			}
-			for (var i = 0; i < this.img.length; i++) {
+			for (i = 0; i < this.img.length; i++) {
 				totalCost[i].data = Number(this.cost[i][1]) * this.box.value;
 			}
-		}
-		var units = new Array();
+		};
+		var units = [];
 
 		function findAmountOfStorageResources() {
 			// gold, lamber, metal, stone, mandragora
-			var resources = [["it/204.gif",0], ["it/214.gif", 0], ["it/224.gif",0], ["it/234.gif", 0], ["it/284.gif",0], ]; //[4][1]
+			var resources = [["it/204.gif",0], ["it/214.gif", 0], ["it/224.gif",0], ["it/234.gif", 0], ["it/284.gif",0]]; //[4][1]
 			$("#stor img[src^='it/2']").each(function(i, img) {
-				$(resources).each(function(j, res) {
+				$(resources).each(function(j) {
 					if ($(img).attr("src") == resources[j][0]) {
 						resources[j][1] = $(img).parent().contents().last().text();
 					}
@@ -75,12 +66,12 @@
 						buyButton.setAttribute('style', 'width:120px;');
 
 						table = buyButton.parentNode.parentNode.parentNode.parentNode;
-						var cost = table.rows[0].cells[buyButton.parentNode.cellIndex-1];
+						var k, cost = table.rows[0].cells[buyButton.parentNode.cellIndex-1];
 						unit = new Unit();
 						img = cost.getElementsByTagName('img');
 						for (var j = 0; j < img.length; j++) {
 							if (img[j].hasAttribute('tooltip') ) {
-								for (var k = 0; k < res.length; k++)
+								for (k = 0; k < res.length; k++)
 									if (img[j].getAttribute('src') == res[k][0]) {
 										unit.cost.push([res[k][0],img[j].nextSibling.data]);
 										unit.img.push(img[j].cloneNode(true));
@@ -117,7 +108,7 @@
 						units.push(unit);
 						var box = input.parentNode.childNodes[0];
 						box.setAttribute("blockNum", units.length-1);
-						for (var k = unit.img.length - 1; k >= 0; k--) {
+						for (k = unit.img.length - 1; k >= 0; k--) {
 							text = document.createTextNode(Number(unit.cost[k][1]));
 							insertAfter(text, input);
 							insertAfter(unit.img[k],input);
@@ -126,14 +117,14 @@
 							var blockNum = this.getAttribute("blockNum");
 							unit = units[blockNum];
 							unit.printTotalCost();
-						}, false)
+						}, false);
 						input.addEventListener("click", function () {
 							box = this.parentNode.childNodes[0];
 							var blockNum = box.getAttribute("blockNum");
 							unit = units[blockNum];
 							box.value = unit.min;
 							unit.printTotalCost();
-						}, false)
+						}, false);
 					}
 				}
 			}
@@ -148,7 +139,7 @@
 			this.quantity = 0;
 			this.rc = "";
 			this.z = 0;
-		};
+		}
 		
 		var forceTable = [
 			new forceType("Казармы", "9010.gif", [1,0,0,0,0], 0),
@@ -160,7 +151,7 @@
 			new forceType("Конюшни", "9070.gif", [5,1,0,0,0], 0),
 			new forceType("Арена", "9080.gif", [5,1,1,0,0], 1),
 			new forceType("Башня магов", "9090.gif", [0,0,0,0,1], 0),
-			new forceType("Храм", "", [0,0,0,0,0], 0),
+			new forceType("Храм", "", [0,0,0,0,0], 0)
 		];
 
 		function cloneArray(arr) {
@@ -168,7 +159,7 @@
 			for (var i = 0; i < arr.length; i++)
 				res.push(arr[i]);
 			return res;
-		};
+		}
 
 		function addBuyAllButton() {
 			function getTotalCost() {				
@@ -176,12 +167,12 @@
 				$("#buyforcetable input[type=checkbox]").each(function(i, cb) {
 					if (cb.checked) {
 						$($(cb).parent().parent().find("td[maxprice]").attr("maxprice").split(",")).each(function(j, price) {
-							totalCost[j] = parseInt(totalCost[j]) + parseInt(price);
+							totalCost[j] = parseInt(totalCost[j], 10) + parseInt(price, 10);
 						});
 					}
 				});
 				return totalCost;
-			};
+			}
 			function printTotalCost() {
 				var cell = $("#totalCost");			
 				var resources = findAmountOfStorageResources();
@@ -195,7 +186,7 @@
 						cell.append(document.createTextNode(totalCost[i]));
 					}
 				});
-			};
+			}
 			/**
 			 * j - index in forceTable/buyforcetable
 			 */
@@ -203,7 +194,7 @@
 				if (isNaN(quantity) || (quantity < 0))
 					quantity = 0;
 				var t = document.getElementById("buyforcetable");
-				var avalquantity = parseInt($(t.rows[j]).find("td[name='avalquantity']").html());
+				var avalquantity = parseInt($(t.rows[j]).find("td[name='avalquantity']").html(), 10);
 				if (quantity > avalquantity)
 					quantity = avalquantity;
 				var maxPriceCell = $(t.rows[j]).find("td[maxprice]").get(0);
@@ -212,18 +203,15 @@
 				var price = cloneArray(forceTable[j].price);
 				var altPrice;
 				if ($(t.rows[j]).find("input[type=checkbox]").get(0).checked) {
-					if ((forceTable[j].lvl == 0 && j < forceTable.length - 1 && forceTable[j+1].lvl == 1 && forceTable[j+1].mark == 1
-						 && $(t.rows[j+1]).find("input[type=checkbox]").get(0).checked)
-						||
+					if ((forceTable[j].lvl === 0 && j < forceTable.length - 1 && forceTable[j+1].lvl == 1 && forceTable[j+1].mark == 1 && $(t.rows[j+1]).find("input[type=checkbox]").get(0).checked) ||
 						(forceTable[j].lvl == 1 && $(t.rows[j-1]).find("input[type=checkbox]").get(0).checked)) {
 						var altj;
-						if (forceTable[j].lvl == 0 && j < forceTable.length - 1 && forceTable[j+1].lvl == 1 && forceTable[j+1].mark == 1
-							&& $(t.rows[j+1]).find("input[type=checkbox]").get(0).checked) {
+						if (forceTable[j].lvl === 0 && j < forceTable.length - 1 && forceTable[j+1].lvl == 1 && forceTable[j+1].mark == 1 && $(t.rows[j+1]).find("input[type=checkbox]").get(0).checked) {
 							altj = j+1;
 						} else if (forceTable[j].lvl == 1 && $(t.rows[j-1]).find("input[type=checkbox]").get(0).checked) {
 							altj = j-1;
 						}
-						var altq = parseInt($(t.rows[altj]).find("input[name='quantity']").get(0).value);
+						var altq = parseInt($(t.rows[altj]).find("input[name='quantity']").get(0).value, 10);
 						if (quantity < 0)
 							quantity = 0;
 						if (isNaN(altq))
@@ -236,7 +224,7 @@
 						// not enough money
 						altPrice = cloneArray(forceTable[altj].price);
 						$(resources).each(function(i, res) {
-							if (altq > 0 && quantity > 0 && price[i] != 0 && (price[i] > (res[1] - altPrice[i]*altq - price[i]*quantity)))
+							if (altq > 0 && quantity > 0 && price[i] !== 0 && (price[i] > (res[1] - altPrice[i]*altq - price[i]*quantity)))
 								while (1) {
 									if ((res[1] - altPrice[i]*altq - price[i]*quantity) < 0) {
 										if (altq > 0) {
@@ -266,7 +254,7 @@
 				});
 				$(maxPrice).each(function(i) {
 					if (maxPrice[i] > resources[i][1] - totalCost[i]) {
-						var tmpMin = parseInt((resources[i][1] - totalCost[i]) / price[i]);
+						var tmpMin = parseInt((resources[i][1] - totalCost[i]) / price[i], 10);
 						if (tmpMin < min) {
 							min = tmpMin;
 						}
@@ -291,7 +279,7 @@
 				$(t.rows[j]).find("input[name='quantity']").get(0).value = min;
 				printTotalCost();
 				return min;
-			};
+			}
 			// init forceTable
 			$("td[class='bld']:has(small), td[class='btxt']:has(small), td[class='bld'], td[class='btxt']").each(function(i, td) {
 				$(forceTable).each(function(j, force) {	
@@ -299,7 +287,7 @@
 						var cult = sessionStorage.getItem("cult");
 						if (cult == "атеизм") {
 							force.mark = 0;						
-						} else if (cult != null) {
+						} else if (cult !== null) {
 							force.mark = 1;
 							if ($(td).find("small").length > 0)
 								force.quantity = $(td).find("small").html().match(/\d+/);
@@ -307,21 +295,20 @@
 								force.quantity = 0;
 							force.rc =  td.getAttribute("rc").match(/b\d+/);					
 							var religions = [["силы", "9150.gif", [0,0,1,0,2], 15],
-											 ["стремительности", "9160.gif", [0,2,0,0,0], 16],
-											 ["магии", "9170.gif", [0,0,0,2,1], 17],
-											 ["диверсий", "9180.gif", [4,0,0,0,0], 18],
-											 ["лесов", "9190.gif", [0,2,0,0,0], 19]
+												["стремительности", "9160.gif", [0,2,0,0,0], 16],
+												["магии", "9170.gif", [0,0,0,2,1], 17],
+												["диверсий", "9180.gif", [4,0,0,0,0], 18],
+												["лесов", "9190.gif", [0,2,0,0,0], 19]
 											];
 							$(religions).each(function(k, religion) {
 								if (cult == religion[0]) {
 									force.z = religion[3];
 									force.ico = religion[1];
-									force.price = religion[2]
+									force.price = religion[2];
 								}
 							});
 						}
-					} else if (td.innerHTML.search(force.bld) != -1
-							   || (j < forceTable.length-1 && td.innerHTML.search(forceTable[j+1].bld) != -1 && forceTable[j+1].lvl == 1)) {
+					} else if (td.innerHTML.search(force.bld) != -1 || (j < forceTable.length-1 && td.innerHTML.search(forceTable[j+1].bld) != -1 && forceTable[j+1].lvl == 1)) {
 						force.mark = 1;
 						if ($(td).find("small").length > 0)
 							force.quantity = $(td).find("small").html().match(/\d+/);
@@ -332,17 +319,15 @@
 					}
 				});
 			});
-			var cell;
-			var button;
-			
+			var cell;			
 			// init table
 			var t = document.createElement("table");
 			t.setAttribute("id", "buyforcetable");		
 			$(t).dialog({autoOpen: false, width: 600, title: "Найм войск"});
 			var button = document.createElement("button");
+			button.setAttribute("id", "buyforcebutton");
 			$("td[class='bld']:first").parent().parent().parent().parent().append($(button));
-			$(button).button({label: "Найм войск"}).click(function() {$("#buyforcetable").dialog("open");});			
-			var resources = findAmountOfStorageResources();
+			$(button).button({label: "Найм войск"}).click(function() {$("#buyforcetable").dialog("open");});
 			for (var i = 0; i < forceTable.length + 1; i++) {
 				t.insertRow(0);
 				for (var j = 0; j < 7; j++) {
@@ -353,7 +338,7 @@
 			if (wcBuyForce) {
 				wcBuyForce = wcBuyForce.toString().split(",");
 			} else {
-				wcBuyForce = new Array();
+				wcBuyForce = [];
 				$(forceTable).each(function() {
 					wcBuyForce.push(1);
 				});
@@ -401,19 +386,15 @@
 						max: $(cell).prev().html(),
 						spin: function(e, ui) {
 							var target = e.target;
-							var min = calcCost(parseInt(target.getAttribute("index")),
-											   parseInt(ui.value));
+							var min = calcCost(parseInt(target.getAttribute("index"), 10), parseInt(ui.value, 10));
 							$(this).spinner("value", min);
 							return false;
-						},
+						}
 					});
 					
 					$(input).keyup(function(e) {
 						var target = e.target;
-						//if (navigator.userAgent.search("Chrome") != -1) // Chrome bug
-						//	target = target.parentNode;
-						calcCost(parseInt(target.getAttribute("index")),
-								 parseInt(target.value));
+						calcCost(parseInt(target.getAttribute("index"), 10), parseInt(target.value, 10));
 					});
 					
 					// max
@@ -426,8 +407,7 @@
 						var target = e.target;
 						if (navigator.userAgent.search("Chrome") != -1 && target.toString() ==  "[object HTMLSpanElement]") // Chrome bug
 							target = target.parentNode;
-						calcCost(parseInt(target.getAttribute("index")),
-								 parseInt($(target).parent().parent().find("td[name='avalquantity']").html()));
+						calcCost(parseInt(target.getAttribute("index"), 10), parseInt($(target).parent().parent().find("td[name='avalquantity']").html(), 10));
 					});
 					cell = row.cells[cellCounter++];
 					cell.setAttribute("maxprice", "0,0,0,0,0");
@@ -444,7 +424,7 @@
 						if (target.toString() == "[object HTMLSpanElement]") // Chrome bug
 							target = target.parentNode;
 						var w = window;
-						var quantity = parseInt($(target).parent().parent().find("input[name=quantity]").val());
+						var quantity = parseInt($(target).parent().parent().find("input[name=quantity]").val(), 10);
 						var c = target.getAttribute("c");
 						var z = target.getAttribute("z");
 						// w.ecod  !!!! get new w.ecod for every request
@@ -464,16 +444,13 @@
 									quantity = m[1];
 								// update avalquantity
 								$(target).parent().parent().parent().parent().find(
-									"button[bld='" + target.getAttribute("bld")
-										+ "']").parent().parent().find("input[name='quantity']").spinner("option", "max", quantity);
+									"button[bld='" + target.getAttribute("bld") + "']").parent().parent().find("input[name='quantity']").spinner("option", "max", quantity);
 								// update max value on spinner
 								$(target).parent().parent().parent().parent().find(
-									"button[bld='" + target.getAttribute("bld")
-										+ "']").parent().parent().find("td[name='avalquantity']").html(quantity);
+									"button[bld='" + target.getAttribute("bld") + "']").parent().parent().find("td[name='avalquantity']").html(quantity);
 								// update quantity on max button
 								$(target).parent().parent().parent().parent().find(
-									"button[bld='" + target.getAttribute("bld")
-										+ "']").parent().parent().find("button[index][quantity]").attr("quantity", quantity);
+									"button[bld='" + target.getAttribute("bld") + "']").parent().parent().find("button[index][quantity]").attr("quantity", quantity);
 								// update quantity on building
 								$("td[class='bld'], td[class='btxt']").each(function(j, td) {
 									if (td.innerHTML.search(target.getAttribute("bld")) != -1) {
@@ -488,7 +465,7 @@
 								$(target).parent().parent().find("td[maxprice]").attr("maxprice", "0,0,0,0,0");
 								$(target).parent().parent().find("td[maxprice]").html("");
 								printTotalCost();
-							},
+							}
 						});
 					}); // click				
 					cell.appendChild(button);				
@@ -523,7 +500,7 @@
 			button = document.createElement("button");
 			row.cells[++cellCounter].appendChild(button);
 			cell = row.cells[++cellCounter];
-			$(button).button({label: "max"}).click(function(e) {
+			$(button).button({label: "max"}).click(function() {
 				$("#buyforcetable #totalCost").attr("totalcost", "0,0,0,0,0");
 				$("#buyforcetable #totalCost").html("");
 				$("#buyforcetable input[type='checkbox']").each(function(i, cb) {
@@ -545,12 +522,12 @@
 			cellCounter++;
 			cell = row.cells[cellCounter];
 			cell.appendChild(button);
-			$(button).button({label: "Нанять"}).click(function(e) {
+			$(button).button({label: "Нанять"}).click(function() {
 				$("#buyforcetable input[type='checkbox']").each(function(i, cb) {
 					if (cb.checked) {
 						$(cb).parent().parent().find("button[bld]").click();
 					}
-				})
+				});
 					});
 			// test rountines
 			$(function() {
@@ -558,13 +535,13 @@
 				//$("#buyforcetable img[src='it/2254.gif']").parent().next().next().find("input[name='quantity']").val(10);
 				//$("#buyforcetable img[src='it/2264.gif']").parent().next().next().find("input[name='quantity']").val(10);
 			});
-		};
+		}
 		function addScript(src) {
 			var scripts = document.getElementsByTagName("script");
 			for (var i = 0; i < scripts.length; i++) {
 				if (scripts[i].getAttribute("src") == src)
 					return;
-			};
+			}
 			var script = document.createElement("script");
 			script.src = src;
 			document.head.appendChild(script);
@@ -586,7 +563,7 @@
 				return;
 			}
 
-			if (sessionStorage.getItem("cult") == null) {
+			if (sessionStorage.getItem("cult") === null) {
 				$.ajax({
 					url: "http://warchaos.ru/user/cult",
 					type: "POST",

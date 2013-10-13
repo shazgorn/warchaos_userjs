@@ -2,46 +2,27 @@
 // @name           Warchaos Mapper for Liaf
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Mapper use iframe and window.postMessage
-// @include        http://dragonmap.ru/thispageshouldneverexist
-// @include        http://warchaos.ru/*
-// @include        http://warchaos.ru/f/a
-// @include        http://warchaos.ru/snapshot/*
-// @include        http://warchaos.ru/~snapshot/*
 // @match          http://dragonmap.ru/thispageshouldneverexist
 // @match          http://warchaos.ru/*
 // @match          http://warchaos.ru/f/a
 // @match          http://warchaos.ru/snapshot/*
 // @match          http://warchaos.ru/~snapshot/*
+// @version        1.2
+// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_mapper_shaz.user.js
 // ==/UserScript==
 
 
 (function() {
-	 // return;
+	// return;
 
 	function source() {
 		parseMapAndDoSomeOtherStaff.WORLD = "Лиаф";
-
-		function l() {
-			var t = "";
-			for (var i = 0; i < arguments.length; i++)
-				t += arguments[i] + ' ';
-			if (navigator.appName == "Opera")
-				opera.postError(new Date().toTimeString() + ": " + t);
-		}
-
-		function insertAfter(el1, el2) {
-			if (!el2.parentNode) return;
-			if (el2.nextSibling)
-				el2.parentNode.insertBefore(el1,el2.nextSibling);
-			else
-				el2.parentNode.appendChild(el1);
-		}
 
 		function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
 			var xmlHttpRequest = new XMLHttpRequest();
 			xmlHttpRequest.open(method, url, true);
 			xmlHttpRequest.setRequestHeader('Content-Type', 'text/plain');
-			xmlHttpRequest.onreadystatechange = function (e) {
+			xmlHttpRequest.onreadystatechange = function () {
 				if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
 					onSuccess(xmlHttpRequest, args);
 				}
@@ -50,7 +31,7 @@
 			};
 			xmlHttpRequest.send(param);
 		}
-
+		/*
 		function addOptionsButton() {
 			// this button will show map in iframe. uncomment it in parseMapAndDoSomeOtherStaff()
 			var cntr = document.getElementById('cntr');
@@ -79,6 +60,7 @@
 				}
 			}
 		}
+		*/
 		/**
 		 * parse table with map, return string for server
 		 */
@@ -86,19 +68,22 @@
 			if (typeof tbl == 'undefined') {
 				return;
 			}
-			var m = '';
-			var bgReg = /land\d\/(\d+)\.gif/; //landscape
-			var xyReg = /x\:(\d+) y\:(\d+)/; //cell coords example: x:424 y:270
-			var delReg = /<(?:\w+|\s|=|\/|#|:|\.)+>/gi; //delete tags
-			for (var i = 0; i < tbl.rows.length; i++) {
-				for (var j = 0; j < tbl.rows[i].cells.length; j++) {
+			var img, res, xy,
+				m = '',
+				bgReg = /land\d\/(\d+)\.gif/,				//landscape
+				xyReg = /x\:(\d+) y\:(\d+)/,				//cell coords example: x:424 y:270
+				delReg = /<(?:\w+|\s|=|\/|#|:|\.)+>/gi,		//delete tags
+				difY = Math.abs((tbl.rows.length-1)/2 - 7),
+				difX = Math.abs((tbl.rows[0].cells.length-1)/2 - 7);
+			for (var i = difY; i < tbl.rows.length - difY; i++) {
+				for (var j = difX; j < tbl.rows[i].cells.length - difX; j++) {
 					var c = tbl.rows[i].cells[j];
 					if (c.hasAttribute('background')) {
 						//unit on the ground
-						var res = bgReg.exec(c.getAttribute('background'));
-						if (res != null) {
-							var img = c.getElementsByTagName('img')[0];
-							var xy = xyReg.exec(img.getAttribute('tooltip'));
+						res = bgReg.exec(c.getAttribute('background'));
+						if (res !== null) {
+							img = c.getElementsByTagName('img')[0];
+							xy = xyReg.exec(img.getAttribute('tooltip'));
 							if (xy && (img.getAttribute('tooltip').search("Темнота") == -1) ) {
 								m += (xy[1] * 1000 + xy[2] * 1) + '$';
 								m += res[1];
@@ -117,11 +102,11 @@
 						}
 					} else {
 						//ground
-						var img = c.getElementsByTagName('img')[0];
+						img = c.getElementsByTagName('img')[0];
 						if (img) {
-							var res = bgReg.exec(img.getAttribute('src'));
-							if (res != null) {
-								var xy = xyReg.exec(img.getAttribute('tooltip'));
+							res = bgReg.exec(img.getAttribute('src'));
+							if (res !== null) {
+								xy = xyReg.exec(img.getAttribute('tooltip'));
 								if (xy && (img.getAttribute('tooltip').search("Темнота") == -1) ) {  //terra incognita check
 									m += (xy[1] * 1000 + xy[2] * 1) + '$';
 									m += res[1] + '&';
@@ -142,8 +127,8 @@
 			var nickname = XHR.responseText.match(/color=#182809>([^<]+)/)[1];
 			var world = XHR.responseText.match(/>[^<]+<\/td><td>[^<]+<\/td>/g)[1].match(/>[^<]+<\/td><td>([^<]+)<\/td>/)[1];
 			var accounts = localStorage.getItem('accounts');
-			if (accounts == null) {
-				accounts = new Array();
+			if (accounts === null) {
+				accounts = [];
 			} else {
 				accounts = accounts.split(',');
 			}
@@ -155,8 +140,8 @@
 
 		function findWorldByPlayersName(name) {
 			var accounts = localStorage.getItem('accounts');
-			if (accounts == null) {
-				accounts = new Array();
+			if (accounts === null) {
+				accounts = [];
 			} else {
 				accounts = accounts.split(',');
 				for (var i = 0; i < accounts.length; i += 2) {
@@ -170,11 +155,11 @@
 
 		function formRequest(tbl) {
 			var m = parseMap(tbl);
-			if (!(m == null || (m != null && m.length <= 0))) {
+			if (!(m === null || (m !== null && m.length <= 0))) {
 				var nickname = localStorage.getItem('nickname');
-				while (nickname == null) {
+				while (nickname === null) {
 					nickname = prompt("Введите ваш ник", "nickname");
-					if (nickname != 'nickname' && nickname != 'new-dragon' && nickname != '' && nickname != null) {
+					if (nickname != 'nickname' && nickname != 'new-dragon' && nickname !== '' && nickname !== null) {
 						localStorage.setItem('nickname', nickname);
 						break;
 					}
@@ -229,26 +214,26 @@
 		}
 
 		/**
-		 * Description: find table with map, parse cells coordinates and terrain type, join them into single string, send to server
-		 * Params:
-		 * 	onButtonPress: true - function was called by onclick event handler. Map will be updated with info from snapshot.
-		 */
+		* Description: find table with map, parse cells coordinates and terrain type, join them into single string, send to server
+		* Params:
+		* onButtonPress: true - function was called by onclick event handler. Map will be updated with info from snapshot.
+		*/
 
 		function parseMapAndDoSomeOtherStaff() {
 			// addOptionsButton();
-
+			var world;
 			if (location.href.search('snapshot') != -1) {
 				// check if in database
 				var nick = document.getElementsByTagName("div")[0].getElementsByTagName("table")[0].rows[0].cells[1]
 					.getElementsByTagName('a')[0].innerHTML;
-				var world = findWorldByPlayersName(nick);
+				world = findWorldByPlayersName(nick);
 				if (world == parseMapAndDoSomeOtherStaff.WORLD) {
 					addGoToMapLink();
 					addUpdateMapButton();
-				} else if (world == null) {
+				} else if (world === null) {
 					ajaxRequest(document.getElementsByTagName("div")[0].getElementsByTagName("table")[0].rows[0].cells[1]
 								.getElementsByTagName('a')[0].href,
-								'POST', '', function(XHR, args) {
+								'POST', '', function(XHR) {
 									var world = addToAccounts(XHR);
 									if (world == parseMapAndDoSomeOtherStaff.WORLD) {
 										addGoToMapLink();
@@ -265,7 +250,7 @@
 					tbl = document.getElementsByTagName('button')[0].nextSibling;  // Observatory -> View
 				}
 				var req = formRequest(tbl);
-				var world = findWorldByPlayersName(window.top.players[1]);
+				world = findWorldByPlayersName(window.top.players[1]);
 				if (world == parseMapAndDoSomeOtherStaff.WORLD) {
 					document.getElementById('sd_map').contentWindow.postMessage(req, "http://dragonmap.ru/thispageshouldneverexist");
 					var fonts = document.getElementsByTagName("font");
@@ -283,15 +268,15 @@
 										font.appendChild(a);
 									}
 								},
-											function() {
-												// l('err')
-											},
-											fonts[i]
-										   );
+								function() {
+									// l('err')
+								},
+								fonts[i]
+								);
 							}
 						}
 					}
-				} else if (world == null) {
+				} else if (world === null) {
 					ajaxRequest('http://warchaos.ru/~uid/', 'POST', '', function(XHR, args) {
 						var world = addToAccounts(XHR);
 						if (world == parseMapAndDoSomeOtherStaff.WORLD) {
@@ -318,10 +303,10 @@
 			})(parseMapAndDoSomeOtherStaff);
 		} else if (location.href == "http://dragonmap.ru/thispageshouldneverexist") {
 			addEventListener('message', function(e) {
-				if (e.origin = 'http://warchaos.ru') {
+				if (e.origin == 'http://warchaos.ru') {
 					// l('incoming ' + ' from ' + e.origin + ' ' + e.data );
 					var mapperURL = "http://dragonmap.ru/cgi-bin/mapper3";
-					ajaxRequest(mapperURL, 'POST', e.data, function(XHR) { /* l(XHR.responseText); */ }, function() {} );
+					ajaxRequest(mapperURL, 'POST', e.data, function() {}, function() {} );
 				}
 			}, false);
 		}

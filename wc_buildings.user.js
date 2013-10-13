@@ -2,20 +2,14 @@
 // @name           Warchaos Buildings
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some icons to town screen and blds lvls
-// @include        http://warchaos.ru/f/a
 // @match          http://warchaos.ru/f/a
+// @version        1.0
+// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_astar.user.js
 // ==/UserScript==
 
 (function() {
 	// return;
 	function source() {
-		function l() {
-			var t = "";
-			for (var i = 0; i < arguments.length; i++)
-				t += arguments[i] + ' ';
-			if (navigator.appName == "Opera")
-				opera.postError(new Date().toTimeString() + ": " + t);
-		}
 		// by Taulrom
 		var tbl = [
 			["Казармы", "it/2254.gif"],
@@ -100,8 +94,8 @@
 			["Кожаная броня", "it/904.gif"],
 			["Золотая броня", "it/914.gif"],
 			["Сапоги", "it/1014.gif"],
-			["Подзорная труба", "it/524.gif"],
-		]
+			["Подзорная труба", "it/524.gif"]
+		];
 
 
 		function dummy() {}
@@ -113,7 +107,7 @@
 			var xmlHttpRequest = new XMLHttpRequest();
 			xmlHttpRequest.open(method, url, true);
 			xmlHttpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-			xmlHttpRequest.onreadystatechange = function (e) {
+			xmlHttpRequest.onreadystatechange = function () {
 				if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
 					onSuccess(xmlHttpRequest, args);
 				}
@@ -131,7 +125,7 @@
 		 * result - Array of tables with specified name
 		 */
 		function getTablesByClassName(className) {
-			var result = new Array();
+			var result = [];
 			var tables = document.getElementsByTagName('table');
 			for (i = 0; i < tables.length; i++)
 				if (tables[i].hasAttribute('class') && tables[i].getAttribute('class') == className)
@@ -153,14 +147,14 @@
 
 		/**
 		 * Add listener on refresh button.
-		 * listener will erase item in localStorage associated with current town
+		 * listener will erase item in sessionStorage associated with current town
 		 */
 		function addEraseCookieActionOnRefreshButton(townId) {
 			var buttons = document.getElementsByTagName("BUTTON");
 			for (var i = 0; i < buttons.length; i++) {
 				if (buttons[i].hasAttribute("tooltip") && buttons[i].getAttribute("tooltip") == "Обновить") {
 					buttons[i].addEventListener("click", function () {
-							getWindowObject().localStorage.removeItem(townId)
+							getWindowObject().sessionStorage.removeItem(townId);
 						}, false
 					);
 					break;
@@ -169,15 +163,15 @@
 		}
 
 		/**
-		 * Add building name and level to item in localStorage
+		 * Add building name and level to item in sessionStorage
 		 *
 		 * Params:
 		 * i - cell index containing building
 		 * lvl - building level parsed from xmlHttpRequest
 		 */
 		function addNewBld(t, i) {
-			var m = t.responseText.match(/align\=center>[^[]+ \[(\d+)\]/);
-			var lvl = m ? parseInt(m[1]) : 0;
+			var m = t.responseText.match(/align\=center>[^\[]+ \[(\d+)\]/);
+			var lvl = m ? parseInt(m[1], 10) : 0;
 			var td = document.getElementsByTagName('td');
 			var div = td[i].getElementsByTagName("DIV")[0];
 			var j = 0;
@@ -187,20 +181,20 @@
 				}
 			var w = getWindowObject();
 			var townId = getTownId();
-			var townBuildings = w.localStorage.getItem(townId).split(',');
+			var townBuildings = w.sessionStorage.getItem(townId).split(',');
 			for (var k = 0; k < 15; k++)
 				if (tbl[k][0] == div.childNodes[j].data) {
 					townBuildings[k] = lvl;
 					break;
 				}
-			w.localStorage.setItem(townId, townBuildings);
+			w.sessionStorage.setItem(townId, townBuildings);
 			if (lvl > 0) {
 				td[i].getElementsByTagName("DIV")[0].childNodes[j].data += " [" + lvl + "]";
 			}
 		}
 
 		function addIcons() {
-			var townId;
+			var townId, i, j;
 			var w = getWindowObject();
 			if (typeof w.g == "undefined" || typeof w.g.cons == "undefined" || typeof w.g.blds == "undefined") {		//not on town screen
 				return;
@@ -208,14 +202,14 @@
 				townId = getTownId();
 			}
 			var townBuildings;
-			if ((townBuildings = w.localStorage.getItem(townId)) != null) {
+			if ((townBuildings = w.sessionStorage.getItem(townId)) !== null) {
 				townBuildings = townBuildings.split(',');
 			} else {
-				townBuildings = new Array();
-				for (var i = 0; i < 15; i++) {
+				townBuildings = [];
+				for (i = 0; i < 15; i++) {
 					townBuildings[i] = '-1';
 				}
-				window.localStorage.setItem(townId, townBuildings);
+				window.sessionStorage.setItem(townId, townBuildings);
 			}
 
 			addEraseCookieActionOnRefreshButton(townId);
@@ -226,13 +220,13 @@
 				//buildingTitle == "Фабрика [47]"
 				var buildingTitle = nameOfBldInTable[0].rows[0].cells[1].innerHTML;			
 				var buildingName = buildingTitle.match(/(.*) \[\d+\]/);
-				if (buildingName != null) {
+				if (buildingName !== null) {
 					buildingName = buildingName[1];
 					var buildingLvl = buildingTitle.match(/\d+/);
-					for (var i = 0; i < 15; i++) {
+					for (i = 0; i < 15; i++) {
 						if (tbl[i][0] == buildingName) {
 							townBuildings[i] = buildingLvl;
-							w.localStorage.setItem(townId, townBuildings);
+							w.sessionStorage.setItem(townId, townBuildings);
 							break;
 						}
 					}
@@ -241,22 +235,20 @@
 			
 			// buildings list
 			var td = document.getElementsByTagName('td');
-			for (var i = 0; i < td.length; i++) {
-				if (td[i].hasAttribute('class') && td[i].getAttribute('class') == "bld"
-						&& td[i].hasChildNodes()) {
-					var building = td[i];
+			for (i = 0; i < td.length; i++) {
+				if (td[i].hasAttribute('class') && td[i].getAttribute('class') == "bld" && td[i].hasChildNodes()) {
 					var div = td[i].getElementsByTagName("DIV")[0];
 					var bldName;
-					for (var j = 0; j < div.childNodes.length; j++)
+					for (j = 0; j < div.childNodes.length; j++)
 						if (div.childNodes[j].nodeName == "#text") {
 							bldName = div.childNodes[j].data;
 							break;
 						}
-					for (var j = 0; j < tbl.length; j++) {
+					for (j = 0; j < tbl.length; j++) {
 						if (bldName == tbl[j][0]) {
 							if (j < 15) {
 								var lvl = townBuildings[j]; // lvl: -1 - not checked yet, 0 - wing of building under construction, [1..255] - has some level.
-								if ((lvl == -1) || (lvl == 0 && !td[i].hasAttribute("style"))) {
+								if ((lvl == -1) || (lvl === 0 && !td[i].hasAttribute("style"))) {
 									if (div.hasAttribute('onclick')) {
 										var c = div.getAttribute('onclick').match(/'([\w\d]+)'/)[1];
 										var params = "a="+w.g.mobjects[w.g.objcity+5]+"&b="+w.g.mobjects[0]+"&c="+c+"&d="+''+"&e="+w.g.ecod+"&x=&y=&z=";
@@ -270,12 +262,12 @@
 							}
 
 							//building icons, crafts, etc.
-							if (div.getElementsByTagName("IMG").length == 0) {
+							if (div.getElementsByTagName("IMG").length === 0) {
 								var img = document.createElement('img');
 								img.setAttribute("src", tbl[j][1]);
 								div.insertBefore(img, div.childNodes[0]);
 								if (j <= 8 && j%2 == 1) {
-									var img = document.createElement('img');
+									img = document.createElement('img');
 									img.setAttribute("src", tbl[j-1][1]);
 									div.insertBefore(img, div.childNodes[0]);
 								} else {
