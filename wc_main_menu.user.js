@@ -11,6 +11,13 @@
 (function() {
 	//return;
 	function source() {
+		var navLinks = [
+		["Боевые", "http://warchaos.ru/log/1/0/"],
+		["Архив", "http://warchaos.ru/archive/"],
+		["Обзор аккаунта", "http://warchaos.ru/report/0/65535"],
+		["Управление", "http://warchaos.ru/user/game/"],
+		["Настройки", "http://warchaos.ru/user/preferences/"]
+		];
 		function addScript(src) {
 			var scripts = document.getElementsByTagName("script");
 			for (var i = 0; i < scripts.length; i++) {
@@ -80,8 +87,39 @@
 			li.appendChild(a);
 			ul.appendChild(li);
 		}
+		function createTopNavBar() {
+			if ($("#navBar").length === 0 && $("#mnd").length == 1) {
+				var div = document.createElement("div");
+				div.setAttribute("id", "navBar");
+				div.setAttribute("style", "position: fixed; top:0");
+				// div.setAttribute("class", "ui-widget-header ui-corner-all");
+				for (var i = 0; i < navLinks.length; i++) {
+					var a = document.createElement("a");
+					a.innerHTML = navLinks[i][0];
+					a.setAttribute("href", navLinks[i][1]);
+					div.appendChild(a);
+					$(a).button();
+				}
+				var mnd = $("#mnd").get(0);
+				mnd.appendChild(div);
+				$(div).prependTo(mnd);
+			}
+		}
 		function addAdditionalNav() {
-            if ($("#addmenu").length === 0 && $("#cise table").length == 1) {
+			// return;
+			createTopNavBar();
+			if ($("#addmenu").length === 0 && $("#drig").length == 1) {
+				// var table = $("#drig > table").get(0);
+				// var row = table.insertRow(table.rows.length - 2);
+				// var row = table.rows[1];
+				// var cell = row.insertCell(1);
+				var cell = $("#drig > table > tbody > tr").get(1).cells[1];
+				
+				// cell = row.insertCell(1);
+				// row.insertCell(2);
+				// cell.setAttribute("colspan", "2");
+				// if ($("#addmenu").length === 0 && $("#cise table").length == 1) {
+				/*
                 var table = $("#cise table").get(0);
                 var row = table.insertRow(table.rows.length);
 				var cell;
@@ -90,9 +128,12 @@
 					if (table.rows[0].cells[i].getElementsByTagName("img")[0].getAttribute("src") == "ctrl/54.gif")
 						break;
 				}
+				*/
 				var ul = document.createElement("ul");
 				ul.setAttribute("id", "addmenu");
                 cell.appendChild(ul);
+				$(ul).prependTo(cell);
+				// $(ul).prependTo($("#mnd"));
 				var li = document.createElement("li");
 				var a = document.createElement("a");
 				a.href = "/f/a";
@@ -101,10 +142,10 @@
 				ul.appendChild(li);
 				var inUl = document.createElement("ul");
 				li.appendChild(inUl);
-                addMenuItem(inUl, "Архив", "http://warchaos.ru/archive/");
-                addMenuItem(inUl, "Обзор аккаунта", "http://warchaos.ru/report/0/65535");
-                addMenuItem(inUl, "Управление", "http://warchaos.ru/user/game/");
-                addMenuItem(inUl, "Настройки", "http://warchaos.ru/user/preferences/");
+				
+				for (var i = 0; i < navLinks.length; i++) {
+					addMenuItem(inUl, navLinks[i][0], navLinks[i][1]);
+				}
 				$("#addmenu").menu({position: {my:"left top", at: "left+0 top-90"}});
             }
 		}
