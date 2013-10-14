@@ -13,7 +13,7 @@
 	function source() {
 		var navLinks = [
 		["Боевые", "http://warchaos.ru/log/1/0/"],
-		["Архив", "http://warchaos.ru/archive/"],
+		["Архив", "http://warchaos.ru/archive/0/1/"],
 		["Обзор аккаунта", "http://warchaos.ru/report/0/65535"],
 		["Управление", "http://warchaos.ru/user/game/"],
 		["Настройки", "http://warchaos.ru/user/preferences/"]
@@ -87,13 +87,62 @@
 			li.appendChild(a);
 			ul.appendChild(li);
 		}
+		function getTownLinks() {
+			var bs = $("#cise > table > tbody > tr > td button[rc]");
+			var buttons = [];
+			// var div = document.createElement("div");
+			var button;
+			for (var i = 0; i < bs.length; i++) {
+				// console.log(bs[i].getAttribute("rc"), bs[i].nextSibling.nextSibling.data);
+				button = document.createElement("button");
+				button.setAttribute("rc", bs[i].getAttribute("rc"));
+				button.setAttribute("onclick", bs[i].getAttribute("onclick"));
+				$(button).button({label: bs[i].childNodes[0].childNodes[0]
+					.nextSibling.nextSibling.data}).click(function(){
+					
+				});
+				buttons.push(button);
+			}
+			return buttons;
+		}
+		var seats = [];
+		function getSeats(page) {
+			$.ajax({
+				url: "http://warchaos.ru/archive/0/" + page,
+				type: "GET",
+				// async: true,
+				success: function(data) {
+					var m = data.split('<table class="xrw xmsg" cellspacing=0 cellpadding=0>');
+					for (var i = 0; i < m.length; i++) {
+						if (m[i].search("Вы можете принять управление данным аккаунтом на") != -1) {
+							var name = m[i].match(/<td class=rwleft valign=top><b>([^<]+)</)[1];
+							console.log(name);
+							seats.push(m[i]);
+							console.log(m[i]);
+						}
+					}
+					console.log(seats.length);
+					m = data.match(/href=http:\/\/warchaos.ru\/archive\/0\/(\d+)\/\d+>Следующая/);
+					console.log(m);
+					if (m !== null && m.length == 2) {
+						getSeats(m[1]);
+					}
+				}
+			});
+		}
 		function createTopNavBar() {
+			var i;
+			// getSeats(1);
 			if ($("#navBar").length === 0 && $("#mnd").length == 1) {
 				var div = document.createElement("div");
 				div.setAttribute("id", "navBar");
 				div.setAttribute("style", "position: fixed; top:0");
 				// div.setAttribute("class", "ui-widget-header ui-corner-all");
-				for (var i = 0; i < navLinks.length; i++) {
+				var buttons = getTownLinks();
+				for (i = 0; i < buttons.length; i++) {
+					div.appendChild(buttons[i]);
+				}
+				for (i = 0; i < navLinks.length; i++) {
 					var a = document.createElement("a");
 					a.innerHTML = navLinks[i][0];
 					a.setAttribute("href", navLinks[i][1]);
@@ -108,6 +157,7 @@
 		function addAdditionalNav() {
 			// return;
 			createTopNavBar();
+			// getTownLinks();
 			if ($("#addmenu").length === 0 && $("#drig").length == 1) {
 				// var table = $("#drig > table").get(0);
 				// var row = table.insertRow(table.rows.length - 2);
