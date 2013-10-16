@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    You can move your units like in heroes game
 // @match          http://warchaos.ru/f/a
-// @version        1.32
+// @version        1.33
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_astar.user.js
 // ==/UserScript==
 
@@ -141,14 +141,34 @@
 				return false;
 			};
 			Unit.prototype.isHostile = function() {
-				if (!this.isHero() && !this.isDropship() && !this.isKogg() && !this.isAirborne() && 
+				if (!this.isMarker() && !this.isHero() && !this.isDropship() && !this.isKogg() && !this.isAirborne() && 
 						this.img.parentNode.childNodes.length == 3 && this.img.parentNode.childNodes[2].hasAttribute("class") && 
 						this.img.parentNode.childNodes[2].getAttribute("class") == "ind4")
 					return true;
 				return false;
 			};
+			Unit.prototype.isRainbow = function() {
+				if (this.id == 35)
+					return true;
+				return false;
+			};
+			Unit.prototype.isBush = function() {
+				if (this.id == 25)
+					return true;
+				return false;
+			};
+			Unit.prototype.isWeb = function() {
+				if (this.id == 95)
+					return true;
+				return false;
+			};
+			Unit.prototype.isDebris = function() {
+				if (this.id == 2)
+					return true;
+				return false;
+			}
 			Unit.prototype.isPassable = function() {
-				if (this.isMarker() || this.isCoffin()) {
+				if (this.isMarker() || this.isCoffin() || this.isRainbow() || this.isBush() || this.isWeb() || this.isDebris()) {
 					return true;
 				}
 				return false;
@@ -245,8 +265,15 @@
 					else if (this.isRoad())
 						this.cost = this.cult == "лесов" &&
 						!(this.activeUnit.isVehicle()) ? 1 : 0.5;
-					if (this.obj !== null && this.obj.isTown())
-						this.cost = 0.5;
+					if (this.obj !== null) {
+						if (this.obj.isTown()) {
+							this.cost = 0.5;
+						} else if (!this.activeUnit.isVehicle() && this.obj.isBush()) {
+							this.cost += this.cult == "силы" ? 2 : 4;
+						} else if (!this.activeUnit.isVehicle() && this.obj.isWeb()) {
+							this.cost += 15;
+						}
+					}
 				} else if (this.activeUnit.isWaterborne()) {
 					this.cost = 0.25;
 				} else if (this.activeUnit.isAirborne()) {
@@ -446,7 +473,7 @@
 				start.accessible = 1;
 				openList.push(start);
 				var curNode = null;
-				for (var loops = 0; loops < 400; loops++) {
+				for (var loops = 0; loops < 800; loops++) {
 					curNode = findMinNode(openList);
 					if (curNode !== null) {
 						openList.splice(openList.indexOf(curNode), 1);
@@ -496,7 +523,7 @@
 									];
 						img.setAttribute("style", "display:block;position:relative;top:" + arrs[dy][dx][0] + "px;left:" + arrs[dy][dx][1] + "px;margin:-60px;");
 					}
-					img.setAttribute("tooltip", curNode.cell.childNodes[0].getAttribute("tooltip") + "</br>" + curNode.g);
+					img.setAttribute("tooltip", curNode.cell.childNodes[0].getAttribute("tooltip") + "</br>" + curNode.g + " (" + (moves - curNode.g).toFixed(1) + ")");
 					curNode.cell.appendChild(img);
 					if (curNode.parent === start) {
 						return curNode;
@@ -521,8 +548,17 @@
 				if (e.altKey || e.shiftKey || e.ctrlKey || e.button == 2 || e.target.hasAttribute("class")) {
 					prevDestX = 0;
 					prevDestY = 0;
-				} else if (e.target.hasAttribute("background") || e.target.parentNode.hasAttribute("background")) {
-					if ((new Unit(e.target)).isPassable()) {
+				} else if (e.target.getAttribute("src") == finishIco) {
+					m = e.target.parentNode.childNodes[0].getAttribute("tooltip").match(coordsRg);
+					if (prevDestX == parseInt(m[1], 10) && prevDestY == parseInt(m[2], 10)) {
+						moving = true;
+						move();
+					} else {
+						prevDestX = 0;
+						prevDestY = 0;
+					}					
+				} else if (e.target.parentNode.hasAttribute("background")) {
+					if ((new Unit(e.target.parentNode.childNodes[0])).isPassable()) {
 						m = e.target.getAttribute("tooltip").match(coordsRg);
 						prevDestX = parseInt(m[1], 10);
 						prevDestY = parseInt(m[2], 10);
@@ -531,30 +567,28 @@
 						prevDestX = 0;
 						prevDestY = 0;
 					}
-				} else if (e.target.getAttribute("src") == finishIco || e.target.getAttribute("src") == greenArrows || 
-						e.target.getAttribute("src") == brownArrows || e.target.getAttribute("src") == redArrows) {
+				} else if ((e.target.hasAttribute("tooltip") && !e.target.parentNode.hasAttribute("background"))) {
 					m = e.target.parentNode.childNodes[0].getAttribute("tooltip").match(coordsRg);
-					if (prevDestX == parseInt(m[1], 10) && prevDestY == parseInt(m[2], 10)) {
-						moving = true;
-						move();
-					} else {
-						astar(parseInt(m[1], 10), parseInt(m[2], 10));
-					}
-					prevDestX = parseInt(m[1], 10);
-					prevDestY = parseInt(m[2], 10);
-				} else if (e.target.hasAttribute("tooltip") && !e.target.parentNode.hasAttribute("background")) { // only empty cells
-					m = e.target.getAttribute("tooltip").match(coordsRg);
-					prevDestX = parseInt(m[1], 10);
-					prevDestY = parseInt(m[2], 10);
 					astar(parseInt(m[1], 10), parseInt(m[2], 10));
+					prevDestX = parseInt(m[1], 10);
+					prevDestY = parseInt(m[2], 10);
+				} else {
+					prevDestX = 0;
+					prevDestY = 0;
 				}
 			});
 			function allowMovement() {
 				if (window.h1win)
 					return false;
 				if ($("font[color='black']").length !== 0) {
-					if ($("font[color='black']").html().search(/ставк|ресурсы|папоротник|предметы|артефакт|разрушен|использовали|обороны/) != -1) {
+					if ($("font[color='black']").html().search(/ставк|ресурсы|папоротник|предметы|артефакт|разрушен|цель|использовали|обороны|радуга|огненную/i) != -1) {
 						return true;
+					} else if ($("font[color='black']").html().search(/погиб|щупальца/i) != -1) {
+						return false;
+					} else if ($("font[color='black']").html().search("атакованы врагом") != -1) {
+						var m = $("font[color='black']").html().match(/(\d+) урон/);
+						if (m && parseInt(m[1]) < 100)
+							return true;
 					}
 					return false;
 				}
