@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name           Warchaos Buildings
 // @namespace      https://github.com/shazgorn/warchaos_userjs
-// @description    Add some icons to town screen and blds lvls
+// @description    Add some icons to town screen and buildings levels
 // @match          http://warchaos.ru/f/a
-// @version        1.0
+// @version        1.2
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_astar.user.js
 // ==/UserScript==
 
@@ -94,10 +94,22 @@
 			["Кожаная броня", "it/904.gif"],
 			["Золотая броня", "it/914.gif"],
 			["Сапоги", "it/1014.gif"],
-			["Подзорная труба", "it/524.gif"]
+			["Подзорная труба", "it/524.gif"],
+			["Зубы орка", "it/1114.gif"]
 		];
 
-
+		function addScript(src) {
+				var scripts = document.getElementsByTagName("script"), i, script;
+				for (i = 0; i < scripts.length; i++) {
+					if (scripts[i].getAttribute("src") === src) {
+						return;
+					}
+				}
+				script = document.createElement("script");
+				script.src = src;
+				document.head.appendChild(script);
+		}
+		
 		function dummy() {}
 
 		/**
@@ -155,8 +167,7 @@
 				if (buttons[i].hasAttribute("tooltip") && buttons[i].getAttribute("tooltip") == "Обновить") {
 					buttons[i].addEventListener("click", function () {
 							getWindowObject().sessionStorage.removeItem(townId);
-						}, false
-					);
+					}, false);
 					break;
 				}
 			}
@@ -190,10 +201,29 @@
 			w.sessionStorage.setItem(townId, townBuildings);
 			if (lvl > 0) {
 				td[i].getElementsByTagName("DIV")[0].childNodes[j].data += " [" + lvl + "]";
+				var townCenter = $("td[class='bld'], td[class='btxt']").get(1),
+					textNode, data;
+				if (townCenter.getAttribute("class") == "bld")
+					textNode = townCenter.childNodes[0].childNodes[2];
+				else
+					textNode = townCenter.childNodes[0].childNodes[0];
+				var dataMatch = textNode.data.match(/([^\[]+)(\[(\d+)\])?/);
+				if (typeof dataMatch[3] === "undefined") {
+					textNode.data += " [" + lvl + "]";
+				} else {
+					textNode.data = dataMatch[1] + "[" + (parseInt(lvl, 10) + parseInt(dataMatch[3], 10)) + "]";
+				}
 			}
 		}
 
 		function addIcons() {
+			if (typeof $ === "undefined") {
+				addScript("http://code.jquery.com/jquery-1.9.1.js");
+			}
+			if (typeof $ === "undefined") {
+				setTimeout(addIcons, 1000);
+				return;
+			}
 			var townId, i, j;
 			var w = getWindowObject();
 			if (typeof w.g == "undefined" || typeof w.g.cons == "undefined" || typeof w.g.blds == "undefined") {		//not on town screen
@@ -234,7 +264,8 @@
 			}
 			
 			// buildings list
-			var td = document.getElementsByTagName('td');
+			var td = document.getElementsByTagName('td'),
+				totalLvls = 0;
 			for (i = 0; i < td.length; i++) {
 				if (td[i].hasAttribute('class') && td[i].getAttribute('class') == "bld" && td[i].hasChildNodes()) {
 					var div = td[i].getElementsByTagName("DIV")[0];
@@ -258,6 +289,7 @@
 									}
 								} else if (lvl > 0) {
 									td[i].childNodes[0].childNodes[0].data += " [" + lvl + "]";
+									totalLvls += parseInt(lvl, 10);
 								}
 							}
 
@@ -278,13 +310,17 @@
 						}
 					} //foreach building in tbl
 				}
-			}// foreach tds
+			} // foreach tds
+			if (totalLvls > 0) {
+				var townCenter = $("td[class='bld'], td[class='btxt']").get(1);
+				if (townCenter.getAttribute("class") == "bld")
+					townCenter.childNodes[0].childNodes[2].data += " [" + totalLvls + "]";
+				else
+					townCenter.childNodes[0].childNodes[0].data += " [" + totalLvls + "]";
+			}
 		}//func
 
 		(function(f) {
-			addEventListener('click', function () {
-				//setTimeout(f, 100);
-			}, false);
 			var wc_ifr = document.getElementById("ifr");
 			if (wc_ifr)
 				wc_ifr.addEventListener("load", function () {

@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some links to main menu
 // @match          http://warchaos.ru/*
-// @version        1.23
+// @version        1.24
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_main_menu.user.js
 // ==/UserScript==
 
@@ -157,6 +157,7 @@
 		function addAdditionalNav() {
 			// return;
 			createTopNavBar();
+			return;
 			// getTownLinks();
 			if ($("#addmenu").length === 0 && $("#drig").length == 1) {
 				// var table = $("#drig > table").get(0);
