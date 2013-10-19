@@ -604,7 +604,8 @@
 			var rwh = $(".rwh");
 			if (rwh) {
 				if (rwh[0] && rwh[0].innerHTML.search("Рынок") != -1) {
-					var sellButton = document.getElementsByTagName("button")[0];
+					// var sellButton = document.getElementsByTagName("button")[0];
+					var sellButton = $("button[onclick='cmD(0,0,0)']").get(0); // my shop button
 					if (sellButton) {
 						isBuyPage();
 						makeAlliesList();
@@ -681,7 +682,7 @@
 						});
 						//Options button
 						var b = document.createElement("button");
-						insertAfter(b, document.getElementsByTagName("button")[1]);
+						insertAfter(b, $("button[onclick='cmD(0,2,0)']").get(0)); // after caravans button
 						// b.parentNode.setAttribute("width", "60%");
 						b.setAttribute("class", "cmb");
 						b.setAttribute("style", "width:80px;");
@@ -755,8 +756,7 @@
 							}
 
 							w.localStorage.setItem("wc_market_options", wc_market_options);
-							var w = getWindowObject();
-							w.HideWin();
+							$("#wc_market_options").dialog("close");
 							printListOfMarketsWithChoosenResource(lastResType);
 						}, false);
 						//Select All
