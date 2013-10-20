@@ -1,16 +1,16 @@
 // ==UserScript==
-// @name           Warchaos Loot Button
+// @name           Warchaos Loot Button Pro
 // @namespace      https://github.com/shazgorn/warchaos_userjs
-// @description    Add loot button
+// @description    Add loot button Pro
 // @match          http://warchaos.ru/f/a
 // @version        1.2
-// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_loot_button.user.js
+// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_loot_button_pro.user.js
 // ==/UserScript==
 
 
 (function() {
 	// return;
-	var pro = false;
+	var pro = true;
 	
 	var srcRg = /(\d+).gif/;
 	function addScript(src) {
@@ -26,7 +26,7 @@
 	}
 			
 	function getActiveUnitType() {
-		return parseInt($("button[class='but40'][onclick='cm6();'] img").attr("src").match(/\d+/));
+		return parseInt($("button[class='but40'][onclick='cm6();'] img").attr("src").match(srcRg)[1]);
 	}
 	
 	/**

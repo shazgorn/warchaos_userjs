@@ -3,12 +3,13 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    You can move your units like in heroes game
 // @match          http://warchaos.ru/f/a
-// @version        1.33
+// @version        1.34
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_astar.user.js
 // ==/UserScript==
 
 //TODO: exit from dropship zeroes AP
 (function() {
+	return;
 	"use strict";
 	function source() {
 		(function astar_module() {
@@ -166,12 +167,21 @@
 				if (this.id == 2)
 					return true;
 				return false;
-			}
+			};
 			Unit.prototype.isPassable = function() {
 				if (this.isMarker() || this.isCoffin() || this.isRainbow() || this.isBush() || this.isWeb() || this.isDebris()) {
 					return true;
 				}
 				return false;
+			};
+			Unit.prototype.moves = function findMoves() {
+				var fonts = document.getElementsByTagName("font");
+				for (var i = 0; i < fonts.length; i++) {
+					if (fonts[i].innerHTML == "Ходы:") {
+						return parseFloat(fonts[i].parentNode.nextSibling.innerHTML);
+					}
+				}
+				return -1;
 			};
 
 			function Node(x, y, cell, i, j, map) {
@@ -213,39 +223,7 @@
 					this.terrainType = 6;
 				else if ((this.bg >= 1088 && this.bg <= 1098) || (this.bg >= 240 && this.bg <= 250))
 					this.terrainType = 7;
-			}
-			Node.prototype.activeUnit = null;		// will be calculated in astar function
-			Node.prototype.nodes = null;			// all nodes
-			Node.prototype.isGround = function() {
-				if (this.terrainType ==  1)
-					return true;
-			};
-			Node.prototype.isRoad = function() {
-				if (this.terrainType ==  2)
-					return true;
-			};
-			Node.prototype.isForest = function() {
-				if (this.terrainType ==  3)
-					return true;
-			};
-			Node.prototype.isMountain = function() {
-				if (this.terrainType ==  4)
-					return true;
-			};
-			Node.prototype.isSwamp = function() {
-				if (this.terrainType ==  5)
-					return true;
-			};
-			Node.prototype.isWater = function() {
-				if (this.terrainType ==  6)
-					return true;
-			};
-			Node.prototype.isWall = function() {
-				if (this.terrainType ==  7)
-					return true;
-			};
-			
-			Node.prototype.initCost = function() {
+				// init cost
 				if (this.activeUnit.isSurfaceborne()) {
 					if (this.isGround())
 						this.cost = 1;
@@ -271,7 +249,8 @@
 						} else if (!this.activeUnit.isVehicle() && this.obj.isBush()) {
 							this.cost += this.cult == "силы" ? 2 : 4;
 						} else if (!this.activeUnit.isVehicle() && this.obj.isWeb()) {
-							this.cost += 15;
+							this.cost += parseFloat((this.cult == "силы" ? (this.activeUnit.moves() - this.cost) / 4 : 
+								(this.activeUnit.moves() - this.cost) / 2).toFixed(1)); // this bogus, and works only for adj cell
 						}
 					}
 				} else if (this.activeUnit.isWaterborne()) {
@@ -279,9 +258,7 @@
 				} else if (this.activeUnit.isAirborne()) {
 					this.cost = 1;
 				}
-			};
-
-			Node.prototype.initAccessible = function() {
+				// init accessible
 				if (this.activeUnit.isSurfaceborne()) {
 					if (this.isWater() || this.isWall()) {
 						this.accessible = 0;
@@ -314,7 +291,38 @@
 						this.accessible = 0;
 					}
 				}
+			}
+			Node.prototype.activeUnit = null;		// will be calculated in astar function
+			Node.prototype.nodes = null;			// all nodes
+			Node.prototype.isGround = function() {
+				if (this.terrainType ==  1)
+					return true;
 			};
+			Node.prototype.isRoad = function() {
+				if (this.terrainType ==  2)
+					return true;
+			};
+			Node.prototype.isForest = function() {
+				if (this.terrainType ==  3)
+					return true;
+			};
+			Node.prototype.isMountain = function() {
+				if (this.terrainType ==  4)
+					return true;
+			};
+			Node.prototype.isSwamp = function() {
+				if (this.terrainType ==  5)
+					return true;
+			};
+			Node.prototype.isWater = function() {
+				if (this.terrainType ==  6)
+					return true;
+			};
+			Node.prototype.isWall = function() {
+				if (this.terrainType ==  7)
+					return true;
+			};
+
 			Node.prototype.getAdjCell = function(dx, dy) {
 				if ((this.i + dy >= 0) && (this.i + dy < this.nodes.length) && 
 					(this.j + dx >= 0) && (this.j + dx < this.nodes[0].length)) {
@@ -388,15 +396,7 @@
 				return minNode;
 			}
 			
-			function findMoves() {
-				var fonts = document.getElementsByTagName("font");
-				for (var i = 0; i < fonts.length; i++) {
-					if (fonts[i].innerHTML == "Ходы:") {
-						return parseFloat(fonts[i].parentNode.nextSibling.innerHTML);
-					}
-				}
-				return -1;
-			}
+			
 			
 			function astar(destX, destY) {
 				if (typeof destX === "undefined" || typeof destY === "undefined") {
@@ -420,8 +420,6 @@
 						var cell = map.rows[i].cells[j];
 						var match = cell.childNodes[0].getAttribute("tooltip").match(coordsRg);
 						var node = new Node(parseInt(match[1], 10), parseInt(match[2], 10), cell, i, j, map);
-						node.initCost();
-						node.initAccessible();
 						match = parseInt(cell.childNodes[0].getAttribute("src").match(idRg)[1], 10);
 						nodes[nodes.length-1].push(node);
 					} // for cells
@@ -488,7 +486,7 @@
 				}
 				var sum = 0;
 				curNode = finish;
-				var moves = findMoves();
+				var moves = activeUnit.moves();
 				while (curNode !== start && curNode !== null && finish.parent !== null) {
 					sum += curNode.g;
 					var img = document.createElement("img");
@@ -587,7 +585,7 @@
 						return false;
 					} else if ($("font[color='black']").html().search("атакованы врагом") != -1) {
 						var m = $("font[color='black']").html().match(/(\d+) урон/);
-						if (m && parseInt(m[1]) < 100)
+						if (m && parseInt(m[1], 10) < 100)
 							return true;
 					}
 					return false;
@@ -597,7 +595,7 @@
 			function move() {
 				if (moving && prevDestX !== 0 && prevDestY !== 0 && allowMovement()) {
 					var nodeToMove = astar(prevDestX, prevDestY);
-					if (nodeToMove && nodeToMove.g <= findMoves()) {
+					if (nodeToMove && nodeToMove.g <= Node.prototype.activeUnit.moves()) {
 						window.cmIComm(2, nodeToMove.x, nodeToMove.y, '');
 					} else if (nodeToMove === null) {
 						prevDestX = 0;
