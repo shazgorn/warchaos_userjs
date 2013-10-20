@@ -26,7 +26,7 @@
 	}
 			
 	function getActiveUnitType() {
-		return parseInt($("button[class='but40'][onclick='cm6();'] img").attr("src").match(/\d+/));
+		return parseInt($("button[class='but40'][onclick='cm6();'] img").attr("src").match(srcRg)[1]);
 	}
 	
 	/**
