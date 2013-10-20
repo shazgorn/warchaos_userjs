@@ -9,7 +9,6 @@
 
 //TODO: exit from dropship zeroes AP
 (function() {
-	return;
 	"use strict";
 	function source() {
 		(function astar_module() {
