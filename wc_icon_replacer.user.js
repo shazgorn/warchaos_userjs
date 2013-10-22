@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Replace default recipe icon(1914.gif). Add art info
 // @match          http://warchaos.ru/*
-// @version        1.1
+// @version        1.11
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_icon_replacer.user.js
 // ==/UserScript==
 
@@ -57,14 +57,18 @@
 ];
 		
 		var re = /it\/(\d+)\.gif/i,  //pic
-			art, //art info
+			art = /(I*V*)\** *((?:SL|FC|R|r\d+| )*)* *(?:\$Осталось: )*(\d+)/, //art info
 			re3 = /x\d+/, //crafts
 			parent, text, el,
-			imgs = document.images;			
-		if (document.URL == "http://warchaos.ru/f/a")
-			art = /(I*V*\**) *((?:SL|FC|R|r\d+| )*)* *(?:\$Осталось: )*(\d+)/;
-		else
-			art = /(I*V*\**) *((?:SL|FC|R|r\d+| )*)* *(?:\$Left: )*(\d+)/;
+			imgs = document.images;
+		var romeToArab = {
+			I: 1,
+			II: 2,
+			III: 3,
+			IV: 4,
+			V: 5
+		}
+		
 		for (var i = 0; i < imgs.length; i++) {
 			if (!imgs[i].hasAttribute('sck') && imgs[i].hasAttribute("src") ) {
 				var m = imgs[i].getAttribute('src').match(re);
@@ -104,12 +108,23 @@
 							imgs[i].nextSibling.getAttribute("src") == "q.gif")
 						) {
 						m = art.exec(imgs[i].getAttribute('tooltip'));
-						text = m ? (m[2] ? m[1] + m[2] + ' ' + m[3] : m[1] + "       " + m[3]) : '?';
+						var lvl = document.createElement('span');
+						console.log(m);
+						var style = 'color:yellow; position:relative; width:45px; white-space:nowrap;';
+						lvl.setAttribute('style', style + 'top:-40px; left:-15px; font-size: 12px; font-weight: bold;');
+						lvl.innerHTML = romeToArab[m[1]] + "<br>";
+						insertAfter(lvl, imgs[i]);
 						el = document.createElement('span');
-						el.setAttribute('style','color:yellow;position:relative;top:-12px;width:45px; white-space:nowrap; font-family:"Palatino Linotype", serif;');
-						el.appendChild(document.createElement('br'));
-						el.appendChild(document.createTextNode(text));
-						insertAfter(el,imgs[i]);
+						if (typeof m[2] === "undefined") {
+							el.innerHTML = m[3];
+							el.setAttribute('style', style + 'top:-27px;left:12; font-size: 10px;');
+						} else {
+							el.innerHTML = m[2] + (m[2].length == 2 ? "&nbsp;&nbsp;" : "") + m[3];
+							el.setAttribute('style', style + 'top:-27px;left:0; font-size: 10px;');
+						}
+						insertAfter(el, lvl);
+						
+
 					}
 				}
 			}
