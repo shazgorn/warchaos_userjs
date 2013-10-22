@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add loot button
 // @match          http://warchaos.ru/f/a
-// @version        1.2
+// @version        1.21
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_loot_button.user.js
 // ==/UserScript==
 
@@ -12,7 +12,8 @@
 	// return;
 	var pro = false;
 	
-	var srcRg = /(\d+).gif/;
+	var srcRg = /(\d+).gif/,
+		style = "width: 60px; margin: 2px 4px 2px;";
 	function addScript(src) {
 		var scripts = document.getElementsByTagName("script"), i, script;
 		for (i = 0; i < scripts.length; i++) {
@@ -47,7 +48,7 @@
 		force = {name: "Войска", interval: [2254, 2474], count: "all"},
 		potions = {name: "Зелья", interval: [24, 114], count: "all"},
 		potions1 = {name: "Зелья +1", interval: [24, 114], count: 1},
-		resources = {name: "Ресы", interval: [204, 474], count: "all"};
+		resources = {name: "Ресы", interval: [204, 474], count: "all"},
 		scrolls = {name: "Свитки", interval: [1934, 2134], count: "all"};
 	/**
 	 * createButton
@@ -62,7 +63,7 @@
 				var button = document.createElement("input");
 				button.setAttribute("type", "button");
 				button.setAttribute("class", "cmb");
-				button.setAttribute("style", "width: 60px; margin-right: 7px;");
+				button.setAttribute("style", style);
 				button.setAttribute("value", good.name);
 				$(actionButton).parent().append(button);
 				$(button).click(function(e) {
@@ -75,7 +76,7 @@
 					$(lootTable).find("td[background='ctrl/slot1.gif']").each(function(i, el){
 						var res = srcRg.test($(el).find("img").attr("src")) ? $(el).find("img").attr("src").match(srcRg)[1] : 0;
 						if (((get && !(i === 0 && takeFromHero && res > force.interval[0] && res < force.interval[1])) || 
-								(!get && !(i === 0 && getActiveUnitType() > 9000))) && 
+								(!get && !(i === 0 && getActiveUnitType() > 9000 && getActiveUnitType() % 10 === 0))) && 
 								res >= good.interval[0] && res <= good.interval[1]) {
 							if ($(el).find("*").last().attr("type") == "checkbox") {
 								$(el).find("*").last().prop("checked", true);
@@ -104,7 +105,7 @@
 			setTimeout(addLootButtons, 1000);
 			return;
 		}
-		$("input[type='submit'][class='cmb'][value='Взять'], input[type='submit'][class='cmb'][value='Ok']").attr("style", "width: 60px; margin-right: 7px;");
+		$("input[type='submit'][class='cmb'][value='Взять'], input[type='submit'][class='cmb'][value='Ok']").attr("style", style);
 		createButton(all);
 		createButton(artefacts);
 		createButton(force);
