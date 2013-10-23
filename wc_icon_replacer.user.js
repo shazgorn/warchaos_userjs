@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Replace default recipe icon(1914.gif). Add art info
 // @match          http://warchaos.ru/*
-// @version        1.11
+// @version        1.12
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_icon_replacer.user.js
 // ==/UserScript==
 
@@ -112,7 +112,7 @@
 						console.log(m);
 						var style = 'color:yellow; position:relative; width:45px; white-space:nowrap;';
 						lvl.setAttribute('style', style + 'top:-40px; left:-15px; font-size: 12px; font-weight: bold;');
-						lvl.innerHTML = romeToArab[m[1]] + "<br>";
+						lvl.innerHTML = "<br>" + romeToArab[m[1]] + "<br>";
 						insertAfter(lvl, imgs[i]);
 						el = document.createElement('span');
 						if (typeof m[2] === "undefined") {
