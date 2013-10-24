@@ -3,13 +3,13 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add loot button Pro
 // @match          http://warchaos.ru/f/a
-// @version        1.21
+// @version        1.22
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_loot_button_pro.user.js
 // ==/UserScript==
 
 
 (function() {
-	return;
+	// return;
 	var pro = true;
 	
 	var srcRg = /(\d+).gif/,
