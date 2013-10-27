@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    You can move your units like in heroes game
 // @match          http://warchaos.ru/f/a
-// @version        1.34
+// @version        1.35
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_astar.user.js
 // ==/UserScript==
 
@@ -430,7 +430,7 @@
 						if (nodes[i][j].obj !== null && nodes[i][j].obj.isHostile()) {
 							adjCells = nodes[i][j].getAdjCells();
 							for (k = 0; k < adjCells.length; k++) {
-								adjCells[k].enemyOnAdjCell = 1;
+								adjCells[k].enemyOnAdjCell = true;
 							}
 						}
 					}
@@ -494,7 +494,7 @@
 						img.setAttribute("src", finishIco);
 						if (curNode.g <= moves) {
 							if (curNode.checkForEnemyOnAdjCell() === true) {
-								img.setAttribute("style", "display:block;position:relative;top:0px;left:-20px;margin:-40px -20px 0px;");
+								img.setAttribute("style", "display:block;position:relative;top:0px;left:20px;margin:-40px -20px 0px;");
 							} else
 								img.setAttribute("style", "display:block;position:relative;top:0px;left:20px;margin:-40px -20px 0px;");
 						}
@@ -538,7 +538,6 @@
 				return;
 			}
 			
-			
 			$("td").click(function(e) {
 				var m;
 				moving = false;
@@ -549,7 +548,7 @@
 					m = e.target.parentNode.childNodes[0].getAttribute("tooltip").match(coordsRg);
 					if (prevDestX == parseInt(m[1], 10) && prevDestY == parseInt(m[2], 10)) {
 						moving = true;
-						move();
+						move(false);
 					} else {
 						prevDestX = 0;
 						prevDestY = 0;
@@ -574,10 +573,10 @@
 					prevDestY = 0;
 				}
 			});
-			function allowMovement() {
+			function allowMovement(rtooltip) {
 				if (window.h1win)
 					return false;
-				if ($("font[color='black']").length !== 0) {
+				if (rtooltip && $("font[color='black']").length !== 0) {
 					if ($("font[color='black']").html().search(/ставк|ресурсы|папоротник|предметы|артефакт|разрушен|цель|использовали|обороны|радуга|огненную/i) != -1) {
 						return true;
 					} else if ($("font[color='black']").html().search(/погиб|щупальца/i) != -1) {
@@ -591,8 +590,10 @@
 				}
 				return true;
 			}
-			function move() {
-				if (moving && prevDestX !== 0 && prevDestY !== 0 && allowMovement()) {
+			function move(rtooltip) {
+				if (rtooltip === undefined)
+					rtooltip = true;
+				if (moving && prevDestX !== 0 && prevDestY !== 0 && allowMovement(rtooltip)) {
 					var nodeToMove = astar(prevDestX, prevDestY);
 					if (nodeToMove && nodeToMove.g <= Node.prototype.activeUnit.moves()) {
 						window.cmIComm(2, nodeToMove.x, nodeToMove.y, '');

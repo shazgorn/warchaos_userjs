@@ -12,11 +12,11 @@
 	//return;
 	function source() {
 		var navLinks = [
-		["Боевые", "http://warchaos.ru/log/1/0/"],
-		["Архив", "http://warchaos.ru/archive/0/1/"],
-		["Обзор аккаунта", "http://warchaos.ru/report/0/65535"],
-		["Управление", "http://warchaos.ru/user/game/"],
-		["Настройки", "http://warchaos.ru/user/preferences/"]
+			["Боевые", "http://warchaos.ru/log/1/0/"],
+			["Архив", "http://warchaos.ru/archive/0/1/"],
+			["Обзор аккаунта", "http://warchaos.ru/report/0/65535"],
+			["Управление", "http://warchaos.ru/user/game/"],
+			["Настройки", "http://warchaos.ru/user/preferences/"]
 		];
 		function addScript(src) {
 			var scripts = document.getElementsByTagName("script");
