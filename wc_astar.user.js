@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    You can move your units like in heroes game
 // @match          http://warchaos.ru/f/a
-// @version        1.35
+// @version        1.36
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_astar.user.js
 // ==/UserScript==
 
@@ -537,8 +537,8 @@
 				setTimeout(astar_module, 1000);
 				return;
 			}
-			
-			$("td").click(function(e) {
+
+			addEventListener("click", function(e) {
 				var m;
 				moving = false;
 				if (e.altKey || e.shiftKey || e.ctrlKey || e.button == 2 || e.target.hasAttribute("class")) {
@@ -572,7 +572,8 @@
 					prevDestX = 0;
 					prevDestY = 0;
 				}
-			});
+			}, false);
+			
 			function allowMovement(rtooltip) {
 				if (window.h1win)
 					return false;
