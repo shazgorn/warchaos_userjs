@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add loot button
 // @match          http://warchaos.ru/f/a
-// @version        1.30
+// @version        1.31
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_loot_button.user.js
 // ==/UserScript==
 
@@ -136,7 +136,7 @@
 			}
 		});
 	}
-	var running = false;
+	// var running = false;
 
 	var expressions = [];
 
@@ -146,6 +146,10 @@
 
 	if (sessionStorage.getItem("wc_loot_button_i") === null) {
 		sessionStorage.setItem("wc_loot_button_i", 1);
+	}
+	
+	if (sessionStorage.getItem("wc_loot_button_code") === null) {
+		sessionStorage.setItem("wc_loot_button_code", "");
 	}
 
 	function pushButton(button) {
@@ -193,6 +197,10 @@
 			}
 		});
 	}
+	function seat() {
+		console.log("seat");
+		$("button[class='cmb2']").click();
+	}
 	function execOper(expression) {
 		switch (expression.length) {
 			case 1:
@@ -211,7 +219,8 @@
 	}
 	function parseCode() {
 		expressions = [];
-		var code = $("#codearea").val();
+		// var code = $("#codearea").val();
+		var code = sessionStorage.getItem("wc_loot_button_code");
 		var commands = code.split("\n");
 		var i, k;
 		for (i = 0; i < commands.length; i++) {
@@ -241,25 +250,32 @@
 							expressions.push([pushButton, "Ok"]);
 						}
 						break;
+					case "сит":
+						if (tokens.length == 1) {
+							expressions.push([seat]);
+						}
+						break;					
 					default:
 						$("#errorArea").val("Неизвестный оператор");
 						break;
 				}
 			}
 		}
-		console.log(expressions);
+		console.log('expressions', expressions);
 	}
 	function runCode() {
-		if (running) {
+		parseCode();
+		if (true) {
 			var i = parseInt(sessionStorage.getItem("wc_loot_button_i"), 10),
-				ip = parseInt(sessionStorage.getItem("wc_ip"), 10),
+				ip = parseInt(sessionStorage.getItem("wc_loot_button_ip"), 10),
 				delay = parseInt(localStorage.getItem("wc_loot_button_delay"), 10);
 			console.log("runCode");
-			console.log(i);
+			console.log('i: ' + i);
 			if (i > 0) {
-				if (ip < expressions.length) {
+				console.log('ip: ' + ip, 'expr.len: ' + expressions.length);
+ 				if (ip < expressions.length) {
 					console.log(i, ip);
-					sessionStorage.setItem("wc_ip", ip + 1);
+					sessionStorage.setItem("wc_loot_button_ip", ip + 1);
 					if (expressions[ip][0] === give ||
 							expressions[ip][0] === get ||
 							expressions[ip][0] === pushButton ||
@@ -269,14 +285,15 @@
 						setTimeout(runCode, delay);
 						return;
 					} else if (expressions[ip][0] === select ||
-							expressions[ip][0] === getFrom) {
+							expressions[ip][0] === getFrom ||
+							expressions[ip][0] === seat) {
 						// those actions will cause rerendering of the page and data loading through "ifr"
 						execOper(expressions[ip]);
 						return;
 					}
 				}
 				ip = 0;
-				sessionStorage.setItem("wc_ip", ip);
+				sessionStorage.setItem("wc_loot_button_ip", ip);
 				i--;
 				sessionStorage.setItem("wc_loot_button_i", i);
 				$("#iterations").val(i);
@@ -284,6 +301,9 @@
 		}
 		if (i === 0 && ip === 0) {
 			running = false;
+		}
+		if (running) {
+			runCode();
 		}
 	}
 	
@@ -362,16 +382,20 @@
 		$("#delay").keyup(function(e) {
 			localStorage.setItem("wc_loot_button_delay", e.target.value);
 		});
-		input.value = localStorage.getItem("wc_loot_button_delay");
+		input.setAttribute('value', localStorage.getItem("wc_loot_button_delay"));
 
 		codeWindow.appendChild(document.createElement("br"));
 		var codeArea = document.createElement("textarea");
 		codeArea.setAttribute("id", "codearea");
 		codeArea.setAttribute("rows", "5");
 		codeArea.setAttribute("cols", "40");
-		codeArea.value = "выбрать Альфа2\n" +
-						"передать Ресы Альфа10\n" +
-						"";
+		// codeArea.value = "выбрать Альфа2\n" +
+						// "передать Ресы Альфа10\n" +
+						// "";
+		codeArea.value = sessionStorage.getItem("wc_loot_button_code");
+		$("#codearea").keyup(function(e) {
+			sessionStorage.setItem("wc_loot_button_code", e.target.value);
+		});
 		codeWindow.appendChild(codeArea);
 		codeWindow.appendChild(document.createElement("br"));
 
@@ -385,23 +409,35 @@
 		codeWindow.appendChild(run);
 		$(run).click(function() {
 			parseCode();
-			sessionStorage.setItem("wc_ip", 0);
+			sessionStorage.setItem("wc_loot_button_ip", 0);
 			running = true;
 			runCode();
 		});
 		$(codeWindow).dialog({autoOpen: false, width: 300, title: "Код"});
 		addCodeButton();
 	}//func
-
+	// console.log("f");
+	// setTimeout(function () {
+	// parseCode();
+	// runCode();
+	// }, 2000);
 	(function(f) {
+		
 		addEventListener('click', function () {
 			setTimeout(f, 0);
 		}, false);
 		var wc_ifr = document.getElementById("ifr");
-		if (wc_ifr)
+		// console.log(wc_ifr);
+		if (wc_ifr) {
 			wc_ifr.addEventListener("load", function () {
 				setTimeout(f, 1000);
-				setTimeout(runCode, delay);
+				// setTimeout(runCode, 2000);
+				// console.log('load');
 			}, false);
+		}
+		addEventListener('load', function() {
+			// setTimeout(runCode, 2000);
+		}, false);
+		
 	})(addLootButtons);
 })();

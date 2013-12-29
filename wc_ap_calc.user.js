@@ -31,6 +31,20 @@
 			m = "0" + m;
 		return h + ":" + m;
 	}
+	function htmlTd(html) {
+		return '<td>' + html + '</td>';
+	}
+	function incrMilestone(i, cur, ceil, max, mileStoneTime, timeToRegenOnePoint) {
+		if (i === 0 && cur < ceil && ceil <= max) {
+			//when part of ap will be regenerated
+			mileStoneTime += Math.floor((ceil-cur) * timeToRegenOnePoint);
+		} else if (ceil > max) {
+			mileStoneTime += Math.floor((max - parseInt(max, 10)) * timeToRegenOnePoint);
+		} else {
+			mileStoneTime += timeToRegenOnePoint;
+		}
+		return mileStoneTime;
+	}
 	/**
 	 * Description: create table containing AP regeneration time
 	 * Return: raw table
@@ -38,10 +52,10 @@
 	function createTable(cur, max) {
 		var t = "";
 		var timeToRegenOnePoint = Math.floor(1440 / max);
-		t += "Время восст. 1 ед.: " + convertMinutesToHM(timeToRegenOnePoint);
+		t += "Время восст. 1 ед.: " + convertMinutesToHM(timeToRegenOnePoint) + ' (' + parseInt(cur / max * 100) + '%)';
 		if (cur == max)
 			return t;
-		t += "<table><tr><td>Ходы</td><td>Время</td><td>Через</td></tr>";
+		t += "<table><tr><td>Ходы</td><td>Время</td><td>Через</td><td>%</td></tr>";
 		var d = new Date(),
 			minutesSinceMidnight = d.getMinutes() + d.getHours() * 60,
 			ceil = Math.ceil(cur);
@@ -52,22 +66,14 @@
 		for (var i = 0; ceil < max + 1; i++) {
 			t += "<tr>";
 			if (ceil > max) {
-				t += "<td>" + max + "</td>";
+				t += htmlTd(max);
 			} else {
-				t += "<td>" + ceil + "</td>";
+				t += htmlTd(ceil);
 			}
-			t += "<td>";
-			if (i === 0 && cur < ceil && ceil <= max) {
-				//when part of ap will be regenerated
-				mileStoneTime += Math.floor((ceil-cur) * timeToRegenOnePoint);
-			} else if (ceil > max) {
-				mileStoneTime += Math.floor((max - parseInt(max, 10)) * timeToRegenOnePoint);
-			} else {
-				mileStoneTime += timeToRegenOnePoint;
-			}
-			t += convertMinutesToHM(mileStoneTime);
-			t += "</td>";
-			t += "<td>" + convertMinutesToHM(mileStoneTime - minutesSinceMidnight) + "</td>";
+			mileStoneTime = incrMilestone(i, cur, ceil, max, mileStoneTime, timeToRegenOnePoint);
+			t += htmlTd(convertMinutesToHM(mileStoneTime));
+			t += htmlTd(convertMinutesToHM(mileStoneTime - minutesSinceMidnight));
+			t += htmlTd(parseInt(((ceil > max ? max : ceil) / max) * 100));
 			t += "</tr>";
 			ceil++;
 		}

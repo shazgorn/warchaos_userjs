@@ -72,6 +72,11 @@
 					return true;
 				return false;
 			};
+			Unit.prototype.isStavka = function() {
+				if (this.id == 142)
+					return true;
+				return false;
+			};
 			Unit.prototype.isHero = function() {
 				if (this.id == 9000)
 					return true;
@@ -182,6 +187,11 @@
 				}
 				return -1;
 			};
+			Unit.prototype.isSprinter = function() {
+				if ($("img[src='355.gif'][class='mut1']").length == 1)
+					return true;
+				return false;
+			};
 
 			function Node(x, y, cell, i, j, map) {
 				this.x = x;
@@ -222,8 +232,13 @@
 					this.terrainType = 6;
 				else if ((this.bg >= 1088 && this.bg <= 1098) || (this.bg >= 240 && this.bg <= 250))
 					this.terrainType = 7;
-				// init cost
-				if (this.activeUnit.isSurfaceborne()) {
+				// calc cost
+				if (this.activeUnit.isStavka()) {
+					if (this.isRoad())
+						this.cost = 0.5;
+					else
+						this.cost = 1;
+				} else if (this.activeUnit.isSurfaceborne()) {
 					if (this.isGround())
 						this.cost = 1;
 					else if (this.isMountain())
@@ -257,7 +272,7 @@
 				} else if (this.activeUnit.isAirborne()) {
 					this.cost = 1;
 				}
-				// init accessible
+				// calc accessible
 				if (this.activeUnit.isSurfaceborne()) {
 					if (this.isWater() || this.isWall()) {
 						this.accessible = 0;
