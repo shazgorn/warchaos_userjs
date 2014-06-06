@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add loot button
 // @match          http://warchaos.ru/f/a
-// @version        1.32
+// @version        1.33
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_loot_button.user.js
 // ==/UserScript==
 
@@ -338,6 +338,7 @@
     // }, false);
 
     function heroInventory() {
+		return;
         var activeUnitName = $('#drig span:first-child').contents().get(0).data;
         var unitInv = $('#inv').html();
         sessionStorage.setItem('inv_' + $.trim(activeUnitName), unitInv);

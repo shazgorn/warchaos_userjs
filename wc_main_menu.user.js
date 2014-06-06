@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some links to main menu
 // @match          http://warchaos.ru/*
-// @version        1.24
+// @version        1.25
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_main_menu.user.js
 // ==/UserScript==
 
@@ -311,6 +311,43 @@
 							firstMsg = $(".xrw").get(0);
 						if (firstMsg)
 							firstMsg.parentNode.insertBefore(nextPrevBar, firstMsg);
+						var td = $(nextPrevBar).find("td:nth-child(3)");
+						var nextLink = $(nextPrevBar).find("td:nth-child(3) a");
+						var m = window.location.href.match(/([^\d]+\d+\/)(\d+)/);
+						for (var i = 1; i < 6; i++) {
+							var ai = document.createElement('a');
+							ai.href = m[1] + (parseInt(m[2]) + i);
+							ai.innerHTML = (parseInt(m[2]) + i);
+							var text = document.createTextNode(' ');
+							td.append(text);
+							td.append(ai);
+						}
+						var input = document.createElement("input");
+						input.type = "text";
+						input.size = 3;
+						input.setAttribute('maxlength', 3);
+						input.setAttribute("class", "ybox");
+						input.setAttribute("id", "goto-page");
+						input.setAttribute("pattern", "[0-9]");
+						go = document.createElement('input');
+						go.setAttribute('type', 'submit');
+						go.setAttribute('value', 'Go');
+						go.setAttribute('class', 'cmb');
+						go.setAttribute('style', 'width: 30px');
+						var form = $(document.createElement('form'));
+						form.attr('style', 'display: inline;');
+						text = document.createTextNode(' ');
+						form.append(text);
+						form.append(input);
+						text = document.createTextNode(' ');
+						form.append(text);
+						form.append(go);
+						form.submit(function(e) {
+							event.preventDefault();
+							var m = window.location.href.match(/([^\d]+\d+\/)(\d+)/);
+							window.location.href = m[1] + $("#goto-page").val();
+						});
+						td.append(form);
 					} else if (document.URL.search("msg/1") == -1) {
 						//change font color to black in messages everywhere except trade messages
 						var tds = document.getElementsByTagName("TD");
