@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some links to main menu
 // @match          http://warchaos.ru/*
-// @version        1.25
+// @version        1.26
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_main_menu.user.js
 // ==/UserScript==
 
@@ -314,7 +314,7 @@
 						var td = $(nextPrevBar).find("td:nth-child(3)");
 						var nextLink = $(nextPrevBar).find("td:nth-child(3) a");
 						var m = window.location.href.match(/([^\d]+\d+\/)(\d+)/);
-						for (var i = 1; i < 6; i++) {
+						for (var i = 2; i < 7; i++) {
 							var ai = document.createElement('a');
 							ai.href = m[1] + (parseInt(m[2]) + i);
 							ai.innerHTML = (parseInt(m[2]) + i);
