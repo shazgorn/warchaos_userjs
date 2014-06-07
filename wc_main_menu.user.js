@@ -328,7 +328,7 @@
 						input.setAttribute('maxlength', 3);
 						input.setAttribute("class", "ybox");
 						input.setAttribute("id", "goto-page");
-						input.setAttribute("pattern", "[0-9]");
+						input.setAttribute("pattern", "[0-9]+");
 						go = document.createElement('input');
 						go.setAttribute('type', 'submit');
 						go.setAttribute('value', 'Go');
