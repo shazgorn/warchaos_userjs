@@ -306,7 +306,7 @@
         } else if (location.href == "http://dragonmap.ru/thispageshouldneverexist") {
             addEventListener('message', function(e) {
                 if (e.origin == 'http://warchaos.ru') {
-                    // l('incoming ' + ' from ' + e.origin + ' ' + e.data );
+//                    console.log('incoming ' + ' from ' + e.origin + ' ' + e.data );
                     var mapperURL = "http://dragonmap.ru/cgi-bin/mapper3";
                     ajaxRequest(mapperURL, 'POST', e.data, function() {
                     }, function() {
