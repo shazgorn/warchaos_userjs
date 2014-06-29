@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    You can move your units like in heroes game
 // @match          http://warchaos.ru/f/a
-// @version        1.36
+// @version        1.37
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_astar.user.js
 // ==/UserScript==
 
@@ -37,9 +37,13 @@
 			}
 
 			function Unit(img) {
+                            if (img) {
 				this.img = img;
 				this.id = img.getAttribute("src").match(idRg)[1];
 				this.relation = 0;
+                            } else {
+                                return null;
+                            }
 			}
 			Unit.prototype.isWaterborne = function() {
 				if (this.id == 9252 || this.id == 9032 || this.id == 9262 || this.id == 9042 || this.id == 9242 ||
