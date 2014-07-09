@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some links to main menu
 // @match          http://warchaos.ru/*
-// @version        1.27
+// @version        1.28
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_main_menu.user.js
 // ==/UserScript==
 
@@ -16,7 +16,8 @@
             ["Архив", "http://warchaos.ru/archive/0/1/"],
             ["Обзор аккаунта", "http://warchaos.ru/report/0/65535"],
             ["Управление", "http://warchaos.ru/user/game/"],
-            ["Настройки", "http://warchaos.ru/user/preferences/"]
+            ["Настройки", "http://warchaos.ru/user/preferences/"],
+            ["Ситы", ""]
         ];
         function addScript(src) {
             var scripts = document.getElementsByTagName("script");
@@ -105,6 +106,26 @@
             }
             return buttons;
         }
+        // potions control
+        function potionControl() {
+            $('img[src="395.gif"], img[src="345.gif"], img[src="435.gif"], img[src="385.gif"]').each(function(i, potionIco) {
+                function blink(potionIco, interval) {
+                    setInterval(function(interval) {
+                        $(potionIco).fadeOut(interval).fadeIn(interval);
+                    }, interval * 2);
+                }
+                var times = $(potionIco).attr('tooltip').match(/(\d+):(\d+):(\d+)/);
+                var h = times[1];
+                if (h < 3) {
+                    blink(potionIco, 400);
+                    $(potionIco).css('border', '2px dashed red');
+                } else if (h < 6) {
+                    $(potionIco).css('border', '2px dashed red');
+                } else if (h < 12) {
+                    $(potionIco).css('border', '1px dotted yellow');
+                }
+            });
+        }
         var seats = [];
         function getSeats(page) {
             $.ajax({
@@ -133,26 +154,133 @@
         function createTopNavBar() {
             var i;
             // getSeats(1);
-            if ($("#navBar").length === 0 && $("#mnd").length == 1) {
+            if ($("#navBar").length === 0 && $("#mnd").length === 1) {
                 var div = document.createElement("div");
                 div.setAttribute("id", "navBar");
                 div.setAttribute("style", "position: fixed; top:0");
-                // div.setAttribute("class", "ui-widget-header ui-corner-all");
+                var ulMenu = document.createElement("ul");
+                var liMenu;
                 var buttons = getTownLinks();
                 for (i = 0; i < buttons.length; i++) {
                     div.appendChild(buttons[i]);
                 }
                 for (i = 0; i < navLinks.length; i++) {
+                    var dropdownMenu;
                     var a = document.createElement("a");
                     a.innerHTML = navLinks[i][0];
-                    a.setAttribute("href", navLinks[i][1]);
+                    if (a.innerHTML === "Ситы") {
+                        var seats = sessionStorage.getItem("seats");
+//                        seats = null;
+                        if (seats === null) {
+                            $.get("http://warchaos.ru/archive/0/1").done(function(data) {
+                                var d = $.parseHTML(data);
+                                if (d) {
+                                    var tables = $(d[4]).find('table[class="xrw xmsg"]');
+                                    var seatsStr = "";
+                                    $(tables).each(function(i, table) {
+                                        var nickname = $(table).find("td.rwleft b").get(0).innerHTML;
+                                        var button = $(table).find("img[src='ctrl/x1but10.gif'][class='xbut']");
+                                        if (button.length) {
+                                            var clickCode = $(button).attr("onclick");
+                                            seatsStr += nickname + "," + clickCode + "|";
+                                        }
+                                    });
+                                    sessionStorage.setItem("seats", seatsStr);
+                                }
+                            });
+                        } else {
+                            dropdownMenu = document.createElement("ul");
+                            $(dropdownMenu).addClass("dropdown-menu");
+                            $(seats.split('|')).each(function(i, el) {
+                                var seatNick = el.split(",")[0];
+                                var seatAction = el.split(",")[1];
+                                var seatAnchor = document.createElement('a');
+                                $(seatAnchor).html(seatNick);
+                                $(seatAnchor).attr('href', '');
+                                $(seatAnchor).click(function(e) {
+                                    e.preventDefault();
+                                    eval(seatAction);
+                                });
+                                var seat = document.createElement('li');
+                                $(seat).append(seatAnchor);
+                                $(dropdownMenu).append(seat);
+                            });
+                            var cancel = $(document.createElement('a'));
+                            cancel.html('Отмена');
+                            cancel.attr('href', '');
+                            cancel.css('color', 'red');
+                            cancel.click(function(e) {
+                                e.preventDefault();
+                                var iframe = $(document.createElement('iframe'));
+                                iframe.attr('src', 'http://warchaos.ru/user/game/');
+                                iframe.attr('name', 'control');
+                                iframe.attr('id', 'control');
+                                iframe.css('display', 'none');
+                                $('body').append(iframe);
+                                var iframeDoc = iframe.get(0).contentDocument;
+                                $(iframe).load(function() {
+                                    $(iframeDoc.body).find('button.xcmb2').click();
+                                })
+                            });
+                            liMenu = document.createElement('li');
+                            $(liMenu).append(cancel);
+                            $(dropdownMenu).append(liMenu);
+                            $(a).after(dropdownMenu);
+                        }
+                        var form = document.createElement('form');
+                        form.id = "cmdform";
+                        form.name = "cmdform";
+                        form.action = "http://warchaos.ru/archive/0/1";
+                        form.method = "post";
+                        function ci(name) {
+                            var input = document.createElement("input");
+                            input.name = name;
+                            input.type = "hidden";
+                            return input;
+                        }
+                        var arr = ["d", "x", "y", "z"];
+                        $(arr).each(function(i) {
+                            $(form).append(ci(arr[i]));
+                        });
+                        $('body').append(form);
+//                        $(a).click(function() {
+//                            form.d.value = 10;
+//                            form.x.value = 221;
+//                            console.log(form);
+//                            form.submit();
+//                        });
+
+                    } else {
+                        a.setAttribute("href", navLinks[i][1]);
+                    }
                     div.appendChild(a);
+                    aClone = a.cloneNode(true);
                     $(a).button();
+                    liMenu = document.createElement('li');
+                    $(liMenu).append(aClone);
+                    if (dropdownMenu) {
+                        $(liMenu).addClass('dropdown');
+                        $(liMenu).append(dropdownMenu);
+                    }
+                    $(ulMenu).append(liMenu);
                 }
-                var mnd = $("#mnd").get(0);
-                mnd.appendChild(div);
-                $(div).prependTo(mnd);
+                $(ulMenu).attr('id', 'nav-bar-2');
+                $("<style>.dropdown-menu {display: none;} .dropdown:hover .dropdown-menu {display:block;}</style>").appendTo("head");
+                $("<style>#nav-bar-2 {position:fixed; top:30px;}\n\
+#nav-bar-2, #nav-bar-2 ul {list-style-type: none;padding-left: 0px;}\n\
+#nav-bar-2 > li {float:left;background: #94613D url('http://warchaos.ru/fp/ctrl/bg_4.gif') repeat;\n\
+border: 1px solid #593008;color: #4C3000;font-weight: 700;font-size: 12px;padding: 4px 12px;}\n\
+#nav-bar-2 a {color: #281604; text-decoration:none;font-family: Arial;}\n\
+#nav-bar-2 a:hover {color:#FF912E;}\n\
+#nav-bar-2 > li:hover {border: 1px solid #CC7A00;}\n\
+#nav-bar-2 li {}</style>").appendTo("head");
+                $('body').prepend(ulMenu);
+                $('body').prepend(div);
             }
+        }
+        function clickFunctions() {
+            addAdditionalNav();
+            potionControl();
         }
         function addAdditionalNav() {
             // return;
@@ -436,18 +564,16 @@
                     }
                 }
             } else if (document.URL === "http://warchaos.ru/f/a") {
-                setTimeout(addAdditionalNav, 100);
+                setTimeout(clickFunctions, 100);
                 var wc_ifr = document.getElementById("ifr");
                 if (wc_ifr) {
                     wc_ifr.addEventListener("load", function() {
-                        setTimeout(addAdditionalNav, 100);
+                        setTimeout(clickFunctions, 100);
                     }, false);
                 }
             }
+            potionControl();
         })();
-
-
-
     } // source
 
     var script = document.createElement('script');
