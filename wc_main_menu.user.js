@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some links to main menu
 // @match          http://warchaos.ru/*
-// @version        1.29
+// @version        1.31
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_main_menu.user.js
 // ==/UserScript==
 
@@ -17,7 +17,7 @@
             ["Обзор аккаунта", "http://warchaos.ru/report/0/65535"],
             ["Управление", "http://warchaos.ru/user/game/"],
             ["Настройки", "http://warchaos.ru/user/preferences/"],
-            ["Ситы", ""]
+//            ["Ситы", ""]
         ];
         function addScript(src) {
             var scripts = document.getElementsByTagName("script");
@@ -108,6 +108,7 @@
         }
         // potions control
         function potionControl() {
+            return;
             $('img[src="395.gif"], img[src="345.gif"], img[src="435.gif"], img[src="385.gif"]').each(function(i, potionIco) {
                 function blink(potionIco, interval) {
                     setInterval(function(interval) {
@@ -154,15 +155,15 @@
         function createTopNavBar() {
             var i;
             // getSeats(1);
-            if ($("#navBar").length === 0 && $("#mnd").length === 1) {
-                var div = document.createElement("div");
-                div.setAttribute("id", "navBar");
-                div.setAttribute("style", "position: fixed; top:0");
+            if ($("#nav-bar-2").length === 0 && $("#mnd").length === 1) {
+//                var div = document.createElement("div");
+//                div.setAttribute("id", "navBar");
+//                div.setAttribute("style", "position: fixed; top:0");
                 var ulMenu = document.createElement("ul");
                 var liMenu;
                 var buttons = getTownLinks();
                 for (i = 0; i < buttons.length; i++) {
-                    div.appendChild(buttons[i]);
+//                    div.appendChild(buttons[i]);
                 }
                 for (i = 0; i < navLinks.length; i++) {
                     var dropdownMenu;
@@ -253,7 +254,7 @@
                     } else {
                         a.setAttribute("href", navLinks[i][1]);
                     }
-                    div.appendChild(a);
+//                    div.appendChild(a);
                     aClone = a.cloneNode(true);
                     $(a).button();
                     liMenu = document.createElement('li');
@@ -266,7 +267,7 @@
                 }
                 $(ulMenu).attr('id', 'nav-bar-2');
                 $("<style>.dropdown-menu {display: none;} .dropdown:hover .dropdown-menu {display:block;}</style>").appendTo("head");
-                $("<style>#nav-bar-2 {position:fixed; top:30px;}\n\
+                $("<style>#nav-bar-2 {position:fixed; top:0px;}\n\
 #nav-bar-2, #nav-bar-2 ul {list-style-type: none;padding-left: 0px;}\n\
 #nav-bar-2 > li {float:left;background: #94613D url('http://warchaos.ru/fp/ctrl/bg_4.gif') repeat;\n\
 border: 1px solid #593008;color: #4C3000;font-weight: 700;font-size: 12px;padding: 4px 12px;}\n\
@@ -275,7 +276,7 @@ border: 1px solid #593008;color: #4C3000;font-weight: 700;font-size: 12px;paddin
 #nav-bar-2 > li:hover {border: 1px solid #CC7A00;}\n\
 #nav-bar-2 li {}</style>").appendTo("head");
                 $('body').prepend(ulMenu);
-                $('body').prepend(div);
+//                $('body').prepend(div);
             }
         }
         function clickFunctions() {
