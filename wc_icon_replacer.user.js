@@ -149,7 +149,6 @@
             safeNames();
 //            playerBanner();
             potionControl();
-
         }
 
         /* add player`s 1st char to every cell with his unit, with specified color */
