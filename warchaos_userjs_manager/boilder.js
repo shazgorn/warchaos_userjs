@@ -103,7 +103,6 @@ function replaceIcons() {
                     }
                 }
             } else if (item >= 604 && item <= 1764) {
-                continue;
                 parent = imgs[i].parentNode;
                 if (parent.nodeName == "BUTTON") {
                     parent.setAttribute('style', "max-height:40px;");
@@ -117,7 +116,7 @@ function replaceIcons() {
                     lvl.setAttribute('style', style + 'top:-40px; left:-15px; font-size: 12px; font-weight: bold;');
                     lvl.innerHTML = "<br>" + (m[1] === "" ? "" : romeToArab[m[1]]) + "<br>";
 //                    insertAfter(lvl, imgs[i]);
-                    $(imgs[i]).insertAfter(lvl);
+                    $(imgs[i]).after(lvl);
                     el = document.createElement('span');
                     if (typeof m[2] === "undefined") {
                         el.innerHTML = m[3];
@@ -127,7 +126,7 @@ function replaceIcons() {
                         el.setAttribute('style', style + 'top:-27px;left:0; font-size: 10px;');
                     }
 //                    insertAfter(el, lvl);
-                    $(lvl).insertAfter(el);
+                    $(lvl).after(el);
                 }
             }
         }
