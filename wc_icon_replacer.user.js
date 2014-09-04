@@ -369,13 +369,13 @@ if (typeof u === "undefined") {
             if (window.frames['ifr']) {
                 window.addEventListener('load', function() {
                     setTimeout(function() {
-                        s('win load');
+//                        s('win load');
                     }, 1000);
                 }, false);
                 addEventListener('click', function() {
-//                    setTimeout(f, 1000);
+                    setTimeout(f, 1000);
                     setTimeout(function() {
-                        s('click');
+//                        s('click');
                     }, 1000);
                 }, false);
                 var wc_ifr = document.getElementById("ifr");
@@ -383,7 +383,7 @@ if (typeof u === "undefined") {
                     wc_ifr.addEventListener("load", function() {
 //                        setTimeout(f, 1000);
                         setTimeout(function() {
-                            s('load');
+//                            s('load');
                         }, 1000);
                     }, false);
                 f();

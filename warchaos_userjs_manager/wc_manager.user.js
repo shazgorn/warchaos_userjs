@@ -37,6 +37,20 @@ function init() {
     script.src = basepath + scrname + '.js';
     document.body.appendChild(script);
     console.log(scripts);
+    for (var i = 0; i < scripts.length; i++) {
+        var script = document.createElement('script');
+        script.src = basepath + scripts[i].name + '.js';
+        if (window.frames['ifr']) {
+            window.frames['ifr'].addEventListener('click', function() {
+                icon_replacer();
+            }, false);
+        }
+    }
+
+//    var script = document.createElement('script');
+//    script.textContent = '(' + source + ')();';
+//    document.body.appendChild(script);
+//    document.body.removeChild(script);
 }
 
 init();
