@@ -76,7 +76,7 @@ function replaceIcons() {
             var m = imgs[i].getAttribute('src').match(re);
             var item = m ? parseInt(m[1], 10) : 0;
             // recipe
-            if (item == 1914) {
+            if (item === 1914) {
                 for (var j = 0; j < icons.length; j++) {
                     if (imgs[i].hasAttribute("tooltip")) {
                         for (var k = 0; k < icons[j].length - 1; k++) {
@@ -97,12 +97,13 @@ function replaceIcons() {
                                 el.setAttribute('style', "position:relative;top:-3px;left:0px;color:yellow;");
                                 el.appendChild(document.createElement('br'));
                                 el.appendChild(document.createTextNode(text));
-                                $(imgs[i]).insertAfter(el);
+//                                $(imgs[i]).after(el);
                             }
                         }
                     }
                 }
             } else if (item >= 604 && item <= 1764) {
+                continue;
                 parent = imgs[i].parentNode;
                 if (parent.nodeName == "BUTTON") {
                     parent.setAttribute('style', "max-height:40px;");
