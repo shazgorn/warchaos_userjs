@@ -7,8 +7,6 @@
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_icon_replacer.user.js
 // ==/UserScript==
 
-
-
 function addScript(src) {
     var scripts = document.getElementsByTagName("script");
     for (var i = 0; i < scripts.length; i++) {
@@ -35,19 +33,31 @@ function init() {
     basepath = 'https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/warchaos_userjs_manager/';
     scrname = "scripts";
     script.src = basepath + scrname + '.js';
-    document.body.appendChild(script);
-    console.log(scripts);
+    document.head.appendChild(script);
     for (var i = 0; i < scripts.length; i++) {
         var script = document.createElement('script');
         script.src = basepath + scripts[i].name + '.js';
-        console.log(1);
-        if (window.frames['ifr']) {
-            console.log(2);
-            window.addEventListener('click', function() {
-                console.log(3);
-                icon_replacer();
-            }, false);
+        var ifr = window.frames['ifr'];
+        if (ifr) {
+            var name = scripts[i].name;
+            for (var j = 0; j < scripts[i].events.length; j++) {
+                switch (scripts[i].events[j]) {
+                    case "click":
+                        window.addEventListener('click', function() {
+                            eval(name + "()");
+                        }, false);
+                        break;
+                    case "load":
+                        break;
+                    case "frame_load":
+                        ifr.addEventListener('load', function() {
+                            eval(name + "()");
+                        }, false);
+                        break;
+                }
+            }
         }
+//        document.head.appendChild(script);
     }
 
 //    var script = document.createElement('script');

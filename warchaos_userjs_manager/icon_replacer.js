@@ -109,19 +109,3 @@ function icon_replacer() {
         }
     }//for
 }
-
-//(function(f) {
-//    if (window.frames['ifr']) {
-//        window.addEventListener('load', function() {
-//            setTimeout(function() {
-//                s('win load');
-//            }, 1000);
-//        }, false);
-//        addEventListener('click', function() {
-//        }, false);
-//        var wc_ifr = document.getElementById("ifr");
-//        f();
-//    }
-//})(replaceIcons);
-
-
