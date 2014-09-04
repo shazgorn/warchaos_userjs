@@ -179,7 +179,7 @@
             Unit.prototype.isPassable = function() {
                 if (this.isMarker() || this.isCoffin() || this.isRainbow() 
                         || this.isBush() || this.isWeb() || this.isDebris()
-                        || this.isStavka()) {
+                        ) {
                     return true;
                 }
                 return false;

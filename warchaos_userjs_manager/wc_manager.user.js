@@ -7,59 +7,37 @@
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_icon_replacer.user.js
 // ==/UserScript==
 
-if (typeof u === "undefined") {
-//    u = $('#cise').get(0);
-    u = document.getElementById('cise');
+
+
+function addScript(src) {
+    var scripts = document.getElementsByTagName("script");
+    for (var i = 0; i < scripts.length; i++) {
+        if (scripts[i].getAttribute("src") == src)
+            return;
+    }
+    var script = document.createElement("script");
+    script.src = src;
+    document.head.appendChild(script);
 }
 
-(function() {
-    // return;
-    function source() {
-        function addScript(src) {
-            var scripts = document.getElementsByTagName("script");
-            for (var i = 0; i < scripts.length; i++) {
-                if (scripts[i].getAttribute("src") == src)
-                    return;
-            }
-            var script = document.createElement("script");
-            script.src = src;
-            document.head.appendChild(script);
-        }
-        function replaceIcons() {
-            if (typeof $ === "undefined") {
-                addScript("http://code.jquery.com/jquery-1.9.1.js");
-            }
-            if (typeof $ === "undefined") {
-                setTimeout(replaceIcons, 100);
-                return;
-            }
-            if ($('#ss').length === 0) {
-                var b = document.createElement('button');
-                b.innerHTML = "start";
-                b.id = 'ss';
-                $(b).click(function() {
-                    ss = 0;
-                    sessionStorage.setItem('brew', 1);
-                    console.log('drop');
-                });
-                $(b).appendTo('body');
-            }
-        }
-        // semaphore
-
-
-        (function() {
-            var script = document.createElement('script');
-            script.src = "https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/warchaos_userjs_manager/boilder.js";
-            return;
-//            script.textContent = '(' + source + ')();';
-            document.body.appendChild(script);
-            test();
-        })();
+function init() {
+    if (typeof u === "undefined") {
+        u = document.getElementById('cise');
+    }
+    if (typeof $ === "undefined") {
+        addScript("http://code.jquery.com/jquery-1.9.1.js");
+    }
+    if (typeof $ === "undefined") {
+        setTimeout(init, 100);
+        return;
     }
     var script = document.createElement('script');
-    script.textContent = '(' + source + ')();';
+    basepath = 'https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/warchaos_userjs_manager/';
+    scrname = "scripts";
+    script.src = basepath + scrname + '.js';
     document.body.appendChild(script);
-    document.body.removeChild(script);
-})();
+    console.log(scripts);
+}
+
+init();
 
