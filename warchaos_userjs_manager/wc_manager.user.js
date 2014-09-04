@@ -40,8 +40,11 @@ function init() {
     for (var i = 0; i < scripts.length; i++) {
         var script = document.createElement('script');
         script.src = basepath + scripts[i].name + '.js';
+        console.log(1);
         if (window.frames['ifr']) {
-            window.frames['ifr'].addEventListener('click', function() {
+            console.log(2);
+            window.addEventListener('click', function() {
+                console.log(3);
                 icon_replacer();
             }, false);
         }

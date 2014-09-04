@@ -76,7 +76,7 @@ function icon_replacer() {
                                 el.setAttribute('style', "position:relative;top:-3px;left:0px;color:yellow;");
                                 el.appendChild(document.createElement('br'));
                                 el.appendChild(document.createTextNode(text));
-                                insertAfter(el, imgs[i]);
+                                $(imgs[i]).after(el);
                             }
                         }
                     }
@@ -94,7 +94,7 @@ function icon_replacer() {
                     var style = 'color:yellow; position:relative; width:45px; white-space:nowrap;';
                     lvl.setAttribute('style', style + 'top:-40px; left:-15px; font-size: 12px; font-weight: bold;');
                     lvl.innerHTML = "<br>" + (m[1] === "" ? "" : romeToArab[m[1]]) + "<br>";
-                    insertAfter(lvl, imgs[i]);
+                    $(imgs[i]).after(lvl);
                     el = document.createElement('span');
                     if (typeof m[2] === "undefined") {
                         el.innerHTML = m[3];
@@ -103,7 +103,7 @@ function icon_replacer() {
                         el.innerHTML = m[2] + (m[2].length == 2 ? "&nbsp;&nbsp;" : "") + m[3];
                         el.setAttribute('style', style + 'top:-27px;left:0; font-size: 10px;');
                     }
-                    insertAfter(el, lvl);
+                    $(lvl).after(el);
                 }
             }
         }
