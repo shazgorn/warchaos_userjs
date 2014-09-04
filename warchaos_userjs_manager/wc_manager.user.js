@@ -50,10 +50,11 @@ if (typeof u === "undefined") {
 
         (function() {
             var script = document.createElement('script');
-            script.src = "1.js";
+            script.src = "https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/warchaos_userjs_manager/boilder.js";
             return;
-            script.textContent = '(' + source + ')();';
+//            script.textContent = '(' + source + ')();';
             document.body.appendChild(script);
+            test();
         })();
     }
     var script = document.createElement('script');
