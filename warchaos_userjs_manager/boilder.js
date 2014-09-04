@@ -135,24 +135,10 @@ function replaceIcons() {
 
 (function(f) {
     if (window.frames['ifr']) {
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                s('win load');
-            }, 1000);
-        }, false);
-        addEventListener('click', function() {
-//                    setTimeout(f, 1000);
-            setTimeout(function() {
-                s('click');
-            }, 1000);
-        }, false);
         var wc_ifr = document.getElementById("ifr");
         if (wc_ifr)
             wc_ifr.addEventListener("load", function() {
-//                        setTimeout(f, 1000);
-                setTimeout(function() {
-                    s('load');
-                }, 1000);
+                setTimeout(f, 1000);
             }, false);
         f();
     }
