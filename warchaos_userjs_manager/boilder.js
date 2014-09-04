@@ -97,7 +97,7 @@ function replaceIcons() {
                                 el.setAttribute('style', "position:relative;top:-3px;left:0px;color:yellow;");
                                 el.appendChild(document.createElement('br'));
                                 el.appendChild(document.createTextNode(text));
-//                                $(imgs[i]).after(el);
+                                $(imgs[i]).after(el);
                             }
                         }
                     }
