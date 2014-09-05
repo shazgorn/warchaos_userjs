@@ -26,13 +26,14 @@ function f() {
     }
 
     (function() {
-        function runScript(script) {
+        function bindEvents(script) {
             var ifr = window.frames['ifr'];
             if (ifr) {
                 var name = script.name;
                 for (var k = 0; k < script.events.length; k++) {
                     switch (script.events[k]) {
                         case 'click':
+                            console.log(name);
                             window.addEventListener('click', function() {
                                 evalScript(name);
                             }, false);
@@ -50,6 +51,7 @@ function f() {
         }
         function evalScript(name) {
             setTimeout(function() {
+//                console.log(name);
                 eval(name + '()');
             }, 1000);
         }
@@ -70,7 +72,7 @@ function f() {
                                     && location.href.substr(0, lastIndex) === matchurl.substr(0, lastIndex))
                                     || location.href === matchurl) {
                                 addScript(basepath + scripts[i].name + '.js');
-                                runScript(scripts[i]);
+                                bindEvents(scripts[i]);
                                 break;
                             }
                         }
