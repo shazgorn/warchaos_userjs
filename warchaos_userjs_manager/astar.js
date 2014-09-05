@@ -623,19 +623,19 @@ addEventListener("mousedown", function(e) {
         }, false);
     }
 })(move);
-if (sessionStorage.getItem("cult") === null) {
-    $.ajax({
-        url: "http://warchaos.ru/user/cult",
-        type: "POST",
-        async: false,
-        success: function(data) {
-            var m = data.match(/Вами выбрана\:<\/b><br><big><font color=#800000>Религия (.+)<\/font>/);
-            if (m) {
-                m[1].toLowerCase();
-                sessionStorage.setItem("cult", m[1].toLowerCase());
-            } else {
-                sessionStorage.setItem("cult", "атеизм");
-            }
-        }
-    });
-}
+//if (sessionStorage.getItem("cult") === null) {
+//    $.ajax({
+//        url: "http://warchaos.ru/user/cult",
+//        type: "POST",
+//        async: false,
+//        success: function(data) {
+//            var m = data.match(/Вами выбрана\:<\/b><br><big><font color=#800000>Религия (.+)<\/font>/);
+//            if (m) {
+//                m[1].toLowerCase();
+//                sessionStorage.setItem("cult", m[1].toLowerCase());
+//            } else {
+//                sessionStorage.setItem("cult", "атеизм");
+//            }
+//        }
+//    });
+//}
