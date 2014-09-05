@@ -56,7 +56,7 @@ function init() {
                 }
             }
         }
-//        document.head.appendChild(script);
+        document.head.appendChild(script);
     }
 
 //    var script = document.createElement('script');
