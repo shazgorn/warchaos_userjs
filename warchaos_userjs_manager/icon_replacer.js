@@ -111,5 +111,5 @@ function icon_replacer() {
 }
 window.icon_replacer = icon_replacer;
 window.addEventListener('click', function() {
-    icon_replacer();
+//    icon_replacer();
 }, false)
