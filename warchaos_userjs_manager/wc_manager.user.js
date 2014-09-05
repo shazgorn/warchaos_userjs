@@ -40,12 +40,12 @@ function f() {
                             break;
                         case 'load':
 //                            window.addEventListener('load', function() {
-                                evalScript(name);
+                                evalScript(name, 1000);
 //                            }, false);
                             break;
                         case 'frame_load':
                             ifr.addEventListener('load', function() {
-                                evalScript(name);
+                                evalScript(name, 100);
                             }, false);
                             break;
                     }
