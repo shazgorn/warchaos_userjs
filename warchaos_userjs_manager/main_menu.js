@@ -326,7 +326,7 @@ function main_menu() {
         document.head.appendChild(link);
     }
     if (typeof $ === "undefined" || typeof $.ui === "undefined") {
-        setTimeout(mainMenuUpgrade, 100);
+        setTimeout(main_menu, 100);
         return;
     }
     var li, a, i, j;
