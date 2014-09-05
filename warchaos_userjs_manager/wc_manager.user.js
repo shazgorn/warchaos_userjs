@@ -24,6 +24,11 @@ function f() {
         }
         return script;
     }
+    function runScript(name) {
+        setTimeout(function() {
+            eval(name + '()');
+        }, 1000);
+    }
     (function() {
         var basepath;
         if (navigator.appVersion.search('Chrome') === -1) {
@@ -35,24 +40,34 @@ function f() {
         addScript("http://code.jquery.com/jquery-1.9.1.js", function() {
             addScript(basepath + 'scripts.js', function() {
                 for (var i = 0; i < scripts.length; i++) {
-                    addScript(basepath + scripts[i].name + '.js');
-                    var ifr = window.frames['ifr'];
-                    if (ifr) {
-                        var name = scripts[i].name;
-                        for (var j = 0; j < scripts[i].events.length; j++) {
-                            switch (scripts[i].events[j]) {
-                                case 'click':
-                                    window.addEventListener('click', function() {
-                                        eval(name + '()');
-                                    }, false);
-                                    break;
-                                case 'load':
-                                    break;
-                                case 'frame_load':
-                                    ifr.addEventListener('load', function() {
-                                        eval(name + '()');
-                                    }, false);
-                                    break;
+                    if (scripts[i].match) {
+                        for (var j = 0; j < scripts[i].match.length; j++) {
+                            var lastIndex = scripts[i].match[j].length - 1, matchurl = scripts[i].match[j];
+                            if ((matchurl.charAt(lastIndex) === "*"
+                                    && location.href.substr(0, lastIndex) === matchurl.substr(0, lastIndex))
+                                    || location.href === matchurl) {
+                                addScript(basepath + scripts[i].name + '.js');
+                                var ifr = window.frames['ifr'];
+                                if (ifr) {
+                                    var name = scripts[i].name;
+                                    for (var k = 0; k < scripts[i].events.length; k++) {
+                                        switch (scripts[i].events[k]) {
+                                            case 'click':
+                                                window.addEventListener('click', function() {
+                                                    runScript(name)
+                                                }, false);
+                                                break;
+                                            case 'load':
+                                                break;
+                                            case 'frame_load':
+                                                ifr.addEventListener('load', function() {
+                                                    runScript(name)
+                                                }, false);
+                                                break;
+                                        }
+                                    }
+                                }
+                                break;
                             }
                         }
                     }
