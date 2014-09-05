@@ -110,3 +110,6 @@ function icon_replacer() {
     }//for
 }
 window.icon_replacer = icon_replacer;
+window.addEventListener('click', function() {
+    icon_replacer();
+}, false)
