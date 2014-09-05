@@ -39,9 +39,9 @@ function f() {
                             }, false);
                             break;
                         case 'load':
-                            window.addEventListener('load', function() {
+//                            window.addEventListener('load', function() {
                                 evalScript(name);
-                            }, false);
+//                            }, false);
                             break;
                         case 'frame_load':
                             ifr.addEventListener('load', function() {
@@ -52,11 +52,14 @@ function f() {
                 }
             }
         }
-        function evalScript(name) {
+        function evalScript(name, delay) {
+            if (typeof delay === "undefined") {
+                delay = 0;
+            }
             setTimeout(function() {
 //                console.log(name);
                 eval(name + '()');
-            }, 1000);
+            }, delay);
         }
         var basepath;
         if (navigator.appVersion.search('Chrome') === -1) {
