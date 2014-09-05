@@ -72,7 +72,9 @@ function f() {
                                     && location.href.substr(0, lastIndex) === matchurl.substr(0, lastIndex))
                                     || location.href === matchurl) {
                                 addScript(basepath + scripts[i].name + '.js');
-                                bindEvents(scripts[i]);
+                                if (scripts[i].events) {
+                                    bindEvents(scripts[i]);
+                                }
                                 break;
                             }
                         }
