@@ -71,7 +71,10 @@ function f() {
                             if ((matchurl.charAt(lastIndex) === "*"
                                     && location.href.substr(0, lastIndex) === matchurl.substr(0, lastIndex))
                                     || location.href === matchurl) {
-                                addScript(basepath + scripts[i].name + '.js');
+//                                console.log(icon_replacer);
+                                if (typeof window[scripts[i].name] !== "undefined") {
+                                    addScript(basepath + scripts[i].name + '.js');
+                                }
                                 if (scripts[i].events) {
                                     bindEvents(scripts[i]);
                                 }
