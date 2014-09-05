@@ -34,14 +34,14 @@ function f() {
                     switch (script.events[k]) {
                         case 'click':
                             window.addEventListener('click', function() {
-                                evalScript(name)
+                                evalScript(name);
                             }, false);
                             break;
                         case 'load':
                             break;
                         case 'frame_load':
                             ifr.addEventListener('load', function() {
-                                evalScript(name)
+                                evalScript(name);
                             }, false);
                             break;
                     }
