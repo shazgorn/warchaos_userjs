@@ -1,16 +1,3 @@
-function test() {
-    console.log('test');
-}
-function addScript(src) {
-    var scripts = document.getElementsByTagName("script");
-    for (var i = 0; i < scripts.length; i++) {
-        if (scripts[i].getAttribute("src") == src)
-            return;
-    }
-    var script = document.createElement("script");
-    script.src = src;
-    document.head.appendChild(script);
-}
 function replaceIcons() {
     if (typeof $ === "undefined") {
         addScript("http://code.jquery.com/jquery-1.9.1.js");

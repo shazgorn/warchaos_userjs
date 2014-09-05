@@ -24,12 +24,35 @@ function f() {
         }
         return script;
     }
-    function runScript(name) {
-        setTimeout(function() {
-            eval(name + '()');
-        }, 1000);
-    }
+
     (function() {
+        function runScript(script) {
+            var ifr = window.frames['ifr'];
+            if (ifr) {
+                var name = script.name;
+                for (var k = 0; k < script.events.length; k++) {
+                    switch (script.events[k]) {
+                        case 'click':
+                            window.addEventListener('click', function() {
+                                evalScript(name)
+                            }, false);
+                            break;
+                        case 'load':
+                            break;
+                        case 'frame_load':
+                            ifr.addEventListener('load', function() {
+                                evalScript(name)
+                            }, false);
+                            break;
+                    }
+                }
+            }
+        }
+        function evalScript(name) {
+            setTimeout(function() {
+                eval(name + '()');
+            }, 1000);
+        }
         var basepath;
         if (navigator.appVersion.search('Chrome') === -1) {
             basepath = "https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/warchaos_userjs_manager/";
@@ -47,26 +70,7 @@ function f() {
                                     && location.href.substr(0, lastIndex) === matchurl.substr(0, lastIndex))
                                     || location.href === matchurl) {
                                 addScript(basepath + scripts[i].name + '.js');
-                                var ifr = window.frames['ifr'];
-                                if (ifr) {
-                                    var name = scripts[i].name;
-                                    for (var k = 0; k < scripts[i].events.length; k++) {
-                                        switch (scripts[i].events[k]) {
-                                            case 'click':
-                                                window.addEventListener('click', function() {
-                                                    runScript(name)
-                                                }, false);
-                                                break;
-                                            case 'load':
-                                                break;
-                                            case 'frame_load':
-                                                ifr.addEventListener('load', function() {
-                                                    runScript(name)
-                                                }, false);
-                                                break;
-                                        }
-                                    }
-                                }
+                                runScript(scripts[i]);
                                 break;
                             }
                         }
