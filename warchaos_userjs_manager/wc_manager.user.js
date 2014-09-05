@@ -40,7 +40,7 @@ function f() {
                             break;
                         case 'load':
 //                            window.addEventListener('load', function() {
-                                evalScript(name, 1000);
+                            evalScript(name, 1000);
 //                            }, false);
                             break;
                         case 'frame_load':
@@ -61,6 +61,27 @@ function f() {
                 eval(name + '()');
             }, delay);
         }
+        function loadScripts() {
+            for (var i = 0; i < scripts.length; i++) {
+                if (scripts[i].match) {
+                    for (var j = 0; j < scripts[i].match.length; j++) {
+                        var lastIndex = scripts[i].match[j].length - 1, matchurl = scripts[i].match[j];
+                        if ((matchurl.charAt(lastIndex) === "*"
+                                && location.href.substr(0, lastIndex) === matchurl.substr(0, lastIndex))
+                                || location.href === matchurl) {
+//                                console.log(icon_replacer);
+                            if (typeof window[scripts[i].name] !== "undefined") {
+                                addScript(basepath + scripts[i].name + '.js');
+                            }
+                            if (scripts[i].events) {
+                                bindEvents(scripts[i]);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         var basepath;
         if (navigator.appVersion.search('Chrome') === -1) {
             basepath = "https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/warchaos_userjs_manager/";
@@ -69,27 +90,12 @@ function f() {
         }
         // жабаскрипт головного мозга
         addScript("http://code.jquery.com/jquery-1.9.1.js", function() {
-            addScript(basepath + 'scripts.js', function() {
-                for (var i = 0; i < scripts.length; i++) {
-                    if (scripts[i].match) {
-                        for (var j = 0; j < scripts[i].match.length; j++) {
-                            var lastIndex = scripts[i].match[j].length - 1, matchurl = scripts[i].match[j];
-                            if ((matchurl.charAt(lastIndex) === "*"
-                                    && location.href.substr(0, lastIndex) === matchurl.substr(0, lastIndex))
-                                    || location.href === matchurl) {
-//                                console.log(icon_replacer);
-                                if (typeof window[scripts[i].name] !== "undefined") {
-                                    addScript(basepath + scripts[i].name + '.js');
-                                }
-                                if (scripts[i].events) {
-                                    bindEvents(scripts[i]);
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-            });
+            if (typeof scripts === "undefined") {
+                addScript(basepath + 'scripts.js', loadScripts);
+            } else {
+                loadScripts();
+            }
+            
         });
     })();
 }
