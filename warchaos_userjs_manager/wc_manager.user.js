@@ -39,6 +39,9 @@ function f() {
                             }, false);
                             break;
                         case 'load':
+                            window.addEventListener('load', function() {
+                                evalScript(name);
+                            }, false);
                             break;
                         case 'frame_load':
                             ifr.addEventListener('load', function() {
