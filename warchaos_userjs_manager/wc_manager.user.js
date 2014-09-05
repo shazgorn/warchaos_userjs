@@ -32,16 +32,9 @@ function f() {
             basepath = "https://rawgit.com/shazgorn/warchaos_userjs/master/warchaos_userjs_manager/";
         }
         // жабаскрипт головного мозга
-        addScript("http://yastatic.net/jquery/2.1.1/jquery.min.js", function() {
+        addScript("http://code.jquery.com/jquery-1.9.1.js", function() {
             addScript(basepath + 'scripts.js', function() {
                 for (var i = 0; i < scripts.length; i++) {
-                    if (scripts[i].match) {
-                        for (var j = 0; j < scripts[i].match.length; j++) {
-                            console.log(scripts[i].match[j].charAt(-1));
-                        }
-                    } else {
-
-                    }
                     addScript(basepath + scripts[i].name + '.js');
                     var ifr = window.frames['ifr'];
                     if (ifr) {
