@@ -109,3 +109,4 @@ function icon_replacer() {
         }
     }//for
 }
+window.icon_replacer = icon_replacer;
