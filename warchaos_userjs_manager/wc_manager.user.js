@@ -33,15 +33,12 @@ function f() {
                 for (var k = 0; k < script.events.length; k++) {
                     switch (script.events[k]) {
                         case 'click':
-                            console.log(name);
                             window.addEventListener('click', function() {
                                 evalScript(name);
                             }, false);
                             break;
                         case 'load':
-//                            window.addEventListener('load', function() {
-                            evalScript(name, 1000);
-//                            }, false);
+                            evalScript(name, 0);
                             break;
                         case 'frame_load':
                             ifr.addEventListener('load', function() {
@@ -57,8 +54,9 @@ function f() {
                 delay = 0;
             }
             setTimeout(function() {
-//                console.log(name);
-                eval(name + '()');
+                if (window[name]) {
+                    window[name]();
+                }
             }, delay);
         }
         function loadScripts() {
@@ -69,7 +67,6 @@ function f() {
                         if ((matchurl.charAt(lastIndex) === "*"
                                 && location.href.substr(0, lastIndex) === matchurl.substr(0, lastIndex))
                                 || location.href === matchurl) {
-//                                console.log(icon_replacer);
                             if (typeof window[scripts[i].name] !== "undefined") {
                                 addScript(basepath + scripts[i].name + '.js');
                             }

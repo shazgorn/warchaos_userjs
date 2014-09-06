@@ -1,8 +1,8 @@
 function marker() {
-    addEventListener("click", function(e) {
+    window.addEventListener("click", function(e) {
         if (e.altKey && e.target == "[object HTMLImageElement]" && e.target.hasAttribute("sck"))
             eval(e.target.getAttribute("sck"));
-        if (e.altKey || e.shiftKey || e.button == 2) {
+        if (e.altKey || e.shiftKey || e.button === 2) {
             setTimeout(function() {
                 var input = document.getElementById("miniinfoy");
                 if (input !== null) {
