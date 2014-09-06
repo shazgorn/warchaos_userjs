@@ -160,8 +160,10 @@ function boiler() {
         console.log('brew2', brew);
         setTimeout(function() {
             var res = getIngredients(localStorage.getItem("boiler_type"));
+            console.log(res);
             $(res).each(function(i, el) {
                 var img = $("img[src='it/" + el.id + ".gif']");
+                console.log(img);
                 if (img.length) {
                     img.nextAll("input").val(el.count);
                 }
