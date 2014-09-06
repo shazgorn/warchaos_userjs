@@ -182,6 +182,9 @@ function boiler() {
                 sessionStorage.setItem('brew', brew = 4);
                 boiler_running = false;
                 console.log('before click3');
+                if (typeof u === 'undefined') {
+                    u = document.getElementById('cise');
+                }
                 $(el).click();
                 console.log('after click3');
             }
