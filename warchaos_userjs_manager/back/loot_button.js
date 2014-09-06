@@ -331,17 +331,10 @@ function heroInventory() {
 }
 
 function loot_button() {
-    if (typeof $.ui === "undefined") {
-        addScript("http://code.jquery.com/ui/1.10.3/jquery-ui.js");
-        var link = document.createElement("link");
-        link.setAttribute("rel", "stylesheet");
-        link.setAttribute("href", "http://warchaosujs.gixx.ru/jquery-ui/css/sunny/jquery-ui-1.10.3.custom.css");
-        document.head.appendChild(link);
-    }
-    if (typeof $ === "undefined" || typeof $.ui === "undefined") {
-        setTimeout(loot_button, 100);
-        return;
-    }
+    var link = document.createElement("link");
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("href", "http://warchaosujs.gixx.ru/jquery-ui/css/sunny/jquery-ui-1.10.3.custom.css");
+    document.head.appendChild(link);
     $("input[type='submit'][class='cmb'][value='Взять'], input[type='submit'][class='cmb'][value='Ok']").attr("style", style);
     createButton(all);
     createButton(artefacts);

@@ -6,16 +6,6 @@ var navLinks = [
     ["Настройки", "http://warchaos.ru/user/preferences/"],
 //            ["Ситы", ""]
 ];
-function addScript(src) {
-    var scripts = document.getElementsByTagName("script");
-    for (var i = 0; i < scripts.length; i++) {
-        if (scripts[i].getAttribute("src") == src)
-            return;
-    }
-    var script = document.createElement("script");
-    script.src = src;
-    document.head.appendChild(script);
-}
 
 function getWindowObject() {
     return window;
@@ -318,17 +308,10 @@ function addAdditionalNav() {
 }
 
 function main_menu() {
-    if (typeof $.ui === "undefined") {
-        addScript("http://code.jquery.com/ui/1.10.3/jquery-ui.js");
-        var link = document.createElement("link");
-        link.setAttribute("rel", "stylesheet");
-        link.setAttribute("href", "http://warchaosujs.gixx.ru/jquery-ui/css/sunny/jquery-ui-1.10.3.custom.css");
-        document.head.appendChild(link);
-    }
-    if (typeof $ === "undefined" || typeof $.ui === "undefined") {
-        setTimeout(main_menu, 100);
-        return;
-    }
+    var link = document.createElement("link");
+    link.setAttribute("rel", "stylesheet");
+    link.setAttribute("href", "http://warchaosujs.gixx.ru/jquery-ui/css/sunny/jquery-ui-1.10.3.custom.css");
+    document.head.appendChild(link);
     var li, a, i, j;
     if (document.URL != "http://warchaos.ru/f/a") {
         var bookBlockId = "me500i";
