@@ -56,6 +56,9 @@ function f() {
         }
     }
     function evalScript(name, delay) {
+        if (typeof u === 'undefined') {
+            u = document.getElementById('cise');
+        }
         if (typeof delay === "undefined") {
             delay = 0;
         }
@@ -111,7 +114,6 @@ function f() {
             li.prependTo("#me600i");
             var a = $(document.createElement("a"));
             a.html("Настройки скриптов");
-//            a.attr("href", "#manager-prefs");
             a.click(function() {
                 $("#manager-prefs").dialog("open");
             });
