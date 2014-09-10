@@ -224,7 +224,7 @@ function parseMapAndDoSomeOtherStaff() {
                     }, function() {
             }, []);
         }
-    } else if (location.href.pathname === "f/a" && notOnTournamentArena() && typeof window.top.players !== "undefined") {
+    } else if (location.pathname === "/f/a" && notOnTournamentArena() && typeof window.top.players !== "undefined") {
         var tbl;  // table with map
         var dmap = top.document.getElementById('dmap');
         if (dmap) {
@@ -235,7 +235,6 @@ function parseMapAndDoSomeOtherStaff() {
         var req = formRequest(tbl);
         world = findWorldByPlayersName(window.top.players[1]);
         if (world == parseMapAndDoSomeOtherStaff.WORLD) {
-            console.log(window);
             document.getElementById('sd_map').contentWindow.postMessage(req, "http://dragonmap.ru/thispageshouldneverexist");
             var fonts = document.getElementsByTagName("font");
             if (fonts) {
@@ -272,6 +271,16 @@ function parseMapAndDoSomeOtherStaff() {
     }
 } // fun
 
+function testIframe_init() {
+    var test_iframe = document.createElement('iframe');
+    test_iframe.setAttribute('src', 'http://dragonmap.ru/thispageshouldneverexist');
+    test_iframe.setAttribute('id', 'test_iframe');
+    test_iframe.setAttribute('style', 'width: 80%; height: 100%; margin: 30px 50px 30px 50px; display: none;'); //display: none;
+    document.body.appendChild(test_iframe);
+    $(test_iframe).ready(function() {
+        console.log('ready');
+    });
+}
 function mapper_shaz_init() {
     if (location.href.search(/snapshot|f\/a/) != -1) {
         var sd_map_iframe = document.createElement('iframe');
@@ -290,7 +299,7 @@ function mapper_shaz_init() {
     } else if (location.href == "http://dragonmap.ru/thispageshouldneverexist") {
         addEventListener('message', function(e) {
             if (e.origin === 'http://warchaos.ru') {
-                    console.log('incoming ' + ' from ' + e.origin + ' ' + e.data );
+                console.log('incoming ' + ' from ' + e.origin + ' ' + e.data);
                 var mapperURL = "http://dragonmap.ru/cgi-bin/mapper3";
                 ajaxRequest(mapperURL, 'POST', e.data, function() {
                 }, function() {
