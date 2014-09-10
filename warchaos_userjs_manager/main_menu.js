@@ -399,9 +399,9 @@ function main_menu() {
         }//for
 
         //Add next/prev links at top of pages. Use with caution
-        if (document.URL.search(/msg|log|archive|clan\/\d|lenta|snapshots|top/) != -1) {
+        if (document.URL.search(/msg|log|archive|clan\/\d|lenta|snapshots|top/) !== -1) {
             var mtext = $(".mtext").get(0);
-            if (mtext !== null && mtext.innerHTML.search("Следующая") != -1) {
+            if (typeof mtext !== "undefined" && mtext.innerHTML.search("Следующая") !== -1) {
                 var nextPrevBar = mtext.cloneNode(true);
                 var firstMsg = $(".xrw xmsg").get(0);
                 if (!firstMsg)

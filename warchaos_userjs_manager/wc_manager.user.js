@@ -4,6 +4,7 @@
 // @author         shazgorn@ya.ru
 // @description    Control script loading
 // @match          http://warchaos.ru/*
+// @match          http://dragonmap.ru/*
 // @version        1.00
 // @downloadURL    https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/warchaos_userjs_manager/wc_manager.user.js
 // ==/UserScript==
