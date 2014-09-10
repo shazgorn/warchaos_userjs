@@ -224,7 +224,7 @@ function parseMapAndDoSomeOtherStaff() {
                     }, function() {
             }, []);
         }
-    } else if (location.href.search("f/a") != -1 && notOnTournamentArena() && typeof window.top.players !== "undefined") {
+    } else if (location.href.pathname === "f/a" && notOnTournamentArena() && typeof window.top.players !== "undefined") {
         var tbl;  // table with map
         var dmap = top.document.getElementById('dmap');
         if (dmap) {
@@ -235,7 +235,12 @@ function parseMapAndDoSomeOtherStaff() {
         var req = formRequest(tbl);
         world = findWorldByPlayersName(window.top.players[1]);
         if (world == parseMapAndDoSomeOtherStaff.WORLD) {
+            try {
+                console.log(window);
             document.getElementById('sd_map').contentWindow.postMessage(req, "http://dragonmap.ru/thispageshouldneverexist");
+        } catch (e) {
+            console.log('!!!', e);
+        }
             var fonts = document.getElementsByTagName("font");
             if (fonts) {
                 for (var i = 0; i < fonts.length; i++) {
