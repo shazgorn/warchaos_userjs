@@ -325,6 +325,6 @@ function mapper_shaz_init() {
      */
 }
 
-function mapper_shaz() {
+function mapper_shaz_t() {
     //stub
 }

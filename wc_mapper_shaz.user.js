@@ -2,27 +2,47 @@
 // @name           Warchaos Mapper for Liaf
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Mapper use iframe and window.postMessage
+// @include        http://dragonmap.ru/thispageshouldneverexist
+// @include        http://warchaos.ru/*
+// @include        http://warchaos.ru/f/a
+// @include        http://warchaos.ru/snapshot/*
+// @include        http://warchaos.ru/~snapshot/*
 // @match          http://dragonmap.ru/thispageshouldneverexist
 // @match          http://warchaos.ru/*
 // @match          http://warchaos.ru/f/a
 // @match          http://warchaos.ru/snapshot/*
 // @match          http://warchaos.ru/~snapshot/*
-// @version        1.2
-// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_mapper_shaz.user.js
 // ==/UserScript==
 
 
-(function() {
+(function () {
     // return;
 
     function source() {
-        parseMapAndDoSomeOtherStaff.WORLD = "Лиаф";
+        parseMapAndDoSomeOtherStaff.WORLD = "Мортал";
+
+        function l() {
+            var t = "";
+            for (var i = 0; i < arguments.length; i++)
+                t += arguments[i] + ' ';
+            if (navigator.appName == "Opera")
+                opera.postError(new Date().toTimeString() + ": " + t);
+        }
+
+        function insertAfter(el1, el2) {
+            if (!el2.parentNode)
+                return;
+            if (el2.nextSibling)
+                el2.parentNode.insertBefore(el1, el2.nextSibling);
+            else
+                el2.parentNode.appendChild(el1);
+        }
 
         function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
             var xmlHttpRequest = new XMLHttpRequest();
             xmlHttpRequest.open(method, url, true);
             xmlHttpRequest.setRequestHeader('Content-Type', 'text/plain');
-            xmlHttpRequest.onreadystatechange = function() {
+            xmlHttpRequest.onreadystatechange = function (e) {
                 if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
                     onSuccess(xmlHttpRequest, args);
                 }
@@ -31,36 +51,35 @@
             };
             xmlHttpRequest.send(param);
         }
-        /*
-         function addOptionsButton() {
-         // this button will show map in iframe. uncomment it in parseMapAndDoSomeOtherStaff()
-         var cntr = document.getElementById('cntr');
-         if (cntr) {
-         var tbl = cntr.parentNode.parentNode.parentNode.parentNode;
-         var b = document.createElement('button');
-         b.setAttribute('class', 'but40');
-         var img = document.createElement('img');
-         img.setAttribute('src', 'ctrl/map.gif'); //http://warchaos.ru/fp
-         b.appendChild(img);
-         if (tbl.rows.length == 4) {
-         tbl.insertRow(4).insertCell(0).appendChild(b);
-         b.addEventListener('click', function() {
-         var sd_map_iframe = document.getElementById('sd_map');
-         if (sd_map_iframe) {
-         if (sd_map_iframe.getAttribute('style').search('display: none') == -1) {
-         sd_map_iframe.setAttribute('style', 'width: 1000px; height: 1000px; margin: 30px 50px 30px 50px; display: none;');
-         sd_map_iframe.setAttribute('src', 'http://dragonmap.ru/404');
-         }
-         else {
-         sd_map_iframe.setAttribute('style', 'width: 1000px; height: 1000px; margin: 30px 50px 30px 50px; display: inline;');
-         sd_map_iframe.setAttribute('src', 'http://dragonmap.ru/akrit/');
-         }
-         }
-         }, false);
-         }
-         }
-         }
-         */
+
+        function addOptionsButton() {
+            // this button will show map in iframe. uncomment it in parseMapAndDoSomeOtherStaff()
+            var cntr = document.getElementById('cntr');
+            if (cntr) {
+                var tbl = cntr.parentNode.parentNode.parentNode.parentNode;
+                var b = document.createElement('button');
+                b.setAttribute('class', 'but40');
+                var img = document.createElement('img');
+                img.setAttribute('src', 'ctrl/map.gif'); //http://warchaos.ru/fp
+                b.appendChild(img);
+                if (tbl.rows.length == 4) {
+                    tbl.insertRow(4).insertCell(0).appendChild(b);
+                    b.addEventListener('click', function () {
+                        var sd_map_iframe = document.getElementById('sd_map');
+                        if (sd_map_iframe) {
+                            if (sd_map_iframe.getAttribute('style').search('display: none') == -1) {
+                                sd_map_iframe.setAttribute('style', 'width: 1000px; height: 1000px; margin: 30px 50px 30px 50px; display: none;');
+                                sd_map_iframe.setAttribute('src', 'http://dragonmap.ru/404');
+                            }
+                            else {
+                                sd_map_iframe.setAttribute('style', 'width: 1000px; height: 1000px; margin: 30px 50px 30px 50px; display: inline;');
+                                sd_map_iframe.setAttribute('src', 'http://dragonmap.ru/mortal/');
+                            }
+                        }
+                    }, false);
+                }
+            }
+        }
         /**
          * parse table with map, return string for server
          */
@@ -68,24 +87,21 @@
             if (typeof tbl == 'undefined') {
                 return;
             }
-            var img, res, xy,
-                    m = '',
-                    bgReg = /land\d\/(\d+)\.gif/, //landscape
-                    xyReg = /x\:(\d+) y\:(\d+)/, //cell coords example: x:424 y:270
-                    delReg = /<(?:\w+|\s|=|\/|#|:|\.)+>/gi, //delete tags
-                    difY = Math.abs((tbl.rows.length - 1) / 2 - 7),
-                    difX = Math.abs((tbl.rows[0].cells.length - 1) / 2 - 7);
-            for (var i = difY; i < tbl.rows.length - difY; i++) {
-                for (var j = difX; j < tbl.rows[i].cells.length - difX; j++) {
+            var m = '';
+            var bgReg = /land\d\/(\d+)\.gif/; //landscape
+            var xyReg = /x\:(\d+) y\:(\d+)/; //cell coords example: x:424 y:270
+            var delReg = /<(?:\w+|\s|=|\/|#|:|\.)+>/gi; //delete tags
+            for (var i = 0; i < tbl.rows.length; i++) {
+                for (var j = 0; j < tbl.rows[i].cells.length; j++) {
                     var c = tbl.rows[i].cells[j];
                     if (c.hasAttribute('background')) {
                         //unit on the ground
-                        res = bgReg.exec(c.getAttribute('background'));
-                        if (res !== null) {
-                            img = c.getElementsByTagName('img')[0];
-                            xy = xyReg.exec(img.getAttribute('tooltip'));
+                        var res = bgReg.exec(c.getAttribute('background'));
+                        if (res != null) {
+                            var img = c.getElementsByTagName('img')[0];
+                            var xy = xyReg.exec(img.getAttribute('tooltip'));
                             if (xy && (img.getAttribute('tooltip').search("Темнота") == -1)) {
-                                m += (xy[1] * 1000 + xy[2] * 1) + '$';
+                                m += (xy[1] * 10000 + xy[2] * 1) + '$';
                                 m += res[1];
                                 res = img.getAttribute('src').replace('.gif', '');
                                 if (res != 19 && res != 29 && res != 39 && res != 49 && res != 59 && res != 69) {  //peon
@@ -102,13 +118,13 @@
                         }
                     } else {
                         //ground
-                        img = c.getElementsByTagName('img')[0];
+                        var img = c.getElementsByTagName('img')[0];
                         if (img) {
-                            res = bgReg.exec(img.getAttribute('src'));
-                            if (res !== null) {
-                                xy = xyReg.exec(img.getAttribute('tooltip'));
+                            var res = bgReg.exec(img.getAttribute('src'));
+                            if (res != null) {
+                                var xy = xyReg.exec(img.getAttribute('tooltip'));
                                 if (xy && (img.getAttribute('tooltip').search("Темнота") == -1)) {  //terra incognita check
-                                    m += (xy[1] * 1000 + xy[2] * 1) + '$';
+                                    m += (xy[1] * 10000 + xy[2] * 1) + '$';
                                     m += res[1] + '&';
                                 }
                             }
@@ -127,8 +143,8 @@
             var nickname = XHR.responseText.match(/color=#182809>([^<]+)/)[1];
             var world = XHR.responseText.match(/>[^<]+<\/td><td>[^<]+<\/td>/g)[1].match(/>[^<]+<\/td><td>([^<]+)<\/td>/)[1];
             var accounts = localStorage.getItem('accounts');
-            if (accounts === null) {
-                accounts = [];
+            if (accounts == null) {
+                accounts = new Array();
             } else {
                 accounts = accounts.split(',');
             }
@@ -140,8 +156,8 @@
 
         function findWorldByPlayersName(name) {
             var accounts = localStorage.getItem('accounts');
-            if (accounts === null) {
-                accounts = [];
+            if (accounts == null) {
+                accounts = new Array();
             } else {
                 accounts = accounts.split(',');
                 for (var i = 0; i < accounts.length; i += 2) {
@@ -155,11 +171,11 @@
 
         function formRequest(tbl) {
             var m = parseMap(tbl);
-            if (!(m === null || (m !== null && m.length <= 0))) {
+            if (!(m == null || (m != null && m.length <= 0))) {
                 var nickname = localStorage.getItem('nickname');
-                while (nickname === null) {
+                while (nickname == null) {
                     nickname = prompt("Введите ваш ник", "nickname");
-                    if (nickname != 'nickname' && nickname != 'new-dragon' && nickname !== '' && nickname !== null) {
+                    if (nickname != 'nickname' && nickname != 'new-dragon' && nickname != '' && nickname != null) {
                         localStorage.setItem('nickname', nickname);
                         break;
                     }
@@ -179,7 +195,7 @@
             b.value = "Обновить карту";
             document.getElementsByTagName("div")[0].getElementsByTagName("center")[0].getElementsByTagName("table")[0]
                     .rows[0].cells[1].appendChild(b);
-            b.addEventListener("click", function() {
+            b.addEventListener("click", function () {
                 this.disabled = true;
                 var tbl = document.getElementsByTagName("div")[0].getElementsByTagName("center")[0].getElementsByTagName("table")[
                         document.getElementsByTagName("div")[0].getElementsByTagName("center")[0].getElementsByTagName("table").length - 2];  //snapshot
@@ -196,7 +212,7 @@
                     document.getElementsByTagName("div")[0].getElementsByTagName("center")[0].getElementsByTagName("table").length - 2];
             var xyReg = /x\:(\d+) y\:(\d+)/; //cell coords example: x:424 y:270
             var xy = tbl.rows[tbl.rows.length / 2 - 0.5].cells[tbl.rows[0].cells.length / 2 - 0.5].getElementsByTagName("img")[0].getAttribute("tooltip").match(xyReg);
-            a.href = "http://dragonmap.ru/akrit?x=" + xy[1] + "&y=" + xy[2];
+            a.href = "http://dragonmap.ru/mortal?x=" + xy[1] + "&y=" + xy[2];
             document.getElementsByTagName("div")[0].getElementsByTagName("center")[0].getElementsByTagName("table")[0]
                     .rows[0].cells[1].appendChild(document.createTextNode(" / "));
             document.getElementsByTagName("div")[0].getElementsByTagName("center")[0].getElementsByTagName("table")[0]
@@ -216,30 +232,30 @@
         /**
          * Description: find table with map, parse cells coordinates and terrain type, join them into single string, send to server
          * Params:
-         * onButtonPress: true - function was called by onclick event handler. Map will be updated with info from snapshot.
+         * 	onButtonPress: true - function was called by onclick event handler. Map will be updated with info from snapshot.
          */
 
         function parseMapAndDoSomeOtherStaff() {
             // addOptionsButton();
-            var world;
+
             if (location.href.search('snapshot') != -1) {
                 // check if in database
                 var nick = document.getElementsByTagName("div")[0].getElementsByTagName("table")[0].rows[0].cells[1]
                         .getElementsByTagName('a')[0].innerHTML;
-                world = findWorldByPlayersName(nick);
+                var world = findWorldByPlayersName(nick);
                 if (world == parseMapAndDoSomeOtherStaff.WORLD) {
                     addGoToMapLink();
                     addUpdateMapButton();
-                } else if (world === null) {
+                } else if (world == null) {
                     ajaxRequest(document.getElementsByTagName("div")[0].getElementsByTagName("table")[0].rows[0].cells[1]
                             .getElementsByTagName('a')[0].href,
-                            'POST', '', function(XHR) {
+                            'POST', '', function (XHR, args) {
                                 var world = addToAccounts(XHR);
                                 if (world == parseMapAndDoSomeOtherStaff.WORLD) {
                                     addGoToMapLink();
                                     addUpdateMapButton();
                                 }
-                            }, function() {
+                            }, function () {
                     }, []);
                 }
             } else if (location.href.search("f/a") != -1 && notOnTournamentArena() && typeof window.top.players !== "undefined") {
@@ -251,14 +267,14 @@
                     tbl = document.getElementsByTagName('button')[0].nextSibling;  // Observatory -> View
                 }
                 var req = formRequest(tbl);
-                world = findWorldByPlayersName(window.top.players[1]);
+                var world = findWorldByPlayersName(window.top.players[1]);
                 if (world == parseMapAndDoSomeOtherStaff.WORLD) {
                     document.getElementById('sd_map').contentWindow.postMessage(req, "http://dragonmap.ru/thispageshouldneverexist");
                     var fonts = document.getElementsByTagName("font");
                     if (fonts) {
                         for (var i = 0; i < fonts.length; i++) {
                             if (fonts[i].innerHTML == "Снэпшот успешно сделан.") {
-                                ajaxRequest('http://warchaos.ru/snapshots/0', 'POST', '', function(XHR, font) {
+                                ajaxRequest('http://warchaos.ru/snapshots/0', 'POST', '', function (XHR, font) {
                                     font.innerHTML = "";
                                     // <a href=http://warchaos.ru/snapshot/2492/166&342096535/33929>Смотреть</a>
                                     var link = XHR.responseText.match(/a href\=(http\:\/\/[^>]+)>Смотреть/)[1];
@@ -269,7 +285,7 @@
                                         font.appendChild(a);
                                     }
                                 },
-                                        function() {
+                                        function () {
                                             // l('err')
                                         },
                                         fonts[i]
@@ -277,13 +293,13 @@
                             }
                         }
                     }
-                } else if (world === null) {
-                    ajaxRequest('http://warchaos.ru/~uid/', 'POST', '', function(XHR, args) {
+                } else if (world == null) {
+                    ajaxRequest('http://warchaos.ru/~uid/', 'POST', '', function (XHR, args) {
                         var world = addToAccounts(XHR);
                         if (world == parseMapAndDoSomeOtherStaff.WORLD) {
                             document.getElementById('sd_map').contentWindow.postMessage(args, "http://dragonmap.ru/thispageshouldneverexist");
                         }
-                    }, function() {
+                    }, function () {
                     }, req);
                 }
             }
@@ -295,21 +311,21 @@
             sd_map_iframe.setAttribute('id', 'sd_map');
             sd_map_iframe.setAttribute('style', 'width: 80%; height: 100%; margin: 30px 50px 30px 50px; display: none;'); //display: none;
             document.body.appendChild(sd_map_iframe);
-            (function(f) {
+            (function (f) {
                 var wc_ifr = document.getElementById("ifr");
                 if (wc_ifr)
-                    wc_ifr.addEventListener("load", function() {
+                    wc_ifr.addEventListener("load", function () {
                         setTimeout(f, 0);
                     }, false);
                 f();
             })(parseMapAndDoSomeOtherStaff);
         } else if (location.href == "http://dragonmap.ru/thispageshouldneverexist") {
-            addEventListener('message', function(e) {
-                if (e.origin == 'http://warchaos.ru') {
-//                    console.log('incoming ' + ' from ' + e.origin + ' ' + e.data );
-                    var mapperURL = "http://dragonmap.ru/cgi-bin/mapper3";
-                    ajaxRequest(mapperURL, 'POST', e.data, function() {
-                    }, function() {
+            addEventListener('message', function (e) {
+                if (e.origin = 'http://warchaos.ru') {
+                    // l('incoming ' + ' from ' + e.origin + ' ' + e.data );
+                    var mapperURL = "http://dragonmap.ru/cgi-bin/mapper_mortal";
+                    ajaxRequest(mapperURL, 'POST', e.data, function (XHR) { /* l(XHR.responseText); */
+                    }, function () {
                     });
                 }
             }, false);

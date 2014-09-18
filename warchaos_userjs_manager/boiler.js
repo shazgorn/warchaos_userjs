@@ -1,4 +1,6 @@
+var boiler_running = false;
 function boiler_init() {
+    console.log('boiler init');
     boiler_running = false;
     if ($('#brew-button').length === 0) {
         var select = document.createElement("select");
@@ -84,6 +86,7 @@ function getIngredients(type) {
 }
 
 function boiler() {
+    console.log($('img[src="9162.gif"]').length);
     if ($('img[src="9162.gif"]').length > 0) {
         $('#brew-button, #brew-select-type').show();
     } else {
@@ -99,6 +102,8 @@ function boiler() {
         brew = 1;
     }
     if (brew === 4 && $("#inv td[valign='middle']").length === 1) {
+        $("font[color='blue']");
+//        return;
         sessionStorage.setItem('brew', brew = 5);
         ShowInv2();
         $('.cmb2').click();
@@ -117,7 +122,7 @@ function boiler() {
             console.log('fin4');
         }
     }
-    if (brew === 5 && $("#inv td[valign='middle']").length === 0 && parseInt($("font[color='#800000']").html()) > 0) {
+    if (brew === 5 && $("#inv td[valign='middle']").length === 0 && parseInt($("font[color='#800000'][style]").html()) > 0) {
         console.log(5);
         boiler_running = false;
         sessionStorage.setItem('brew', brew = 1);
@@ -126,14 +131,14 @@ function boiler() {
     }
 
 //    console.log(brew, $("#inv td[valign='middle']").length, parseInt($("font[color='#800000']").html()));
-    if (brew === 5 && $("#inv td[valign='middle']").length === 0 && parseInt($("font[color='#800000']").html()) === 0) {
+    if (brew === 5 && $("#inv td[valign='middle']").length === 0 && parseInt($("font[color='#800000'][style]").html()) === 0) {
 //        console.log('brew5', brew);
         // find next boiler
         $('img[src="9162.gif"]').parent().parent().parent().nextAll('td').find('img[src="162.gif"]').parent().parent().first().click();
         boiler_running = false;
         return;
     }
-    if (brew === 1 && $("#inv td[valign='middle']").length < 4 && parseInt($("font[color='#800000']").html()) > 0) {
+    if (brew === 1 && $("#inv td[valign='middle']").length < 4 && parseInt($("font[color='#800000'][style]").html()) > 0) {
         console.log('brew1', brew);
         $('button').each(function(i, el) {
             if (el.innerHTML === "Варить") {
