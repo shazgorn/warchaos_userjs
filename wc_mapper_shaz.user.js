@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name           Warchaos Mapper for Liaf
+// @name           Warchaos Mapper for Mortal
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Mapper use iframe and window.postMessage
 // @include        http://dragonmap.ru/thispageshouldneverexist
