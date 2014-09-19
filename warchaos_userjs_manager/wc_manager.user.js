@@ -4,7 +4,7 @@
 // @author         shazgorn@ya.ru
 // @description    Control script loading
 // @match          http://warchaos.ru/*
-// @match          http://dragonmap.ru/*
+// @match          http://dragonmap.ru/thispageshouldneverexist
 // @version        1.00
 // @downloadURL    https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/warchaos_userjs_manager/wc_manager.user.js
 // ==/UserScript==
@@ -31,6 +31,7 @@ function f() {
     }
 
     function bindEvents(script) {
+        console.log(script.name);
         var name = script.name;
         if (window[name + '_init']) {
             window[name + '_init']();

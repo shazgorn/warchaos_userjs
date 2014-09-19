@@ -1,4 +1,4 @@
-parseMapAndDoSomeOtherStaff.WORLD = "Лиаф";
+parseMapAndDoSomeOtherStaff.WORLD = "Мортал";
 
 function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
     var xmlHttpRequest = new XMLHttpRequest();
@@ -202,6 +202,7 @@ function notOnTournamentArena() {
  */
 
 function parseMapAndDoSomeOtherStaff() {
+    console.log("m3");
     // addOptionsButton();
     var world;
     if (location.href.search('snapshot') != -1) {
@@ -235,6 +236,7 @@ function parseMapAndDoSomeOtherStaff() {
         var req = formRequest(tbl);
         world = findWorldByPlayersName(window.top.players[1]);
         if (world == parseMapAndDoSomeOtherStaff.WORLD) {
+            console.log('m1');
             document.getElementById('sd_map').contentWindow.postMessage(req, "http://dragonmap.ru/thispageshouldneverexist");
             var fonts = document.getElementsByTagName("font");
             if (fonts) {
@@ -282,6 +284,7 @@ function testIframe_init() {
     });
 }
 function mapper_shaz_init() {
+    console.log("i1");
     if (location.href.search(/snapshot|f\/a/) != -1) {
         var sd_map_iframe = document.createElement('iframe');
         sd_map_iframe.setAttribute('src', 'http://dragonmap.ru/thispageshouldneverexist');
@@ -296,16 +299,9 @@ function mapper_shaz_init() {
                 }, false);
             f();
         })(parseMapAndDoSomeOtherStaff);
+        console.log("i2");
     } else if (location.href == "http://dragonmap.ru/thispageshouldneverexist") {
-        addEventListener('message', function(e) {
-            if (e.origin === 'http://warchaos.ru') {
-                console.log('incoming ' + ' from ' + e.origin + ' ' + e.data);
-                var mapperURL = "http://dragonmap.ru/cgi-bin/mapper3";
-                ajaxRequest(mapperURL, 'POST', e.data, function() {
-                }, function() {
-                });
-            }
-        }, false);
+
     }
     /*
      else {
