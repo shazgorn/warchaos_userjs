@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some links to main menu
 // @match          http://warchaos.ru/*
-// @version        1.31
+// @version        1.32
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_main_menu.user.js
 // ==/UserScript==
 
