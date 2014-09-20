@@ -206,6 +206,7 @@ function notOnTournamentArena() {
 function parseMapAndDoSomeOtherStaff() {
     // addOptionsButton();
     var world;
+    console.log(location.pathname === "/f/a", notOnTournamentArena(), typeof window.top.players !== "undefined");
     if (location.href.search('snapshot') != -1) {
         // check if in database
         var nick = document.getElementsByTagName("div")[0].getElementsByTagName("table")[0].rows[0].cells[1]
