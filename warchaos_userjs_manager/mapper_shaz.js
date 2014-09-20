@@ -110,7 +110,7 @@ function addToAccounts(XHR) {
     // >Мир:</td><td>Лиаф</td>
     var nickname = XHR.responseText.match(/color=#182809>([^<]+)/)[1];
     var world = XHR.responseText.match(/>[^<]+<\/td><td>[^<]+<\/td>/g)[1].match(/>[^<]+<\/td><td>([^<]+)<\/td>/)[1];
-    var accounts = localStorage.getItem('accounts');
+    var accounts = sessionStorage.getItem('accounts');
     if (accounts === null) {
         accounts = [];
     } else {
@@ -118,12 +118,12 @@ function addToAccounts(XHR) {
     }
     accounts.push(nickname);
     accounts.push(world);
-    localStorage.setItem('accounts', accounts);
+    sessionStorage.setItem('accounts', accounts);
     return world;
 }
 
 function findWorldByPlayersName(name) {
-    var accounts = localStorage.getItem('accounts');
+    var accounts = sessionStorage.getItem('accounts');
     if (accounts === null) {
         accounts = [];
     } else {
