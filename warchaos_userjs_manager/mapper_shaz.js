@@ -284,7 +284,9 @@ function testIframe_init() {
     });
 }
 function mapper_shaz_init() {
+    console.log("init");
     if (location.href.search(/snapshot|f\/a/) != -1) {
+        console.log("init2");
         var sd_map_iframe = document.createElement('iframe');
         sd_map_iframe.setAttribute('src', 'http://dragonmap.ru/thispageshouldneverexist');
         sd_map_iframe.setAttribute('id', 'sd_map');
