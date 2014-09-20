@@ -67,7 +67,8 @@ function parseMap(tbl) {
                     img = c.getElementsByTagName('img')[0];
                     xy = xyReg.exec(img.getAttribute('tooltip'));
                     if (xy && (img.getAttribute('tooltip').search("Темнота") == -1)) {
-                        m += (xy[1] * 1000 + xy[2] * 1) + '$';
+                        parsedCoord = parseInt(xy[1]) * 10000 + parseInt(xy[2]);
+                        m += parsedCoord + '$';
                         m += res[1];
                         res = img.getAttribute('src').replace('.gif', '');
                         if (res != 19 && res != 29 && res != 39 && res != 49 && res != 59 && res != 69) {  //peon
@@ -90,7 +91,8 @@ function parseMap(tbl) {
                     if (res !== null) {
                         xy = xyReg.exec(img.getAttribute('tooltip'));
                         if (xy && (img.getAttribute('tooltip').search("Темнота") == -1)) {  //terra incognita check
-                            m += (xy[1] * 1000 + xy[2] * 1) + '$';
+                            parsedCoord = parseInt(xy[1]) * 10000 + parseInt(xy[2]);
+                            m += parsedCoord + '$';
                             m += res[1] + '&';
                         }
                     }
@@ -202,7 +204,6 @@ function notOnTournamentArena() {
  */
 
 function parseMapAndDoSomeOtherStaff() {
-    console.log("m3");
     // addOptionsButton();
     var world;
     if (location.href.search('snapshot') != -1) {
@@ -236,7 +237,6 @@ function parseMapAndDoSomeOtherStaff() {
         var req = formRequest(tbl);
         world = findWorldByPlayersName(window.top.players[1]);
         if (world == parseMapAndDoSomeOtherStaff.WORLD) {
-            console.log('m1');
             document.getElementById('sd_map').contentWindow.postMessage(req, "http://dragonmap.ru/thispageshouldneverexist");
             var fonts = document.getElementsByTagName("font");
             if (fonts) {
@@ -280,11 +280,9 @@ function testIframe_init() {
     test_iframe.setAttribute('style', 'width: 80%; height: 100%; margin: 30px 50px 30px 50px; display: none;'); //display: none;
     document.body.appendChild(test_iframe);
     $(test_iframe).ready(function() {
-        console.log('ready');
     });
 }
 function mapper_shaz_init() {
-    console.log("i1");
     if (location.href.search(/snapshot|f\/a/) != -1) {
         var sd_map_iframe = document.createElement('iframe');
         sd_map_iframe.setAttribute('src', 'http://dragonmap.ru/thispageshouldneverexist');
@@ -299,7 +297,6 @@ function mapper_shaz_init() {
                 }, false);
             f();
         })(parseMapAndDoSomeOtherStaff);
-        console.log("i2");
     } else if (location.href == "http://dragonmap.ru/thispageshouldneverexist") {
 
     }
@@ -321,6 +318,6 @@ function mapper_shaz_init() {
      */
 }
 
-function mapper_shaz_t() {
+function mapper_shaz() {
     //stub
 }

@@ -8,7 +8,7 @@ var scripts = [
     {name: "main_menu", events: ["load"], match: ["http://warchaos.ru/*"], libraries: ["jquery-ui"], desc: "Ссылки в главном меню, индикаторы зелий"},
 //    {name: "mandragora", events: ["click"], match: ["http://warchaos.ru/f/a"], desc: "Сборка мандрагоры"},
     {name: "mapper_shaz", events: [], match: ["http://warchaos.ru/*"], desc: "Маппер"},
-    {name: "mapper_sender_shaz", events: [], match: ["http://dragonmap.ru/thispageshouldneverexist"], desc: "Маппер сендер"},
+//    {name: "mapper_sender_shaz", events: [], match: ["http://dragonmap.ru/thispageshouldneverexist"], desc: "Маппер сендер"},
 //    {name: "marker", events: ["load"], match: ["http://warchaos.ru/f/a"], desc: "Маркер(25ч., для сокланов)"},
 //    {name: "replace_force_size", events: ["frame_load", "click", "load"], match: ["http://warchaos.ru/f/a", "http://warchaos.ru/snapshot/*", "http://warchaos.ru/~snapshot/*"], desc: "Замена словесных обозначений войск на числовые"},
 //    {name: "safe_names", events: ["frame_load", "click", "load"], match: ["http://warchaos.ru/f/a"], desc: "Добавляет имена сейфам"},
