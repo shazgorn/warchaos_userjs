@@ -205,7 +205,7 @@ function notOnTournamentArena() {
 
 function parseMapAndDoSomeOtherStaff() {
     // addOptionsButton();
-    var world;
+    var world = findWorldByPlayersName(window.top.players[1]);
     console.log(location.pathname === "/f/a", notOnTournamentArena(), typeof window.top.players !== "undefined");
     if (location.href.search('snapshot') != -1) {
         // check if in database
@@ -227,7 +227,7 @@ function parseMapAndDoSomeOtherStaff() {
                     }, function() {
             }, []);
         }
-    } else if (location.pathname === "/f/a" && notOnTournamentArena() && typeof window.top.players !== "undefined") {
+    } else if (location.pathname === "/f/a" && notOnTournamentArena() && typeof window.top.players !== "undefined" && world !== null) {
         var tbl;  // table with map
         var dmap = top.document.getElementById('dmap');
         if (dmap) {
@@ -236,7 +236,6 @@ function parseMapAndDoSomeOtherStaff() {
             tbl = document.getElementsByTagName('button')[0].nextSibling;  // Observatory -> View
         }
         var req = formRequest(tbl);
-        world = findWorldByPlayersName(window.top.players[1]);
         console.log(world,parseMapAndDoSomeOtherStaff.WORLD, world == parseMapAndDoSomeOtherStaff.WORLD);
         if (world == parseMapAndDoSomeOtherStaff.WORLD) {
             console.log(req);
