@@ -237,6 +237,7 @@ function parseMapAndDoSomeOtherStaff() {
         var req = formRequest(tbl);
         world = findWorldByPlayersName(window.top.players[1]);
         if (world == parseMapAndDoSomeOtherStaff.WORLD) {
+            console.log(req);
             document.getElementById('sd_map').contentWindow.postMessage(req, "http://dragonmap.ru/thispageshouldneverexist");
             var fonts = document.getElementsByTagName("font");
             if (fonts) {
