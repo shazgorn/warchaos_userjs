@@ -93,22 +93,6 @@ function addScript(src) {
 function dummy() {
 }
 
-/**
- *
- */
-function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
-    var xmlHttpRequest = new XMLHttpRequest();
-    xmlHttpRequest.open(method, url, true);
-    xmlHttpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xmlHttpRequest.onreadystatechange = function() {
-        if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
-            onSuccess(xmlHttpRequest, args);
-        }
-        else if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status != 200)
-            onFailure(xmlHttpRequest);
-    };
-    xmlHttpRequest.send(param);
-}
 
 /**
  * Search tables with specified name and return array of tables

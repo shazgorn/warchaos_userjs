@@ -11,6 +11,19 @@
 
 
 function f() {
+//    function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
+//        var xmlHttpRequest = new XMLHttpRequest();
+//        xmlHttpRequest.open(method, url, true);
+//        xmlHttpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+//        xmlHttpRequest.onreadystatechange = function () {
+//            if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
+//                onSuccess(xmlHttpRequest, args);
+//            }
+//            else if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status != 200)
+//                onFailure(xmlHttpRequest);
+//        };
+//        xmlHttpRequest.send(param);
+//    }
     /*
      * scr - script source url
      * onload - handler to fire on load event
@@ -50,6 +63,11 @@ function f() {
                     case 'frame_load':
                         ifr.addEventListener('load', function () {
                             evalScript(name, 1000);
+                        }, false);
+                        break;
+                    default:
+                        window.addEventListener(script.events[k], function () {
+                            evalScript(name, 0);
                         }, false);
                         break;
                 }
@@ -227,30 +245,15 @@ function f() {
         } else {
             loadReqLibraries();
         }
-
     });
 }
 if (typeof u === 'undefined') {
     u = document.getElementById('cise');
 }
 if (location.href === "http://dragonmap.ru/thispageshouldneverexist") {
-    function ajaxRequest(url, method, param) {
-        var xmlHttpRequest = new XMLHttpRequest();
-        xmlHttpRequest.open(method, url, true);
-        xmlHttpRequest.setRequestHeader('Content-Type', 'text/plain');
-        xmlHttpRequest.onreadystatechange = function () {
-            if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200) {
-            }
-            else if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status !== 200) {
-
-            }
-        };
-        xmlHttpRequest.send(param);
-    }
-
     addEventListener('message', function (e) {
         if (e.origin === 'http://warchaos.ru') {
-        console.log('incoming ' + ' from ' + e.origin + ' ' + e.data);
+            console.log('incoming ' + ' from ' + e.origin + ' ' + e.data);
             ajaxRequest("http://dragonmap.ru/cgi-bin/mapper_mortal", 'POST', e.data);
         }
     }, false);

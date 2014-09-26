@@ -3,7 +3,7 @@ var scripts = [
 //    {name: "boiler", events: ["load", "frame_load", "click"], match: ["http://warchaos.ru/f/a"], desc: "Варка зелий"},
 //    {name: "buildings", events: ["load"], match: ["http://warchaos.ru/f/a"], desc: "Здания"},
 //    {name: "buy_force", events: [], match: ["http://warchaos.ru/f/a"], libraries: ["jquery-ui"], desc: "Покупка войск"},
-//    {name: "icon_replacer", events: ["frame_load", "click", "load"], match: ["http://warchaos.ru/*"], desc: "Замена иконок"},
+    {name: "icon_replacer", events: ["frame_load", "click", "load", "showinv", "showinv2", "showcon"], match: ["http://warchaos.ru/*"], desc: "Замена иконок"},
 //    {name: "loot_button", events: ["frame_load", "click"], match: ["http://warchaos.ru/f/a"], libraries: ["jquery-ui"], desc: "Кнопки для лута"},
     {name: "main_menu", events: ["load"], match: ["http://warchaos.ru/*"], libraries: ["jquery-ui"], desc: "Ссылки в главном меню, индикаторы зелий"},
 //    {name: "mandragora", events: ["click"], match: ["http://warchaos.ru/f/a"], desc: "Сборка мандрагоры"},

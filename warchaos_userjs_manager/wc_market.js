@@ -15,21 +15,6 @@ function getWindowObject() {
     return window;
 }
 
-function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
-    var xmlHttpRequest = new XMLHttpRequest();
-    xmlHttpRequest.onreadystatechange = function() {
-        if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
-            onSuccess(xmlHttpRequest, args);
-        }
-        else if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status != 200)
-            onFailure(xmlHttpRequest);
-    };
-    xmlHttpRequest.open(method, url, true);
-    if (method == 'POST')
-        xmlHttpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xmlHttpRequest.send(param);
-}
-
 function dummy() {
 }
 

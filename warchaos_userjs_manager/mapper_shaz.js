@@ -1,18 +1,20 @@
 parseMapAndDoSomeOtherStaff.WORLD = "Мортал";
+var mortal_sender = "http://dragonmap.ru/mortal/mortal_sender_dev.html";
+//function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
+//    console.log(url, method, "param", onSuccess);
+//    var xmlHttpRequest = new XMLHttpRequest();
+//    xmlHttpRequest.open(method, url, true);
+//    xmlHttpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+//    xmlHttpRequest.onreadystatechange = function () {
+//        if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
+//            onSuccess(xmlHttpRequest, args);
+//        }
+//        else if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status != 200)
+//            onFailure(xmlHttpRequest);
+//    };
+//    xmlHttpRequest.send(param);
+//}
 
-function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
-    var xmlHttpRequest = new XMLHttpRequest();
-    xmlHttpRequest.open(method, url, true);
-    xmlHttpRequest.setRequestHeader('Content-Type', 'text/plain');
-    xmlHttpRequest.onreadystatechange = function() {
-        if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
-            onSuccess(xmlHttpRequest, args);
-        }
-        else if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status != 200)
-            onFailure(xmlHttpRequest);
-    };
-    xmlHttpRequest.send(param);
-}
 /*
  function addOptionsButton() {
  // this button will show map in iframe. uncomment it in parseMapAndDoSomeOtherStaff()
@@ -129,7 +131,7 @@ function findWorldByPlayersName(name) {
     } else {
         accounts = accounts.split(',');
         for (var i = 0; i < accounts.length; i += 2) {
-            if (accounts[i] == name) {
+            if (accounts[i] === name) {
                 return accounts[i + 1];
             }
         }
@@ -163,12 +165,12 @@ function addUpdateMapButton() {
     b.value = "Обновить карту";
     document.getElementsByTagName("div")[0].getElementsByTagName("center")[0].getElementsByTagName("table")[0]
             .rows[0].cells[1].appendChild(b);
-    b.addEventListener("click", function() {
+    b.addEventListener("click", function () {
         this.disabled = true;
         var tbl = document.getElementsByTagName("div")[0].getElementsByTagName("center")[0].getElementsByTagName("table")[
                 document.getElementsByTagName("div")[0].getElementsByTagName("center")[0].getElementsByTagName("table").length - 2];  //snapshot
         var req = formRequest(tbl);
-        document.getElementById('sd_map').contentWindow.postMessage(req, "http://dragonmap.ru/thispageshouldneverexist");
+        document.getElementById('sd_map').contentWindow.postMessage(req, mortal_sender);
     }, false);
 }
 
@@ -180,7 +182,7 @@ function addGoToMapLink() {
             document.getElementsByTagName("div")[0].getElementsByTagName("center")[0].getElementsByTagName("table").length - 2];
     var xyReg = /x\:(\d+) y\:(\d+)/; //cell coords example: x:424 y:270
     var xy = tbl.rows[tbl.rows.length / 2 - 0.5].cells[tbl.rows[0].cells.length / 2 - 0.5].getElementsByTagName("img")[0].getAttribute("tooltip").match(xyReg);
-    a.href = "http://dragonmap.ru/akrit?x=" + xy[1] + "&y=" + xy[2];
+    a.href = "http://dragonmap.ru/mortal?x=" + xy[1] + "&y=" + xy[2];
     document.getElementsByTagName("div")[0].getElementsByTagName("center")[0].getElementsByTagName("table")[0]
             .rows[0].cells[1].appendChild(document.createTextNode(" / "));
     document.getElementsByTagName("div")[0].getElementsByTagName("center")[0].getElementsByTagName("table")[0]
@@ -206,7 +208,6 @@ function notOnTournamentArena() {
 function parseMapAndDoSomeOtherStaff() {
     // addOptionsButton();
     var world = findWorldByPlayersName(window.top.players[1]);
-    console.log(location.pathname === "/f/a", notOnTournamentArena(), typeof window.top.players !== "undefined");
     if (location.href.search('snapshot') != -1) {
         // check if in database
         var nick = document.getElementsByTagName("div")[0].getElementsByTagName("table")[0].rows[0].cells[1]
@@ -216,18 +217,22 @@ function parseMapAndDoSomeOtherStaff() {
             addGoToMapLink();
             addUpdateMapButton();
         } else if (world === null) {
-            ajaxRequest(document.getElementsByTagName("div")[0].getElementsByTagName("table")[0].rows[0].cells[1]
+            ajaxRequest(
+                    document.getElementsByTagName("div")[0].getElementsByTagName("table")[0].rows[0].cells[1]
                     .getElementsByTagName('a')[0].href,
-                    'POST', '', function(XHR) {
+                    'POST', 
+                    '', 
+                    function (XHR) {
                         var world = addToAccounts(XHR);
                         if (world == parseMapAndDoSomeOtherStaff.WORLD) {
                             addGoToMapLink();
                             addUpdateMapButton();
                         }
-                    }, function() {
+                    }, 
+                    function () {
             }, []);
         }
-    } else if (location.pathname === "/f/a" && notOnTournamentArena() && typeof window.top.players !== "undefined" && world !== null) {
+    } else if (location.pathname === "/f/a" && notOnTournamentArena() && typeof window.top.players !== "undefined") {
         var tbl;  // table with map
         var dmap = top.document.getElementById('dmap');
         if (dmap) {
@@ -236,15 +241,13 @@ function parseMapAndDoSomeOtherStaff() {
             tbl = document.getElementsByTagName('button')[0].nextSibling;  // Observatory -> View
         }
         var req = formRequest(tbl);
-        console.log(world,parseMapAndDoSomeOtherStaff.WORLD, world == parseMapAndDoSomeOtherStaff.WORLD);
-        if (world == parseMapAndDoSomeOtherStaff.WORLD) {
-            console.log(req);
-            document.getElementById('sd_map').contentWindow.postMessage(req, "http://dragonmap.ru/thispageshouldneverexist");
+        if (world === parseMapAndDoSomeOtherStaff.WORLD) {
+            document.getElementById('sd_map').contentWindow.postMessage(req, mortal_sender);
             var fonts = document.getElementsByTagName("font");
             if (fonts) {
                 for (var i = 0; i < fonts.length; i++) {
                     if (fonts[i].innerHTML == "Снэпшот успешно сделан.") {
-                        ajaxRequest('http://warchaos.ru/snapshots/0', 'POST', '', function(XHR, font) {
+                        ajaxRequest('http://warchaos.ru/snapshots/0', 'POST', '', function (XHR, font) {
                             font.innerHTML = "";
                             // <a href=http://warchaos.ru/snapshot/2492/166&342096535/33929>Смотреть</a>
                             var link = XHR.responseText.match(/a href\=(http\:\/\/[^>]+)>Смотреть/)[1];
@@ -255,7 +258,7 @@ function parseMapAndDoSomeOtherStaff() {
                                 font.appendChild(a);
                             }
                         },
-                                function() {
+                                function () {
                                     // l('err')
                                 },
                                 fonts[i]
@@ -264,44 +267,53 @@ function parseMapAndDoSomeOtherStaff() {
                 }
             }
         } else if (world === null) {
-            ajaxRequest('http://warchaos.ru/~uid/', 'POST', '', function(XHR, args) {
-                var world = addToAccounts(XHR);
-                if (world == parseMapAndDoSomeOtherStaff.WORLD) {
-                    document.getElementById('sd_map').contentWindow.postMessage(args, "http://dragonmap.ru/thispageshouldneverexist");
-                }
-            }, function() {
-            }, req);
+            ajaxRequest(
+                    'http://warchaos.ru/~uid/',
+                    'POST',
+                    '',
+                    function (XHR, args) {
+                        var world = addToAccounts(XHR);
+                        if (world == parseMapAndDoSomeOtherStaff.WORLD) {
+                            document.getElementById('sd_map').contentWindow.postMessage(args, mortal_sender);
+                        }
+                    },
+                    function () {
+                    },
+                    req
+                    );
         }
     }
 } // fun
 
 function testIframe_init() {
     var test_iframe = document.createElement('iframe');
-    test_iframe.setAttribute('src', 'http://dragonmap.ru/thispageshouldneverexist');
+    test_iframe.setAttribute('src', mortal_sender);
     test_iframe.setAttribute('id', 'test_iframe');
     test_iframe.setAttribute('style', 'width: 80%; height: 100%; margin: 30px 50px 30px 50px; display: none;'); //display: none;
     document.body.appendChild(test_iframe);
-    $(test_iframe).ready(function() {
+    $(test_iframe).ready(function () {
     });
 }
 function mapper_shaz_init() {
-    console.log("init");
     if (location.href.search(/snapshot|f\/a/) != -1) {
-        console.log("init2");
         var sd_map_iframe = document.createElement('iframe');
-        sd_map_iframe.setAttribute('src', 'http://dragonmap.ru/thispageshouldneverexist');
+        sd_map_iframe.setAttribute('src', mortal_sender);
         sd_map_iframe.setAttribute('id', 'sd_map');
         sd_map_iframe.setAttribute('style', 'width: 80%; height: 100%; margin: 30px 50px 30px 50px; display: none;'); //display: none;
+        sd_map_iframe.addEventListener("load", function() {
+//            console.log(this.contentDocument.scripts);
+        });
         document.body.appendChild(sd_map_iframe);
-        (function(f) {
+        
+        (function (f) {
             var wc_ifr = document.getElementById("ifr");
             if (wc_ifr)
-                wc_ifr.addEventListener("load", function() {
+                wc_ifr.addEventListener("load", function () {
                     setTimeout(f, 0);
                 }, false);
             f();
         })(parseMapAndDoSomeOtherStaff);
-    } else if (location.href == "http://dragonmap.ru/thispageshouldneverexist") {
+    } else if (location.href == mortal_sender) {
 
     }
     /*

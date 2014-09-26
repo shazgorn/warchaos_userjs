@@ -487,6 +487,7 @@ function main_menu() {
                     document.getElementsByName('i11')[0].value = 21;
             }
         }
+        highlightLink("lenta/8/", "Мортал");
         highlightLink("lenta/7/", "Лиаф");
         highlightLink("group", "Группа");
         //unhighlightLink("lenta/2/", "Лиаф");
