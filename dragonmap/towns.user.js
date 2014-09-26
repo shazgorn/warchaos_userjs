@@ -22,8 +22,9 @@ width: 30px;\n\
     addEventListener("click", function (e) {
         var tar = $(e.target);
         if (tar.attr("class") && tar.attr("class").search("bg") !== -1) {
-            var phantomTown = document.createElement("img");
-            phantomTown.src = "img/un/13.gif";
+            var phantomTown = $(document.createElement("img"));
+            phantomTown.attr("src", "img/un/13.gif");
+            phantomTown.addClass("phantom-town");
             tar.append(phantomTown);
             var indPhantom = $(document.createElement("img"));
             indPhantom.addClass("ind-phantom");
@@ -47,6 +48,24 @@ width: 30px;\n\
                                 redHover.addClass("shift");
                             }
                             cell.append(redHover);
+                        }
+                    }
+                }
+            }
+        } else if (tar.attr("class") && tar.attr("src") === "img/ovr_1/red.gif" && tar.prevAll("img[class='phantom-town']").length) {
+            tar = tar.prevAll("img[class='phantom-town']").parent();
+            console.log(tar);
+            var m = tar.attr("tt").match(/x:(\d+) y:(\d+)/);
+            if (m) {
+                for (var i = -5; i < 5; i++) {
+                    for (var j = -5; j < 5; j++) {
+                        var cell = $("td[tt*='x:" + (parseInt(m[1]) + i) + " y:" + (parseInt(m[2]) + j) + "']");
+                        if (i === 0 && j === 0) {
+                            cell.attr("fl", "8");
+                            cell.children("*").remove();
+                        } else {
+                            cell.attr("fl", "10");
+                            cell.children("img:last[class*='op']").remove();
                         }
                     }
                 }
