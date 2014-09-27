@@ -32,8 +32,8 @@ width: 30px;\n\
             tar.append(indPhantom);
             var m = tar.attr("tt").match(/x:(\d+) y:(\d+)/);
             if (m) {
-                for (var i = -5; i < 5; i++) {
-                    for (var j = -5; j < 5; j++) {
+                for (var i = -5; i <= 5; i++) {
+                    for (var j = -5; j <= 5; j++) {
                         var cell = $("td[tt*='x:" + (parseInt(m[1]) + i) + " y:" + (parseInt(m[2]) + j) + "']");
                         if (i === 0 && j === 0) {
                             cell.attr("fl", "10");
