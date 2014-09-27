@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Set towns on dragonmap
 // @match          http://dragonmap.ru/mortal/*
-// @version        1.0
+// @version        1.1
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/dragonmap/towns.user.js
 // ==/UserScript==
 
@@ -57,8 +57,8 @@ width: 30px;\n\
             console.log(tar);
             var m = tar.attr("tt").match(/x:(\d+) y:(\d+)/);
             if (m) {
-                for (var i = -5; i < 5; i++) {
-                    for (var j = -5; j < 5; j++) {
+                for (var i = -5; i <= 5; i++) {
+                    for (var j = -5; j <= 5; j++) {
                         var cell = $("td[tt*='x:" + (parseInt(m[1]) + i) + " y:" + (parseInt(m[2]) + j) + "']");
                         if (i === 0 && j === 0) {
                             cell.attr("fl", "8");
