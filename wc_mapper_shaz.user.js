@@ -170,7 +170,7 @@
 			return null;
 		}
 
-		function formRequest(tbl) {
+		function formRequest(tbl, tblStat) {
 			var m = parseMap(tbl);
 			if (!(m == null || (m != null && m.length <= 0))) {
 				var nickname = localStorage.getItem('nickname');
@@ -181,7 +181,23 @@
 						break;
 					}
 				}
-				return nickname + '&&' + m;
+				// Проверяем силу зрения юнита
+				var sight = 0;
+				if(tblStat) {
+					for(var i=0,l=tblStat.rows.length;i<l;i++) {
+						if(tblStat.rows[i].cells[0].textContent == "Видимость:") {
+							var sightRow = tblStat.rows[i];
+							break;
+						}
+					}
+				}
+				if(sightRow) {
+					var res = /\[([-+]*\d+)]/.exec(sightRow.cells[1].textContent);
+					if(res) {
+						sight = parseInt(res[1]);
+					}
+				}
+				return nickname + '&&' + m + "&" + sight;
 			}
 		}
 
@@ -266,7 +282,8 @@
 				} else if (document.getElementsByTagName('button')[0] && document.getElementsByTagName('button')[0].innerHTML == "Вернуться") {
 					tbl = document.getElementsByTagName('button')[0].nextSibling;  // Observatory -> View
 				}
-				var req = formRequest(tbl);
+				var tblStat = document.querySelector("#drig > table:nth-child(1) > tbody:nth-child(2) > tr:nth-child(2) > td:nth-child(2) > table:nth-child(2) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > table:nth-child(1)")
+				var req = formRequest(tbl, tblStat);
 				var world = findWorldByPlayersName(window.top.players[1]);
 				if (world == parseMapAndDoSomeOtherStaff.WORLD) {
 					document.getElementById('sd_map').contentWindow.postMessage(req, "http://dragonmap.ru/thispageshouldneverexist");
