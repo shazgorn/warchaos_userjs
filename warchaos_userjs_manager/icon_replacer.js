@@ -109,3 +109,34 @@ function icon_replacer() {
         }
     }//for
 }
+
+function icon_replacer_init() {
+//    ShowInv2()
+    if (typeof ShowInv !== "undefined") {
+        var oldVersionShowInv = ShowInv;
+        ShowInv = function () {
+            var result = oldVersionShowInv.apply(this, arguments);
+            var event = new Event('showinv');
+            window.dispatchEvent(event);
+            return result;
+        };
+    }
+    if (typeof ShowInv2 !== "undefined") {
+        var oldVersionShowInv2 = ShowInv2;
+        ShowInv2 = function () {
+            var result = oldVersionShowInv2.apply(this, arguments);
+            var event = new Event('showinv2');
+            window.dispatchEvent(event);
+            return result;
+        };
+    }
+    if (typeof ShowCon !== "undefined") {
+        var oldVersionShowCon = ShowCon;
+        ShowCon = function () {
+            var result = oldVersionShowCon.apply(this, arguments);
+            var event = new Event('showcon');
+            window.dispatchEvent(event);
+            return result;
+        };
+    }
+}

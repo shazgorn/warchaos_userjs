@@ -3,7 +3,7 @@
 // @namespace      https://github.com/shazgorn/warchaos_userjs
 // @description    Add some links to main menu
 // @match          http://warchaos.ru/*
-// @version        1.31
+// @version        1.32
 // @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_main_menu.user.js
 // ==/UserScript==
 
@@ -422,7 +422,7 @@ border: 1px solid #593008;color: #4C3000;font-weight: 700;font-size: 12px;paddin
                         li = document.createElement('li');
                         document.getElementById(bookBlockId).appendChild(li);
                         a = document.createElement('a');
-                        a.href = "http://dragonmap.ru/akrit/";
+                        a.href = "http://dragonmap.ru/mortal/";
                         a.target = "_blank";
                         li.appendChild(a);
                         document.links[++i].innerHTML = "Карта";

@@ -4,13 +4,26 @@
 // @author         shazgorn@ya.ru
 // @description    Control script loading
 // @match          http://warchaos.ru/*
-// @match          http://dragonmap.ru/*
+// @match          http://dragonmap.ru/thispageshouldneverexist
 // @version        1.00
 // @downloadURL    https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/warchaos_userjs_manager/wc_manager.user.js
 // ==/UserScript==
 
 
 function f() {
+//    function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
+//        var xmlHttpRequest = new XMLHttpRequest();
+//        xmlHttpRequest.open(method, url, true);
+//        xmlHttpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+//        xmlHttpRequest.onreadystatechange = function () {
+//            if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
+//                onSuccess(xmlHttpRequest, args);
+//            }
+//            else if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status != 200)
+//                onFailure(xmlHttpRequest);
+//        };
+//        xmlHttpRequest.send(param);
+//    }
     /*
      * scr - script source url
      * onload - handler to fire on load event
@@ -40,7 +53,7 @@ function f() {
             for (var k = 0; k < script.events.length; k++) {
                 switch (script.events[k]) {
                     case 'click':
-                        window.addEventListener('click', function() {
+                        window.addEventListener('click', function () {
                             evalScript(name, 1000);
                         }, false);
                         break;
@@ -48,8 +61,13 @@ function f() {
                         evalScript(name);
                         break;
                     case 'frame_load':
-                        ifr.addEventListener('load', function() {
+                        ifr.addEventListener('load', function () {
                             evalScript(name, 1000);
+                        }, false);
+                        break;
+                    default:
+                        window.addEventListener(script.events[k], function () {
+                            evalScript(name, 0);
                         }, false);
                         break;
                 }
@@ -63,7 +81,7 @@ function f() {
         if (typeof delay === "undefined") {
             delay = 0;
         }
-        setTimeout(function() {
+        setTimeout(function () {
             if (window[name]) {
                 window[name]();
             }
@@ -71,7 +89,7 @@ function f() {
     }
     function loadScript(script) {
         if (typeof window[script.name] === "undefined") {
-            addScript(basepath + script.name + '.js', function() {
+            addScript(basepath + script.name + '.js', function () {
                 if (script.events) {
                     bindEvents(script);
                 }
@@ -102,7 +120,7 @@ function f() {
         var prefs = localStorage.getItem("wc_manager_prefs");
         if (prefs !== null) {
             prefs = prefs.split(",");
-            $(prefs).each(function(i, pref) {
+            $(prefs).each(function (i, pref) {
                 var split = pref.split(":");
                 prefs[split[0]] = split[1];
             });
@@ -115,7 +133,7 @@ function f() {
             li.prependTo("#me600i");
             var a = $(document.createElement("a"));
             a.html("Настройки скриптов");
-            a.click(function() {
+            a.click(function () {
                 $("#manager-prefs").dialog("open");
             });
             a.css("border-bottom", "thin dashed #003000");
@@ -132,7 +150,7 @@ function f() {
             var input = $(document.createElement("input"));
             input.attr("type", "checkbox");
             input.attr("name", "all");
-            input.click(function() {
+            input.click(function () {
                 var checkboxes = $("#manager-prefs-table td:first-child input[type='checkbox']");
                 if ($(this).prop("checked")) {
                     checkboxes.prop("checked", "checked");
@@ -148,7 +166,7 @@ function f() {
             th = document.createElement("th");
             th.innerHTML = "Описание";
             $(row).append(th);
-            $(scripts).each(function(i, script) {
+            $(scripts).each(function (i, script) {
                 row = t.insertRow(-1);
                 var cell = row.insertCell(0);
                 label = $(document.createElement("label"));
@@ -168,9 +186,9 @@ function f() {
                 }
             });
             var save_button = document.createElement("button");
-            $(save_button).button({label: "Сохранить"}).click(function() {
+            $(save_button).button({label: "Сохранить"}).click(function () {
                 var prefs = "";
-                $("#manager-prefs-table td:first-child input[type='checkbox']").each(function(i, checkbox) {
+                $("#manager-prefs-table td:first-child input[type='checkbox']").each(function (i, checkbox) {
                     var checkbox = $(checkbox);
                     if (checkbox.prop("checked")) {
                         prefs += checkbox.attr("name") + ":true,";
@@ -189,9 +207,9 @@ function f() {
     }
     function loadReqLibraries() {
         var librariesToLoad = [];
-        $(scripts).each(function(i, script) {
+        $(scripts).each(function (i, script) {
             if (script.libraries) {
-                $(script.libraries).each(function(j, lib) {
+                $(script.libraries).each(function (j, lib) {
                     if ($.inArray(lib, librariesToLoad) === -1) {
                         librariesToLoad.push(lib);
                     }
@@ -206,7 +224,7 @@ function f() {
                 } else if (lib === "underscore") {
                     src = "http://yastatic.net/underscore/1.6.0/underscore-min.js";
                 }
-                addScript(src, function() {
+                addScript(src, function () {
                     loadLibs(librariesToLoad);
                 });
             } else {
@@ -221,19 +239,28 @@ function f() {
     } else {
         basepath = "https://rawgit.com/shazgorn/warchaos_userjs/master/warchaos_userjs_manager/";
     }
-    addScript("http://yastatic.net/jquery/2.1.1/jquery.min.js", function() {
+    addScript("http://yastatic.net/jquery/2.1.1/jquery.min.js", function () {
         if (typeof scripts === "undefined") {
             addScript(basepath + 'scripts.js', loadReqLibraries);
         } else {
             loadReqLibraries();
         }
-
     });
 }
 if (typeof u === 'undefined') {
     u = document.getElementById('cise');
 }
-var script = document.createElement('script');
-script.textContent = '(' + f + ')();';
-document.body.appendChild(script);
+if (location.href === "http://dragonmap.ru/thispageshouldneverexist") {
+    addEventListener('message', function (e) {
+        if (e.origin === 'http://warchaos.ru') {
+            console.log('incoming ' + ' from ' + e.origin + ' ' + e.data);
+            ajaxRequest("http://dragonmap.ru/cgi-bin/mapper_mortal", 'POST', e.data);
+        }
+    }, false);
+} else {
+    var script = document.createElement('script');
+    script.textContent = '(' + f + ')();';
+    document.body.appendChild(script);
 //document.body.removeChild(script);
+}
+
