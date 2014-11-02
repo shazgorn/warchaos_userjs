@@ -13,5 +13,5 @@ var scripts = [
 //    {name: "replace_force_size", events: ["frame_load", "click", "load"], match: ["http://warchaos.ru/f/a", "http://warchaos.ru/snapshot/*", "http://warchaos.ru/~snapshot/*"], desc: "Замена словесных обозначений войск на числовые"},
 //    {name: "safe_names", events: ["frame_load", "click", "load"], match: ["http://warchaos.ru/f/a"], desc: "Добавляет имена сейфам"},
 //    {name: "wc_astar", events: [], match: ["http://warchaos.ru/f/a"], desc: "Астар. Двигалка юнитов"},
-//    {name: "wc_market", events: ["load"], match: ["http://warchaos.ru/f/a"], libraries: ["jquery-ui", "underscore"], desc: "Рынок"},
+    {name: "wc_market", events: ["load"], match: ["http://warchaos.ru/f/a"], libraries: ["jquery-ui", "underscore"], desc: "Рынок"},
 ];

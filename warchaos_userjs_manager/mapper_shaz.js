@@ -1,19 +1,19 @@
 parseMapAndDoSomeOtherStaff.WORLD = "Мортал";
 var mortal_sender = "http://dragonmap.ru/mortal/mortal_sender_dev.html";
-//function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
+function ajaxRequest(url, method, param, onSuccess, onFailure, args) {
 //    console.log(url, method, "param", onSuccess);
-//    var xmlHttpRequest = new XMLHttpRequest();
-//    xmlHttpRequest.open(method, url, true);
-//    xmlHttpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-//    xmlHttpRequest.onreadystatechange = function () {
-//        if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
-//            onSuccess(xmlHttpRequest, args);
-//        }
-//        else if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status != 200)
-//            onFailure(xmlHttpRequest);
-//    };
-//    xmlHttpRequest.send(param);
-//}
+    var xmlHttpRequest = new XMLHttpRequest();
+    xmlHttpRequest.open(method, url, true);
+    xmlHttpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xmlHttpRequest.onreadystatechange = function () {
+        if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
+            onSuccess(xmlHttpRequest, args);
+        }
+        else if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status != 200)
+            onFailure(xmlHttpRequest);
+    };
+    xmlHttpRequest.send(param);
+}
 
 /*
  function addOptionsButton() {

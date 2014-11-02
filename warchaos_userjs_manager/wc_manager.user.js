@@ -216,6 +216,7 @@ function f() {
                 });
             }
         });
+        //arguments.callee
         function loadLibs(librariesToLoad) {
             if (librariesToLoad.length) {
                 var lib = librariesToLoad.pop(), src;
@@ -250,17 +251,8 @@ function f() {
 if (typeof u === 'undefined') {
     u = document.getElementById('cise');
 }
-if (location.href === "http://dragonmap.ru/thispageshouldneverexist") {
-    addEventListener('message', function (e) {
-        if (e.origin === 'http://warchaos.ru') {
-            console.log('incoming ' + ' from ' + e.origin + ' ' + e.data);
-            ajaxRequest("http://dragonmap.ru/cgi-bin/mapper_mortal", 'POST', e.data);
-        }
-    }, false);
-} else {
-    var script = document.createElement('script');
-    script.textContent = '(' + f + ')();';
-    document.body.appendChild(script);
+var script = document.createElement('script');
+script.textContent = '(' + f + ')();';
+document.body.appendChild(script);
 //document.body.removeChild(script);
-}
 
