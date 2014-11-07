@@ -435,7 +435,7 @@ border: 1px solid #593008;color: #4C3000;font-weight: 700;font-size: 12px;paddin
                     var mtext = $(".mtext").get(0);
                     if (mtext !== null && mtext.innerHTML.search("Следующая") != -1) {
                         var nextPrevBar = mtext.cloneNode(true);
-                        var firstMsg = $(".xrw xmsg").get(0);
+                        var firstMsg = $(".xrw.xmsg").get(0);
                         if (!firstMsg)
                             firstMsg = $(".xrw").get(0);
                         if (firstMsg)
