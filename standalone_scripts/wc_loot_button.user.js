@@ -4,7 +4,7 @@
 // @description    Add loot button
 // @match          http://warchaos.ru/f/a
 // @version        1.33
-// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_loot_button.user.js
+// @downloadURL    https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/standalone_scripts/wc_loot_button.user.js
 // ==/UserScript==
 
 

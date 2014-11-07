@@ -4,7 +4,7 @@
 // @description    Calculates action point regeneration rate
 // @match          http://warchaos.ru/f/a
 // @version        1.0
-// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_ap_calc.user.js
+// @downloadURL    https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/standalone_scripts/wc_ap_calc.user.js
 // ==/UserScript==
 
 

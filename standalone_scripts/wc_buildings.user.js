@@ -4,7 +4,7 @@
 // @description    Add some icons to town screen and buildings levels
 // @match          http://warchaos.ru/f/a
 // @version        1.21
-// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_buildings.user.js
+// @downloadURL    https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/standalone_scripts/wc_buildings.user.js
 // ==/UserScript==
 
 (function() {

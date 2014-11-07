@@ -6,7 +6,7 @@
 // @match          http://warchaos.ru/snapshot/*
 // @match          http://warchaos.ru/~snapshot/*
 // @version        1.0
-// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_replace_force_size.user.js
+// @downloadURL    https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/standalone_scripts/wc_replace_force_size.user.js
 // ==/UserScript==
 
 (function() {

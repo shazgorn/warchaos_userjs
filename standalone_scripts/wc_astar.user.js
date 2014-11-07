@@ -4,7 +4,7 @@
 // @description    You can move your units like in heroes game
 // @match          http://warchaos.ru/f/a
 // @version        1.38
-// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_astar.user.js
+// @downloadURL    https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/standalone_scripts/wc_astar.user.js
 // ==/UserScript==
 
 //TODO: exit from dropship zeroes AP

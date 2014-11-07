@@ -4,7 +4,7 @@
 // @description    Replace default recipe icon(1914.gif). Add art info
 // @match          http://warchaos.ru/*
 // @version        1.23
-// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_icon_replacer.user.js
+// @downloadURL    https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/standalone_scripts/wc_icon_replacer.user.js
 // ==/UserScript==
 
 if (typeof u === "undefined") {

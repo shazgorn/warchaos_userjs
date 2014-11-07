@@ -4,7 +4,7 @@
 // @description    Add some links to main menu
 // @match          http://warchaos.ru/*
 // @version        1.32
-// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_main_menu.user.js
+// @downloadURL    https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/standalone_scripts/wc_main_menu.user.js
 // ==/UserScript==
 
 
@@ -435,7 +435,7 @@ border: 1px solid #593008;color: #4C3000;font-weight: 700;font-size: 12px;paddin
                     var mtext = $(".mtext").get(0);
                     if (mtext !== null && mtext.innerHTML.search("Следующая") != -1) {
                         var nextPrevBar = mtext.cloneNode(true);
-                        var firstMsg = $(".xrw xmsg").get(0);
+                        var firstMsg = $(".xrw.xmsg").get(0);
                         if (!firstMsg)
                             firstMsg = $(".xrw").get(0);
                         if (firstMsg)

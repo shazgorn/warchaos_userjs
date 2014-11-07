@@ -4,7 +4,7 @@
 // @description    Add "max" button, allows you to buy all force
 // @match          http://warchaos.ru/f/a
 // @version        1.1
-// @downloadURL    https://raw.github.com/shazgorn/warchaos_userjs/master/wc_buy_force.user.js
+// @downloadURL    https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/standalone_scripts/wc_buy_force.user.js
 // ==/UserScript==
 
 (function () {
