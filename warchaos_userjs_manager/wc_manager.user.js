@@ -238,7 +238,7 @@ function f() {
     if (navigator.appVersion.search('Chrome') === -1) {
         basepath = "https://raw.githubusercontent.com/shazgorn/warchaos_userjs/master/warchaos_userjs_manager/";
     } else {
-        basepath = "https://rawgit.com/shazgorn/warchaos_userjs/master/warchaos_userjs_manager/";
+        basepath = "https://cdn.jsdelivr.net/gh/shazgorn/warchaos_userjs/warchaos_userjs_manager/";
     }
     addScript("http://yastatic.net/jquery/2.1.1/jquery.min.js", function () {
         if (typeof scripts === "undefined") {
